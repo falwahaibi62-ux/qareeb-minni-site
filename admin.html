@@ -9,16 +9,16 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400..700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
 <style>
-  /* Layout: a quiet operations board — status counters on top, then one card per request with its controls. */
+  /* Layout: a quiet operations board — tabs for requests and drivers, counters on top, one card per record. */
   :root{
     --ivory:#FAF7F2; --sand:#F1EADF; --card:#FFFDF9;
     --navy:#1F3A4D; --navy-2:#2C4D63; --muted:#5A6A76;
     --brass:#B8915A; --brass-text:#85632F; --border:#E3D9CA;
-    --error:#B3261E; --ok:#2F6B4F;
+    --error:#B3261E; --ok:#2F6B4F; --warn:#8A5A00;
     --display:"Readex Pro","IBM Plex Sans Arabic",Tahoma,sans-serif;
     --body:"IBM Plex Sans Arabic",Tahoma,sans-serif;
-    /* status colours: told apart by label text as well as colour */
     --s-new:#B8915A; --s-contacted:#4F7A96; --s-confirmed:#2F6B4F; --s-assigned:#6B5B95; --s-done:#5A6A76; --s-cancelled:#B3261E;
+    --d-available:#2F6B4F; --d-busy:#B8915A; --d-leave:#4F7A96; --d-suspended:#B3261E;
     color-scheme:light;
   }
   *{box-sizing:border-box}
@@ -47,7 +47,7 @@
   .login-card label{display:grid;gap:6px;font-weight:600}
   .msg{font-size:14px;color:var(--error);min-height:1em}
 
-  /* Header */
+  /* Header + tabs */
   header{position:sticky;top:0;z-index:10;background:rgba(250,247,242,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
   .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px;flex-wrap:wrap}
   .brand{display:flex;align-items:center;gap:10px}
@@ -57,6 +57,9 @@
   .brand b{font-family:var(--display);font-size:18px}
   .brand span{display:block;font-size:12px;color:var(--muted)}
   .who{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
+  .tabs{display:flex;gap:4px}
+  .tab{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;font-weight:600;cursor:pointer;color:var(--muted)}
+  .tab[aria-selected=true]{color:var(--navy);border-bottom-color:var(--brass)}
 
   /* Toolbar */
   .counters{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 12px}
@@ -65,11 +68,12 @@
   .chip[aria-pressed=true]{border-color:var(--navy);background:var(--navy);color:var(--ivory)}
   .chip[aria-pressed=true] .n{background:rgba(255,255,255,.18)}
   .dot{width:9px;height:9px;border-radius:50%;flex:none}
-  .tools{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+  .tools{display:flex;gap:10px;align-items:center;margin:20px 0 16px;flex-wrap:wrap}
+  .counters + .tools{margin-top:0}
   .tools input{max-width:320px}
   .stamp{font-size:13px;color:var(--muted)}
 
-  /* Request cards */
+  /* Cards */
   .list{display:grid;gap:14px;padding-bottom:48px}
   .req{background:var(--card);border:1px solid var(--border);border-inline-start:4px solid var(--border);border-radius:14px;padding:18px;display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
   .req-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -79,22 +83,40 @@
   .meta{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin-top:10px;font-size:14px}
   .meta dt{color:var(--muted)}
   .meta dd{margin:0;min-width:0;overflow-wrap:anywhere}
-  .meta dd.ltr{direction:ltr;text-align:start;unicode-bidi:isolate}
-  [dir=rtl] .meta dd.ltr{text-align:right}
+  .meta dd.ltr{direction:ltr;unicode-bidi:isolate}
+  html[dir=ltr] .meta dd{text-align:left}
+  html[dir=rtl] .meta dd{text-align:right}
   .links{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
   .links a{font-size:13px;font-weight:600;text-decoration:none;border:1.5px solid var(--border);border-radius:8px;padding:5px 10px;color:var(--navy);background:#fff}
   .links a:hover{border-color:var(--navy)}
   .edit{display:grid;gap:10px;align-content:start;background:var(--ivory);border-radius:10px;padding:14px}
   .edit label{display:grid;gap:4px;font-size:13px;font-weight:600}
   .edit textarea{min-height:64px;resize:vertical}
-  .save-row{display:flex;align-items:center;gap:10px}
+  .hint{font-size:12px;font-weight:500;color:var(--muted)}
+  .hint.warn{color:var(--warn)}
+  .save-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .saved{font-size:13px;color:var(--ok)}
   .saved.err{color:var(--error)}
   .audit{font-size:12px;color:var(--muted)}
   .empty{text-align:center;color:var(--muted);padding:48px 16px;background:var(--card);border:1px dashed var(--border);border-radius:14px}
+  .flag{font-size:12px;font-weight:700;border-radius:6px;padding:1px 8px}
+  .flag.bad{background:#F8E1DF;color:var(--error)}
+  .flag.soon{background:#F6E9D2;color:var(--warn)}
+
+  /* Driver form */
+  .dform{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .dform h3{grid-column:1/-1;font-size:18px}
+  .dform label{display:grid;gap:4px;font-size:13px;font-weight:600}
+  .dform .wide{grid-column:1/-1}
+  .dform .check{display:flex;gap:8px;align-items:flex-start;font-weight:500}
+  .dform .check input{width:18px;height:18px;margin-top:2px;flex:none;accent-color:var(--navy)}
+  .phone{display:flex;direction:ltr}
+  .phone span{display:flex;align-items:center;padding:0 10px;background:var(--sand);border:1.5px solid var(--border);border-right:0;border-radius:8px 0 0 8px;font-weight:600;color:var(--muted)}
+  .phone input{border-radius:0 8px 8px 0;direction:ltr;text-align:left}
 
   @media (max-width:760px){
     .req{grid-template-columns:1fr}
+    .dform{grid-template-columns:1fr}
     .who .email{display:none}
   }
 </style>
@@ -128,6 +150,10 @@
         </svg>
         <div><b data-t="title">لوحة الطلبات</b><span data-t="brand">قريب مني</span></div>
       </div>
+      <nav class="tabs" role="tablist">
+        <button class="tab" role="tab" id="tabReq" aria-selected="true" data-t="tabRequests">الطلبات</button>
+        <button class="tab" role="tab" id="tabDrv" aria-selected="false" data-t="tabDrivers">السائقون</button>
+      </nav>
       <div class="who">
         <span class="email" id="userEmail" dir="ltr"></span>
         <button class="lang" type="button" data-lang-btn>EN</button>
@@ -136,7 +162,8 @@
     </div>
   </header>
 
-  <main class="wrap">
+  <!-- الطلبات / Requests -->
+  <main class="wrap" id="reqPane">
     <div class="counters" id="counters" role="group"></div>
     <div class="tools">
       <input type="search" id="search">
@@ -144,6 +171,32 @@
       <span class="stamp" id="stamp" aria-live="polite"></span>
     </div>
     <div class="list" id="list"></div>
+  </main>
+
+  <!-- السائقون / Drivers -->
+  <main class="wrap" id="drvPane" hidden>
+    <div class="tools">
+      <button class="btn" type="button" id="addDrvBtn" data-t="addDriver">إضافة سائق</button>
+      <input type="search" id="drvSearch">
+    </div>
+    <form class="dform" id="drvForm" hidden novalidate>
+      <h3 id="drvFormTitle"></h3>
+      <label><span data-t="dName">الاسم</span><input id="dName" maxlength="80" dir="auto"></label>
+      <label><span data-t="mobile">الموبايل</span><span class="phone"><span>+968</span><input id="dPhone" inputmode="numeric" maxlength="8" placeholder="9XXXXXXX"></span></label>
+      <label><span data-t="dTruck">حجم الشاحنة</span><select id="dTruck"></select></label>
+      <label><span data-t="dAreas">المناطق التي يغطيها</span><input id="dAreas" maxlength="200" dir="auto"></label>
+      <label><span data-t="dVoc">رقم بطاقة التشغيل (نقل)</span><input id="dVoc" maxlength="40" dir="ltr"></label>
+      <label><span data-t="dVocExp">تاريخ انتهاء البطاقة</span><input id="dVocExp" type="date"></label>
+      <label><span data-t="dStatus">حالة السائق</span><select id="dStatus"></select></label>
+      <label class="wide"><span data-t="dNotes">ملاحظات</span><textarea id="dNotes" maxlength="600" dir="auto"></textarea></label>
+      <label class="check wide"><input type="checkbox" id="dConsent"><span data-t="dConsent">وافق السائق على حفظ بياناته واستخدامها لإسناد الطلبات</span></label>
+      <div class="save-row wide">
+        <button class="btn" type="submit" data-t="save">حفظ</button>
+        <button class="btn btn-ghost" type="button" id="drvCancel" data-t="cancel">إلغاء</button>
+        <span class="saved" id="drvMsg" aria-live="polite"></span>
+      </div>
+    </form>
+    <div class="list" id="drvList"></div>
   </main>
 </div>
 
@@ -153,48 +206,82 @@
   const SUPABASE_URL = 'https://qtcgeuqqixmmpioucolx.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_8rol_CEvn7ECzAX5gcGwYw_Cdt8uJJy';  // المفتاح العام فقط
 
-  // ===== النصوص باللغتين =====
+  // ===== النصوص باللغتين / Both languages =====
   const T = {
     ar: {
       docTitle: 'لوحة الطلبات | قريب مني', title: 'لوحة الطلبات', brand: 'قريب مني', staffOnly: 'قريب مني · للموظفين فقط',
       email: 'البريد الإلكتروني', password: 'كلمة المرور', login: 'دخول', logout: 'خروج', refresh: 'تحديث',
+      tabRequests: 'الطلبات', tabDrivers: 'السائقون',
       badLogin: 'البريد أو كلمة المرور غير صحيحة.', noLib: 'تعذّر تحميل مكتبة الاتصال. تحقق من الإنترنت وحدّث الصفحة.',
       search: 'بحث بالاسم أو رقم الموبايل أو رقم الطلب', filterLabel: 'تصفية حسب الحالة',
-      open: 'المفتوحة', all: 'الكل', updated: 'آخر تحديث', loadFail: 'تعذّر تحميل الطلبات: ',
+      open: 'المفتوحة', all: 'الكل', updated: 'آخر تحديث', loadFail: 'تعذّر التحميل: ',
       emptyNone: 'لا توجد طلبات بعد. ستظهر هنا فور إرسالها من الموقع.', emptyFilter: 'لا توجد طلبات تطابق هذا التصنيف أو البحث.',
       sent: 'أُرسل', mobile: 'الموبايل', service: 'الخدمة', wilayat: 'الولاية', address: 'العنوان', prefDate: 'التاريخ المفضل', custNotes: 'ملاحظات العميل',
       call: 'اتصال', whatsapp: 'واتساب', map: 'الموقع على الخريطة',
-      status: 'الحالة', driver: 'السائق المُسند', driverPh: 'اسم السائق ورقمه', adminNotes: 'ملاحظات الإدارة', adminNotesPh: 'السعر المتفق عليه، العربون، الموعد...',
-      save: 'حفظ', saving: 'جارٍ الحفظ...', savedOk: 'تم الحفظ ✓', saveFail: 'لم يُحفظ: ', needDriver: 'اكتب اسم السائق قبل الإسناد', lastEdit: 'آخر تعديل',
+      status: 'الحالة', driver: 'السائق المُسند', noDriver: '— بدون سائق —', adminNotes: 'ملاحظات الإدارة', adminNotesPh: 'السعر المتفق عليه، العربون، الموعد...',
+      save: 'حفظ', cancel: 'إلغاء', edit: 'تعديل', saving: 'جارٍ الحفظ...', savedOk: 'تم الحفظ ✓', saveFail: 'لم يُحفظ: ', needDriver: 'اختر السائق قبل الإسناد', lastEdit: 'آخر تعديل',
+      freeOn: 'متاح في هذا التاريخ', busyOn: n => `لديه ${n} طلب في هذا التاريخ`, noDate: 'بدون تاريخ محدد',
+      driverWarnBusy: 'تنبيه: هذا السائق لديه طلب آخر في نفس التاريخ.', driverWarnStatus: 'تنبيه: حالة هذا السائق ليست "متاح".',
+      noDrivers: 'لا يوجد سائقون بعد. أضيفيهم من تبويب "السائقون".',
       st: { new: 'جديد', contacted: 'تم التواصل', confirmed: 'مؤكد', assigned: 'مُسند لسائق', done: 'منجز', cancelled: 'ملغي' },
       svc: { move: 'نقل', storage: 'تخزين', both: 'نقل وتخزين' },
-      wil: {}, locale: 'ar-OM', langBtn: 'EN', langAria: 'Switch to English'
+      wil: {},
+      addDriver: 'إضافة سائق', drvSearch: 'بحث باسم السائق أو رقمه', newDriver: 'سائق جديد', editDriver: 'تعديل بيانات السائق',
+      dName: 'الاسم', dTruck: 'حجم الشاحنة', dAreas: 'المناطق التي يغطيها', dVoc: 'رقم بطاقة التشغيل (نقل)', dVocExp: 'تاريخ انتهاء البطاقة',
+      dStatus: 'حالة السائق', dNotes: 'ملاحظات', dConsent: 'وافق السائق على حفظ بياناته واستخدامها لإسناد الطلبات',
+      truck: { small: 'صغيرة', medium: 'متوسطة', large: 'كبيرة' },
+      dst: { available: 'متاح', busy: 'مشغول', leave: 'في إجازة', suspended: 'موقوف' },
+      vocExpired: 'البطاقة منتهية', vocSoon: 'البطاقة تنتهي قريباً', vocMissing: 'بدون بطاقة تشغيل',
+      jobsMonth: n => `${n} طلب منجز هذا الشهر`, activeJobs: n => `${n} طلب قيد التنفيذ`,
+      errName: 'اكتب اسم السائق', errPhone: 'رقم الموبايل العُماني 8 أرقام ويبدأ بـ 7 أو 9', errConsent: 'موافقة السائق مطلوبة قبل حفظ بياناته',
+      noDriversList: 'لا يوجد سائقون بعد. اضغطي "إضافة سائق".',
+      locale: 'ar-OM', langBtn: 'EN', langAria: 'Switch to English'
     },
     en: {
       docTitle: 'Requests board | Qareeb Minni', title: 'Requests board', brand: 'Qareeb Minni', staffOnly: 'Qareeb Minni · Staff only',
       email: 'Email', password: 'Password', login: 'Log in', logout: 'Log out', refresh: 'Refresh',
+      tabRequests: 'Requests', tabDrivers: 'Drivers',
       badLogin: 'Wrong email or password.', noLib: 'Could not load the connection library. Check your internet and reload the page.',
       search: 'Search by name, mobile or request number', filterLabel: 'Filter by status',
-      open: 'Open', all: 'All', updated: 'Updated', loadFail: 'Could not load requests: ',
+      open: 'Open', all: 'All', updated: 'Updated', loadFail: 'Could not load: ',
       emptyNone: 'No requests yet. They will appear here as soon as they are sent from the website.', emptyFilter: 'No requests match this filter or search.',
       sent: 'Sent', mobile: 'Mobile', service: 'Service', wilayat: 'Wilayat', address: 'Address', prefDate: 'Preferred date', custNotes: 'Customer notes',
       call: 'Call', whatsapp: 'WhatsApp', map: 'Location on map',
-      status: 'Status', driver: 'Assigned driver', driverPh: 'Driver name and number', adminNotes: 'Admin notes', adminNotesPh: 'Agreed price, deposit, date...',
-      save: 'Save', saving: 'Saving...', savedOk: 'Saved ✓', saveFail: 'Not saved: ', needDriver: 'Enter the driver name before assigning', lastEdit: 'Last edited',
+      status: 'Status', driver: 'Assigned driver', noDriver: '— No driver —', adminNotes: 'Admin notes', adminNotesPh: 'Agreed price, deposit, date...',
+      save: 'Save', cancel: 'Cancel', edit: 'Edit', saving: 'Saving...', savedOk: 'Saved ✓', saveFail: 'Not saved: ', needDriver: 'Choose a driver before assigning', lastEdit: 'Last edited',
+      freeOn: 'Free on this date', busyOn: n => `Has ${n} job(s) on this date`, noDate: 'No date set',
+      driverWarnBusy: 'Note: this driver has another job on the same date.', driverWarnStatus: 'Note: this driver is not marked "Available".',
+      noDrivers: 'No drivers yet. Add them from the "Drivers" tab.',
       st: { new: 'New', contacted: 'Contacted', confirmed: 'Confirmed', assigned: 'Assigned to driver', done: 'Done', cancelled: 'Cancelled' },
       svc: { move: 'Moving', storage: 'Storage', both: 'Moving + storage' },
       wil: { 'مسقط': 'Muscat', 'مطرح': 'Muttrah', 'بوشر': 'Bausher', 'السيب': 'Seeb', 'العامرات': 'Al Amerat', 'قريات': 'Qurayyat' },
+      addDriver: 'Add driver', drvSearch: 'Search by driver name or number', newDriver: 'New driver', editDriver: 'Edit driver',
+      dName: 'Name', dTruck: 'Truck size', dAreas: 'Areas covered', dVoc: 'Vehicle operating card no. (Naql)', dVocExp: 'Card expiry date',
+      dStatus: 'Driver status', dNotes: 'Notes', dConsent: 'The driver agreed to have their details stored and used to assign requests',
+      truck: { small: 'Small', medium: 'Medium', large: 'Large' },
+      dst: { available: 'Available', busy: 'Busy', leave: 'On leave', suspended: 'Suspended' },
+      vocExpired: 'Card expired', vocSoon: 'Card expires soon', vocMissing: 'No operating card',
+      jobsMonth: n => `${n} job(s) done this month`, activeJobs: n => `${n} active job(s)`,
+      errName: 'Enter the driver name', errPhone: 'Omani mobile numbers have 8 digits and start with 7 or 9', errConsent: 'The driver’s consent is needed before saving their details',
+      noDriversList: 'No drivers yet. Press "Add driver".',
       locale: 'en-GB', langBtn: 'عربي', langAria: 'التبديل إلى العربية'
     }
   };
   const STATUS_COLOR = { new: 'var(--s-new)', contacted: 'var(--s-contacted)', confirmed: 'var(--s-confirmed)', assigned: 'var(--s-assigned)', done: 'var(--s-done)', cancelled: 'var(--s-cancelled)' };
+  const DSTATUS_COLOR = { available: 'var(--d-available)', busy: 'var(--d-busy)', leave: 'var(--d-leave)', suspended: 'var(--d-suspended)' };
+  const ACTIVE = ['contacted', 'confirmed', 'assigned'];   // طلبات تشغل السائق
 
   const $ = id => document.getElementById(id);
-  let db = null, rows = [], filter = 'open', timer = null, lastLoad = null;
+  let db = null, rows = [], drivers = [], filter = 'open', timer = null, lastLoad = null, tab = 'req', editingDriver = null;
   let lang = 'ar';
   try { if (localStorage.getItem('qm-admin-lang') === 'en') lang = 'en'; } catch (e) {}
   const t = () => T[lang];
+  const today = () => new Date().toISOString().slice(0, 10);
 
+  function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function fillSelect(sel, map, current){ sel.replaceChildren(...Object.entries(map).map(([k, v]) => { const o = el('option', null, v); o.value = k; if (k === current) o.selected = true; return o; })); }
+
+  // ===== اللغة / Language =====
   function applyLang(){
     const L = t();
     document.documentElement.lang = lang;
@@ -203,10 +290,14 @@
     document.querySelectorAll('[data-t]').forEach(e => { e.textContent = L[e.dataset.t]; });
     document.querySelectorAll('[data-lang-btn]').forEach(b => { b.textContent = L.langBtn; b.setAttribute('aria-label', L.langAria); b.lang = lang === 'en' ? 'ar' : 'en'; });
     $('search').placeholder = L.search;
+    $('drvSearch').placeholder = L.drvSearch;
     $('counters').setAttribute('aria-label', L.filterLabel);
+    fillSelect($('dTruck'), L.truck, $('dTruck').value || 'medium');
+    fillSelect($('dStatus'), L.dst, $('dStatus').value || 'available');
+    $('drvFormTitle').textContent = editingDriver ? L.editDriver : L.newDriver;
     $('loginMsg').textContent = '';
     stampText();
-    if (rows.length || !$('appView').hidden) render();
+    if (!$('appView').hidden) { render(); renderDrivers(); }
   }
   document.querySelectorAll('[data-lang-btn]').forEach(b => b.addEventListener('click', () => {
     lang = lang === 'ar' ? 'en' : 'ar';
@@ -215,6 +306,18 @@
   }));
   applyLang();
 
+  // ===== التبويبات / Tabs =====
+  function showTab(name){
+    tab = name;
+    $('tabReq').setAttribute('aria-selected', String(name === 'req'));
+    $('tabDrv').setAttribute('aria-selected', String(name === 'drv'));
+    $('reqPane').hidden = name !== 'req';
+    $('drvPane').hidden = name !== 'drv';
+  }
+  $('tabReq').onclick = () => showTab('req');
+  $('tabDrv').onclick = () => showTab('drv');
+
+  // ===== الاتصال والدخول / Connection and login =====
   if (!window.supabase) {
     $('loginMsg').textContent = t().noLib;
   } else {
@@ -222,7 +325,6 @@
     db.auth.getSession().then(({ data }) => { if (data.session) showApp(data.session); });
   }
 
-  // ===== الدخول والخروج =====
   $('loginForm').addEventListener('submit', async e => {
     e.preventDefault();
     if (!db) return;
@@ -237,7 +339,7 @@
   $('logoutBtn').addEventListener('click', async () => {
     clearInterval(timer);
     await db.auth.signOut();
-    rows = []; $('list').replaceChildren();
+    rows = []; drivers = []; $('list').replaceChildren(); $('drvList').replaceChildren();
     $('appView').hidden = true; $('loginView').hidden = false;
   });
 
@@ -249,13 +351,17 @@
     timer = setInterval(load, 60000);   // تحديث تلقائي كل دقيقة
   }
 
-  // ===== تحميل الطلبات =====
+  // ===== تحميل البيانات / Load data =====
   async function load(){
-    const { data, error } = await db.from('requests').select('*').order('created_at', { ascending: false }).limit(500);
-    if (error) { $('stamp').textContent = t().loadFail + error.message; return; }
-    rows = data; lastLoad = new Date();
+    const [r, d] = await Promise.all([
+      db.from('requests').select('*').order('created_at', { ascending: false }).limit(500),
+      db.from('drivers').select('*').order('name')
+    ]);
+    if (r.error) { $('stamp').textContent = t().loadFail + r.error.message; return; }
+    rows = r.data; drivers = d.error ? [] : d.data; lastLoad = new Date();
     stampText();
-    render();
+    if (d.error) $('stamp').textContent += ' · ' + t().loadFail + d.error.message;   // جدول السائقين لم يُنشأ بعد
+    render(); renderDrivers();
   }
   function stampText(){
     if (!lastLoad) return;
@@ -263,18 +369,31 @@
   }
   $('refreshBtn').addEventListener('click', load);
   $('search').addEventListener('input', render);
+  $('drvSearch').addEventListener('input', renderDrivers);
 
   const shortCode = r => 'QM-' + r.id.slice(0, 6).toUpperCase();
   const fmtDate = d => d ? new Date(d).toLocaleString(t().locale, { dateStyle: 'medium', timeStyle: 'short' }) : '';
+  const fmtDay = d => d ? new Date(d + 'T00:00:00').toLocaleDateString(t().locale, { dateStyle: 'medium' }) : '';
 
+  // صلاحية بطاقة التشغيل: 'ok' | 'soon' | 'expired' | 'missing'
+  function vocState(d, onDate){
+    if (!d.voc_expiry) return 'missing';
+    const ref = onDate || today();
+    if (d.voc_expiry < ref) return 'expired';
+    const soon = new Date(); soon.setDate(soon.getDate() + 30);
+    return d.voc_expiry <= soon.toISOString().slice(0, 10) ? 'soon' : 'ok';
+  }
+  // عدد طلبات السائق في نفس التاريخ (غير هذا الطلب)
+  const jobsOn = (driverId, date, exceptId) => date ? rows.filter(x => x.driver_id === driverId && x.preferred_date === date && x.id !== exceptId && ACTIVE.includes(x.status)).length : 0;
+
+  // ===== الطلبات / Requests =====
   function renderCounters(){
     const L = t();
     const open = rows.filter(r => !['done','cancelled'].includes(r.status)).length;
     const items = [['open', L.open, open, 'var(--navy)'], ['all', L.all, rows.length, 'var(--muted)']]
       .concat(Object.keys(STATUS_COLOR).map(k => [k, L.st[k], rows.filter(r => r.status === k).length, STATUS_COLOR[k]]));
     $('counters').replaceChildren(...items.map(([k, label, n, color]) => {
-      const b = document.createElement('button');
-      b.type = 'button'; b.className = 'chip'; b.setAttribute('aria-pressed', String(filter === k));
+      const b = el('button', 'chip'); b.type = 'button'; b.setAttribute('aria-pressed', String(filter === k));
       const dot = el('span', 'dot'); dot.style.background = color;
       b.append(dot, document.createTextNode(label), el('span', 'n', String(n)));
       b.onclick = () => { filter = k; render(); };
@@ -291,13 +410,9 @@
       if (!q) return true;
       return [r.name, r.phone, shortCode(r)].some(v => (v || '').toLowerCase().includes(q));
     });
-    if (!shown.length) {
-      $('list').replaceChildren(el('div', 'empty', rows.length ? t().emptyFilter : t().emptyNone)); return;
-    }
+    if (!shown.length) { $('list').replaceChildren(el('div', 'empty', rows.length ? t().emptyFilter : t().emptyNone)); return; }
     $('list').replaceChildren(...shown.map(card));
   }
-
-  function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 
   function card(r){
     const L = t();
@@ -307,7 +422,7 @@
     // ----- بيانات العميل -----
     const info = el('div');
     const head = el('div', 'req-head');
-    head.append(el('h3', null, r.name));
+    const nm = el('h3', null, r.name); nm.dir = 'auto'; head.append(nm);
     const badge = el('span', 'badge', L.st[r.status] || r.status); badge.style.background = color; head.append(badge);
     head.append(el('span', 'code', shortCode(r)));
     info.append(head);
@@ -319,14 +434,13 @@
     add(L.service, L.svc[r.service] || r.service);
     add(L.wilayat, L.wil[r.wilayat] || r.wilayat);
     add(L.address, r.address);
-    add(L.prefDate, r.preferred_date, true);
+    add(L.prefDate, fmtDay(r.preferred_date));
     add(L.custNotes, r.notes);
     info.append(meta);
 
     const links = el('div', 'links');
-    const phoneDigits = (r.phone || '').replace(/[^\d]/g, '');
     const a1 = el('a', null, L.call); a1.href = 'tel:' + r.phone;
-    const a2 = el('a', null, L.whatsapp); a2.href = 'https://wa.me/' + phoneDigits; a2.target = '_blank'; a2.rel = 'noopener';
+    const a2 = el('a', null, L.whatsapp); a2.href = 'https://wa.me/' + (r.phone || '').replace(/[^\d]/g, ''); a2.target = '_blank'; a2.rel = 'noopener';
     links.append(a1, a2);
     if (r.lat && r.lng) { const a3 = el('a', null, L.map); a3.href = `https://www.google.com/maps?q=${r.lat},${r.lng}`; a3.target = '_blank'; a3.rel = 'noopener'; links.append(a3); }
     info.append(links);
@@ -334,24 +448,48 @@
     // ----- التحكم -----
     const edit = el('div', 'edit');
     const sLab = el('label', null, L.status); const sel = el('select');
-    Object.keys(STATUS_COLOR).forEach(k => { const o = el('option', null, L.st[k]); o.value = k; if (k === r.status) o.selected = true; sel.append(o); });
-    sLab.append(sel);
-    const dLab = el('label', null, L.driver); const drv = el('input'); drv.value = r.assigned_driver || ''; drv.placeholder = L.driverPh; dLab.append(drv);
-    const nLab = el('label', null, L.adminNotes); const nts = el('textarea'); nts.value = r.admin_notes || ''; nts.placeholder = L.adminNotesPh; nLab.append(nts);
+    fillSelect(sel, L.st, r.status); sLab.append(sel);
+
+    // قائمة السائقين: يُستبعد الموقوف ومن انتهت بطاقته، ويظهر المتاح في التاريخ أولاً
+    const dLab = el('label', null, L.driver); const drvSel = el('select');
+    const usable = drivers.filter(d => d.status !== 'suspended' && vocState(d, r.preferred_date) !== 'expired' || d.id === r.driver_id);
+    const scored = usable.map(d => ({ d, n: jobsOn(d.id, r.preferred_date, r.id) }))
+      .sort((a, b) => (a.d.status === 'available' ? 0 : 1) - (b.d.status === 'available' ? 0 : 1) || a.n - b.n || a.d.name.localeCompare(b.d.name));
+    const none = el('option', null, L.noDriver); none.value = ''; drvSel.append(none);
+    scored.forEach(({ d, n }) => {
+      const avail = r.preferred_date ? (n ? L.busyOn(n) : L.freeOn) : L.noDate;
+      const o = el('option', null, `${d.name} · ${L.truck[d.truck_size]} · ${L.dst[d.status]} · ${avail}`);
+      o.value = d.id; if (d.id === r.driver_id) o.selected = true; drvSel.append(o);
+    });
+    const dHint = el('span', 'hint');
+    if (!drivers.length) dHint.textContent = L.noDrivers;
+    const updHint = () => {
+      const d = drivers.find(x => x.id === drvSel.value);
+      if (!d) { dHint.className = 'hint'; dHint.textContent = drivers.length ? '' : L.noDrivers; return; }
+      const msgs = [];
+      if (jobsOn(d.id, r.preferred_date, r.id)) msgs.push(L.driverWarnBusy);
+      if (d.status !== 'available') msgs.push(L.driverWarnStatus);
+      dHint.className = msgs.length ? 'hint warn' : 'hint';
+      dHint.textContent = msgs.join(' ') || d.phone;
+    };
+    drvSel.onchange = updHint; updHint();
+    dLab.append(drvSel, dHint);
+
+    const nLab = el('label', null, L.adminNotes); const nts = el('textarea'); nts.dir = 'auto'; nts.value = r.admin_notes || ''; nts.placeholder = L.adminNotesPh; nLab.append(nts);
 
     const row = el('div', 'save-row');
     const btn = el('button', 'btn', L.save); btn.type = 'button';
     const note = el('span', 'saved'); note.setAttribute('aria-live', 'polite');
     row.append(btn, note);
-    drv.dir = 'auto'; nts.dir = 'auto'; head.firstChild.dir = 'auto';
     edit.append(sLab, dLab, nLab, row);
     if (r.updated_at) edit.append(el('span', 'audit', `${L.lastEdit}: ${fmtDate(r.updated_at)}${r.updated_by ? ' · ' + r.updated_by : ''}`));
 
     btn.onclick = async () => {
       const L2 = t();
-      if (sel.value === 'assigned' && !drv.value.trim()) { note.className = 'saved err'; note.textContent = L2.needDriver; return; }
+      if (sel.value === 'assigned' && !drvSel.value) { note.className = 'saved err'; note.textContent = L2.needDriver; return; }
+      const d = drivers.find(x => x.id === drvSel.value);
       btn.disabled = true; note.className = 'saved'; note.textContent = L2.saving;
-      const patch = { status: sel.value, assigned_driver: drv.value.trim() || null, admin_notes: nts.value.trim() || null };
+      const patch = { status: sel.value, driver_id: d ? d.id : null, assigned_driver: d ? `${d.name} · ${d.phone}` : null, admin_notes: nts.value.trim() || null };
       const { error } = await db.from('requests').update(patch).eq('id', r.id);
       btn.disabled = false;
       if (error) { note.className = 'saved err'; note.textContent = L2.saveFail + error.message; return; }
@@ -362,6 +500,91 @@
     c.append(info, edit);
     return c;
   }
+
+  // ===== السائقون / Drivers =====
+  function renderDrivers(){
+    const L = t();
+    const q = $('drvSearch').value.trim().toLowerCase();
+    const shown = drivers.filter(d => !q || [d.name, d.phone].some(v => (v || '').toLowerCase().includes(q)));
+    if (!shown.length) { $('drvList').replaceChildren(el('div', 'empty', drivers.length ? t().emptyFilter : L.noDriversList)); return; }
+    const monthStart = today().slice(0, 7);
+    $('drvList').replaceChildren(...shown.map(d => {
+      const color = DSTATUS_COLOR[d.status];
+      const c = el('article', 'req'); c.style.borderInlineStartColor = color;
+      const info = el('div');
+      const head = el('div', 'req-head');
+      const nm = el('h3', null, d.name); nm.dir = 'auto'; head.append(nm);
+      const badge = el('span', 'badge', L.dst[d.status]); badge.style.background = color; head.append(badge);
+      const vs = vocState(d);
+      if (vs === 'expired') head.append(el('span', 'flag bad', L.vocExpired));
+      if (vs === 'soon') head.append(el('span', 'flag soon', L.vocSoon));
+      if (vs === 'missing') head.append(el('span', 'flag soon', L.vocMissing));
+      info.append(head);
+      const meta = el('dl', 'meta');
+      const add = (k, v, ltr) => { if (v) { const dd = el('dd', ltr ? 'ltr' : null, v); if (!ltr) dd.dir = 'auto'; meta.append(el('dt', null, k), dd); } };
+      add(L.mobile, d.phone, true);
+      add(L.dTruck, L.truck[d.truck_size]);
+      add(L.dAreas, d.areas);
+      add(L.dVoc, d.voc_number, true);
+      add(L.dVocExp, fmtDay(d.voc_expiry));
+      add(L.dNotes, d.notes);
+      info.append(meta);
+      const links = el('div', 'links');
+      const a1 = el('a', null, L.call); a1.href = 'tel:' + d.phone;
+      const a2 = el('a', null, L.whatsapp); a2.href = 'https://wa.me/' + d.phone.replace(/[^\d]/g, ''); a2.target = '_blank'; a2.rel = 'noopener';
+      links.append(a1, a2); info.append(links);
+
+      const side = el('div', 'edit');
+      const active = rows.filter(x => x.driver_id === d.id && ACTIVE.includes(x.status)).length;
+      const done = rows.filter(x => x.driver_id === d.id && x.status === 'done' && (x.updated_at || '').slice(0, 7) === monthStart).length;
+      side.append(el('span', null, L.activeJobs(active)), el('span', null, L.jobsMonth(done)));
+      const eb = el('button', 'btn btn-ghost', L.edit); eb.type = 'button'; eb.onclick = () => openDriverForm(d);
+      side.append(eb);
+      c.append(info, side);
+      return c;
+    }));
+  }
+
+  function openDriverForm(d){
+    editingDriver = d || null;
+    const L = t();
+    $('drvFormTitle').textContent = d ? L.editDriver : L.newDriver;
+    $('dName').value = d ? d.name : '';
+    $('dPhone').value = d ? d.phone.replace('+968', '') : '';
+    fillSelect($('dTruck'), L.truck, d ? d.truck_size : 'medium');
+    $('dAreas').value = d ? (d.areas || '') : '';
+    $('dVoc').value = d ? (d.voc_number || '') : '';
+    $('dVocExp').value = d ? (d.voc_expiry || '') : '';
+    fillSelect($('dStatus'), L.dst, d ? d.status : 'available');
+    $('dNotes').value = d ? (d.notes || '') : '';
+    $('dConsent').checked = d ? d.consent : false;
+    $('drvMsg').textContent = '';
+    $('drvForm').hidden = false;
+    $('dName').focus();
+  }
+  $('addDrvBtn').onclick = () => openDriverForm(null);
+  $('drvCancel').onclick = () => { $('drvForm').hidden = true; editingDriver = null; };
+  $('dPhone').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^\d]/g, '').slice(0, 8); });
+
+  $('drvForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const L = t(), msg = $('drvMsg');
+    msg.className = 'saved err';
+    if ($('dName').value.trim().length < 2) { msg.textContent = L.errName; return; }
+    if (!/^[79]\d{7}$/.test($('dPhone').value)) { msg.textContent = L.errPhone; return; }
+    if (!$('dConsent').checked) { msg.textContent = L.errConsent; return; }
+    const rec = {
+      name: $('dName').value.trim(), phone: '+968' + $('dPhone').value, truck_size: $('dTruck').value,
+      areas: $('dAreas').value.trim() || null, voc_number: $('dVoc').value.trim() || null, voc_expiry: $('dVocExp').value || null,
+      status: $('dStatus').value, notes: $('dNotes').value.trim() || null, consent: true
+    };
+    msg.className = 'saved'; msg.textContent = L.saving;
+    const res = editingDriver ? await db.from('drivers').update(rec).eq('id', editingDriver.id) : await db.from('drivers').insert(rec);
+    if (res.error) { msg.className = 'saved err'; msg.textContent = L.saveFail + res.error.message; return; }
+    msg.textContent = L.savedOk;
+    $('drvForm').hidden = true; editingDriver = null;
+    load();
+  });
 </script>
 </body>
 </html>
