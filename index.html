@@ -57,10 +57,14 @@
   .eyebrow{display:inline-block;font-weight:600;color:var(--brass-text);background:var(--sand);border-radius:999px;padding:4px 14px;font-size:15px}
   .hero h1{font-size:clamp(34px,4.6vw,54px);font-weight:700;margin-top:18px}
   .hero p.lead{font-size:19px;color:var(--muted);max-width:34em;margin:18px 0 0}
-  .route{margin-top:28px;width:100%;max-width:520px}
+  .route{margin-top:28px;width:100%;max-width:380px}
   .route path,.route circle{fill:none;stroke:var(--navy);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
   .route .house{stroke:var(--brass)}
-  .trust{list-style:none;padding:0;margin:28px 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+  .btn-wa{background:var(--ok);color:#fff}
+  .btn-wa:hover{background:#265A42}
+  .btn-wa svg{width:20px;height:20px;fill:currentColor;flex:none}
+  .trust{list-style:none;padding:0;margin:28px 0 0;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
   .trust li{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 16px;font-size:15px;color:var(--muted)}
   .trust b{display:block;font-family:var(--display);font-size:17px;color:var(--navy)}
 
@@ -98,6 +102,12 @@
   .done .tick svg{width:30px;height:30px;stroke:var(--ok);fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
   .done h3{font-size:24px}
   .done p{color:var(--muted)}
+  details.more{border:1.5px dashed var(--border);border-radius:var(--r-md);padding:4px 14px}
+  details.more[open]{padding-bottom:16px;border-style:solid;background:#fff}
+  details.more summary{cursor:pointer;font-weight:600;font-size:15px;color:var(--brass-text);padding:10px 0;list-style-position:inside}
+  details.more summary small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+  details.more .inner{display:grid;gap:14px;padding-top:6px}
+  .row3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
   .demo{font-size:13px;color:var(--brass-text);background:var(--sand);border-radius:var(--r-sm);padding:8px 12px;margin-top:12px}
 
   /* Sections */
@@ -132,7 +142,15 @@
   .ptable td small{display:block;color:var(--muted);font-weight:400;font-size:13px}
   .note{color:var(--muted);font-size:14px;margin-top:16px}
 
+  .packs-title{font-size:20px;margin:40px 0 16px}
+  .packs{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .pack{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px 24px;display:grid;grid-template-columns:auto 1fr;gap:4px 16px;align-items:start}
+  .pack .icon{grid-row:span 3;width:38px;height:38px}
+  .pack h3{font-size:19px}
+  .pack p{margin:0;color:var(--muted);font-size:15px}
+  .pack .for{font-size:14px;font-weight:600;color:var(--brass-text)}
   .why{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .terms-note{margin-top:28px;font-size:15px;color:var(--muted)}
   .why div{border-top:2px solid var(--brass);padding-top:16px}
   .why h3{font-size:19px}
   .why p{margin:6px 0 0;color:var(--muted);font-size:15px}
@@ -149,18 +167,27 @@
   .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
   .foot a{text-decoration:none}
 
+  /* Mobile sticky action bar */
+  .mbar{display:none}
+  @media (max-width:760px){
+    .mbar{display:flex;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(250,247,242,.96);backdrop-filter:blur(8px);border-top:1px solid var(--border);padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+    .mbar .btn{flex:1;padding:12px 10px;font-size:15px}
+    body{padding-bottom:76px}
+  }
+
   @media (max-width:960px){
     .hero-grid{grid-template-columns:1fr;gap:36px}
     .form-card{order:-1}
     nav{display:none}
-    .cards,.prices{grid-template-columns:1fr}
+    .cards,.prices,.packs{grid-template-columns:1fr}
     .steps,.why{grid-template-columns:1fr 1fr}
   }
   @media (max-width:560px){
     body{font-size:16px}
     .form-card{padding:22px}
     .row2{grid-template-columns:1fr}
-    .trust{grid-template-columns:1fr}
+    .trust,.packs,.row3{grid-template-columns:1fr}
+    .hero-cta .btn{flex:1}
     .steps,.why{grid-template-columns:1fr}
     .brand svg{width:72px}
     .bar .btn-ghost{display:none}
@@ -191,7 +218,7 @@
     </nav>
     <div class="actions">
       <button class="lang" type="button" id="langBtn" lang="en" aria-label="Switch to English">EN</button>
-      <a class="btn btn-ghost" href="#request" data-i18n="ctaHeader">اطلب الخدمة</a>
+      <a class="btn btn-ghost" href="#request" data-i18n="ctaHeader">اطلب عرض سعر</a>
     </div>
   </div>
 </header>
@@ -202,8 +229,12 @@
     <div class="wrap hero-grid">
       <div>
         <span class="eyebrow" data-i18n="eyebrow">نقل وتخزين الأثاث في مسقط</span>
-        <h1 data-i18n="h1">من بيتك إلى بيتك الجديد، وأغراضك بأمان طوال الطريق</h1>
-        <p class="lead" data-i18n="lead">ننقل أثاثك، ونخزّنه في مستودع مغلق ومؤمّن إن احتجت، ثم نوصله لبيتك الجديد. سعر ثابت تعرفه قبل أن تبدأ، وجرد مصوّر لكل قطعة.</p>
+        <h1 data-i18n="h1">ننقل ونخزّن أثاثك، بسعر مكتوب وجرد مصوّر ومسؤولية واضحة</h1>
+        <p class="lead" data-i18n="lead">من بيتك إلى مستودعنا إلى بيتك الجديد، مع جهة واحدة مسؤولة عن كل خطوة. تعرف السعر مكتوباً قبل أن تبدأ، وتوقّع على جرد أغراضك عند التحميل والتسليم.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#request" data-i18n="ctaQuote">اطلب عرض سعر</a>
+          <a class="btn btn-wa wa-link" href="#contact" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.7 11.7 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg><span data-i18n="waBtn">واتساب</span></a>
+        </div>
         <svg class="route" viewBox="30 4 262 124" aria-hidden="true">
           <path d="M58 118C53 110 36 98 36 78A22 22 0 1 1 80 78C80 98 63 110 58 118Z"/>
           <circle cx="58" cy="78" r="8"/>
@@ -212,16 +243,17 @@
           <path class="house" d="M253 37L262 29L271 37V45H253Z"/>
         </svg>
         <ul class="trust">
-          <li data-i18n="trust1"><b>سعر ثابت</b>يصلك خلال ساعة</li>
-          <li data-i18n="trust2"><b>جرد مصوّر</b>عند الاستلام والتسليم</li>
-          <li data-i18n="trust3"><b>مستودع مؤمّن</b>في العامرات</li>
+          <li data-i18n="trust1"><b>نقل وتخزين</b>من جهة واحدة، بمستودعنا في العامرات</li>
+          <li data-i18n="trust2"><b>سعر مكتوب</b>عرض سعر واضح قبل الحجز</li>
+          <li data-i18n="trust3"><b>جرد مصوّر</b>عند التحميل والتسليم، بتوقيعك</li>
+          <li data-i18n="trust4"><b>سائقون مرخّصون</b>ببطاقة تشغيل سارية من «نقل»</li>
         </ul>
       </div>
 
       <div class="form-card" id="request">
         <div id="formView">
-          <h2 data-i18n="formTitle">اطلب الخدمة</h2>
-          <p class="sub" data-i18n="formSub">عبّئ بياناتك وسنتصل بك لتأكيد التفاصيل والموعد.</p>
+          <h2 data-i18n="formTitle">اطلب عرض سعر</h2>
+          <p class="sub" data-i18n="formSub">أربع خانات فقط، ونتصل بك لتأكيد التفاصيل والسعر.</p>
           <form id="reqForm" novalidate>
             <label class="f"><span data-i18n="lName">الاسم</span>
               <input type="text" id="name" name="name" autocomplete="name" required maxlength="80">
@@ -242,33 +274,66 @@
               </div>
             </fieldset>
 
-            <div class="row2">
-              <label class="f"><span data-i18n="lWilayat">الولاية</span>
-                <select id="wilayat" name="wilayat" required>
-                  <option value="" data-i18n="wChoose">اختر الولاية</option>
-                  <option value="مسقط" data-i18n="wMuscat">مسقط</option>
-                  <option value="مطرح" data-i18n="wMuttrah">مطرح</option>
-                  <option value="بوشر" data-i18n="wBausher">بوشر</option>
-                  <option value="السيب" data-i18n="wSeeb">السيب</option>
-                  <option value="العامرات" data-i18n="wAmerat">العامرات</option>
-                  <option value="قريات" data-i18n="wQurayyat">قريات</option>
-                </select>
-                <span class="err" id="e-wilayat"></span>
-              </label>
-              <label class="f"><span data-i18n="lDate">التاريخ المفضل <span class="opt">(اختياري)</span></span>
-                <input type="date" id="date" name="preferred_date">
-              </label>
-            </div>
-
-            <label class="f"><span data-i18n="lAddress">العنوان أو الحي</span>
-              <input type="text" id="address" name="address" data-i18n-ph="phAddress" placeholder="مثال: الخوض السابعة، قرب المسجد" maxlength="200">
+            <label class="f"><span data-i18n="lWilayat">الولاية</span>
+              <select id="wilayat" name="wilayat" required>
+                <option value="" data-i18n="wChoose">اختر الولاية</option>
+                <option value="مسقط" data-i18n="wMuscat">مسقط</option>
+                <option value="مطرح" data-i18n="wMuttrah">مطرح</option>
+                <option value="بوشر" data-i18n="wBausher">بوشر</option>
+                <option value="السيب" data-i18n="wSeeb">السيب</option>
+                <option value="العامرات" data-i18n="wAmerat">العامرات</option>
+                <option value="قريات" data-i18n="wQurayyat">قريات</option>
+              </select>
+              <span class="err" id="e-wilayat"></span>
             </label>
-            <button type="button" class="loc-btn" id="locBtn" data-i18n="locBtn">استخدم موقعي الحالي على الخريطة</button>
-            <span class="loc-status" id="locStatus" aria-live="polite"></span>
 
-            <label class="f"><span data-i18n="lNotes">ملاحظات <span class="opt">(اختياري)</span></span>
-              <textarea id="notes" name="notes" maxlength="600" data-i18n-ph="phNotes" placeholder="عدد الغرف، قطع ثقيلة، الطابق، مدة التخزين..."></textarea>
-            </label>
+            <details class="more" id="more">
+              <summary><span data-i18n="moreTitle">أضف تفاصيل لتسعير أسرع</span><small data-i18n="moreSub">اختياري، ويوفّر عليك أسئلة المكالمة</small></summary>
+              <div class="inner">
+                <div class="row3">
+                  <label class="f"><span data-i18n="lSize">حجم المنزل</span>
+                    <select id="size">
+                      <option value="" data-i18n="optChoose">—</option>
+                      <option value="غرفة أو ستوديو" data-i18n="sz1">غرفة أو ستوديو</option>
+                      <option value="شقة غرفتين" data-i18n="sz2">شقة غرفتين</option>
+                      <option value="شقة 3 غرف أو بيت صغير" data-i18n="sz3">شقة 3 غرف أو بيت صغير</option>
+                      <option value="فيلا" data-i18n="sz4">فيلا</option>
+                      <option value="مكتب" data-i18n="sz5">مكتب</option>
+                    </select>
+                  </label>
+                  <label class="f"><span data-i18n="lFloor">الطابق</span>
+                    <select id="floor">
+                      <option value="" data-i18n="optChoose">—</option>
+                      <option value="أرضي" data-i18n="fl0">أرضي</option>
+                      <option value="الأول" data-i18n="fl1">الأول</option>
+                      <option value="الثاني" data-i18n="fl2">الثاني</option>
+                      <option value="الثالث أو أعلى" data-i18n="fl3">الثالث أو أعلى</option>
+                    </select>
+                  </label>
+                  <label class="f"><span data-i18n="lLift">مصعد</span>
+                    <select id="lift">
+                      <option value="" data-i18n="optChoose">—</option>
+                      <option value="يوجد" data-i18n="lf1">يوجد</option>
+                      <option value="لا يوجد" data-i18n="lf0">لا يوجد</option>
+                    </select>
+                  </label>
+                </div>
+
+                <label class="f"><span data-i18n="lDate">التاريخ المفضل</span>
+                  <input type="date" id="date" name="preferred_date">
+                </label>
+
+                <label class="f"><span data-i18n="lAddress">العنوان أو الحي</span>
+                  <input type="text" id="address" name="address" data-i18n-ph="phAddress" placeholder="مثال: الخوض السابعة، قرب المسجد" maxlength="200">
+                </label>
+                <button type="button" class="loc-btn" id="locBtn" data-i18n="locBtn">استخدم موقعي الحالي على الخريطة</button>
+                <span class="loc-status" id="locStatus" aria-live="polite"></span>
+
+                <label class="f"><span data-i18n="lNotes">ملاحظات</span>
+                  <textarea id="notes" name="notes" maxlength="400" data-i18n-ph="phNotes" placeholder="قطع ثقيلة أو هشّة، مدة التخزين، أي شيء نحتاج معرفته..."></textarea>
+                </label>
+              </div>
+            </details>
 
             <label class="consent">
               <input type="checkbox" id="consent" required>
@@ -276,7 +341,7 @@
             </label>
             <span class="err" id="e-consent"></span>
 
-            <button class="btn btn-primary submit" type="submit" id="submitBtn" data-i18n="submit">إرسال الطلب</button>
+            <button class="btn btn-primary submit" type="submit" id="submitBtn" data-i18n="submit">أرسل طلب عرض السعر</button>
             <span class="err" id="e-submit" role="alert"></span>
           </form>
         </div>
@@ -284,7 +349,7 @@
         <div class="done" id="doneView" aria-live="polite">
           <div class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
           <h3 data-i18n="doneTitle">وصلنا طلبك</h3>
-          <p data-i18n="doneText">سنتصل بك خلال ساعة في أوقات العمل لتأكيد الخدمة والموعد والسعر.</p>
+          <p data-i18n="doneText">سنتصل بك خلال ساعة في أوقات العمل لتأكيد الخدمة والموعد، ونرسل لك عرض السعر مكتوباً.</p>
           <button class="btn btn-ghost" type="button" id="againBtn" data-i18n="again">إرسال طلب آخر</button>
           <div class="demo" id="demoNote" hidden data-i18n="demo">وضع تجريبي: الاستمارة لم تُربط بقاعدة البيانات بعد، فلم يُحفظ الطلب.</div>
         </div>
@@ -314,9 +379,24 @@
         </article>
         <article class="card feature">
           <svg class="icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 42s-13-10-13-21a13 13 0 0 1 26 0c0 11-13 21-13 21z"/><path d="M18 23l6-5 6 5v6H18z"/></svg>
-          <h3 data-i18n="c3t">باقة نقل وتخزين</h3>
-          <p data-i18n="c3p">نستلم من بيتك، نخزّن المدة التي تحتاجها، ثم نوصل لبيتك الجديد بسعر مخفّض.</p>
-          <span class="for" data-i18n="c3f">للعائلات بين بيتين</span>
+          <h3 data-i18n="c3t">خزّن بين البيتين</h3>
+          <p data-i18n="c3p">خرجت من بيتك والجديد لم يجهز بعد؟ نستلم أثاثك، ونخزّنه المدة التي تحتاجها، ثم نوصله لبيتك الجديد بسعر باقة مخفّض.</p>
+          <span class="for" data-i18n="c3f">ميزة لا تجدها عند أغلب شركات النقل</span>
+        </article>
+      </div>
+      <h3 class="packs-title" data-i18n="packsTitle">حلول لحالات خاصة</h3>
+      <div class="packs">
+        <article class="pack">
+          <svg class="icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 30l36-14-6 22-10-6-4 8-2-10z"/><path d="M20 30l16-14"/></svg>
+          <h3 data-i18n="pk1t">المغادرون من عُمان</h3>
+          <p data-i18n="pk1p">تغليف وتخزين مؤقت لأثاثك حتى تبيعه أو تشحنه، وتسليمه لمن تفوّضه كتابياً.</p>
+          <span class="for" data-i18n="pk1f">للمقيمين عند انتهاء العقد</span>
+        </article>
+        <article class="pack">
+          <svg class="icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="14" width="32" height="24" rx="3"/><path d="M18 14v-4h12v4M8 24h32"/></svg>
+          <h3 data-i18n="pk2t">التنقلات الوظيفية</h3>
+          <p data-i18n="pk2p">نقل بموعد محدد داخل مسقط أو إلى ولاية أخرى بالاتفاق، مع فاتورة باسمك تقدّمها لجهة عملك.</p>
+          <span class="for" data-i18n="pk2f">للموظفين المنقولين</span>
         </article>
       </div>
     </div>
@@ -331,9 +411,9 @@
       </div>
       <ol class="steps">
         <li data-i18n="st1"><h3>أرسل طلبك</h3><p>عبر الاستمارة أو واتساب، مع صور أغراضك إن أمكن.</p></li>
-        <li data-i18n="st2"><h3>نتصل بك</h3><p>نؤكد الخدمة والموعد، ونرسل لك سعراً ثابتاً.</p></li>
-        <li data-i18n="st3"><h3>أكّد بعربون</h3><p>نثبّت موعدك ونجهّز الشاحنة والفريق.</p></li>
-        <li data-i18n="st4"><h3>ننقل ونسلّم</h3><p>جرد مصوّر عند الاستلام والتسليم، وتدفع الباقي بعد الانتهاء.</p></li>
+        <li data-i18n="st2"><h3>نتصل بك</h3><p>نؤكد التفاصيل، ونرسل لك عرض سعر مكتوباً.</p></li>
+        <li data-i18n="st3"><h3>وقّع وأكّد بعربون</h3><p>توقّع على العرض والشروط من جوالك، وتدفع العربون فنثبّت موعدك.</p></li>
+        <li data-i18n="st4"><h3>ننقل ونسلّم</h3><p>جرد مصوّر وتوقيعك عند التحميل والتسليم، وتدفع الباقي على دفعتين.</p></li>
       </ol>
     </div>
   </section>
@@ -371,12 +451,15 @@
   <!-- Why us -->
   <section>
     <div class="wrap">
-      <div class="sec-head"><h2 data-i18n="whyTitle">لماذا قريب مني</h2></div>
+      <div class="sec-head">
+        <h2 data-i18n="whyTitle">كيف نحمي أثاثك</h2>
+        <p data-i18n="whySub">ما نعد به مكتوب في شروطنا، وما نستلمه منك نوثّقه بتوقيعك.</p>
+      </div>
       <div class="why">
-        <div data-i18n="w1"><h3>سعر ثابت</h3><p>يُتفق عليه قبل الحجز، بلا مفاجآت يوم النقل.</p></div>
-        <div data-i18n="w2"><h3>جرد مصوّر</h3><p>نصوّر أغراضك عند الاستلام والتسليم.</p></div>
-        <div data-i18n="w3"><h3>مستودع مؤمّن</h3><p>مغلق ومهوّى، بكاميرات وإنذار حريق.</p></div>
-        <div data-i18n="w4"><h3>متابعة واضحة</h3><p>نبلغك بكل خطوة من الطلب حتى التسليم.</p></div>
+        <div data-i18n="w1"><h3>جرد قبل التحميل</h3><p>نصوّر أغراضك ونسجّل حالتها، وتوقّع على المحضر قبل أن نتحرك.</p></div>
+        <div data-i18n="w2"><h3>محضر استلام</h3><p>تراجع أغراضك أمام الفريق، وتكتب أي ملاحظة قبل أن توقّع.</p></div>
+        <div data-i18n="w3"><h3>تعويض واضح</h3><p>نصلح أو نعوّض أي ضرر نتسبب فيه، بحدود مكتوبة، مع خيار تغطية أعلى.</p></div>
+        <div data-i18n="w4"><h3>مستودع مؤمّن</h3><p>مغلق ومهوّى، بكاميرات وإنذار حريق، ولا نسلّم إلا لك أو لمن تفوّضه.</p></div>
       </div>
     </div>
   </section>
@@ -389,7 +472,10 @@
           <h2 data-i18n="ctaTitle">جاهز للانتقال؟</h2>
           <p data-i18n="ctaText">واتساب: [رقم الواتساب] · البريد: [البريد الإلكتروني]</p>
         </div>
-        <a class="btn btn-primary" href="#request" data-i18n="ctaBtn">اطلب الخدمة الآن</a>
+        <div class="hero-cta" style="margin-top:0">
+          <a class="btn btn-primary" href="#request" data-i18n="ctaBtn">اطلب عرض سعر</a>
+          <a class="btn btn-wa wa-link" href="#contact" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.7 11.7 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg><span data-i18n="waBtn">واتساب</span></a>
+        </div>
       </div>
     </div>
   </section>
@@ -402,6 +488,11 @@
     </div>
   </section>
 </main>
+
+<div class="mbar" role="region" data-i18n-aria="aMbar" aria-label="طلب سريع">
+  <a class="btn btn-primary" href="#request" data-i18n="ctaQuote">اطلب عرض سعر</a>
+  <a class="btn btn-wa wa-link" href="#contact" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.7 11.7 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg><span data-i18n="waBtn">واتساب</span></a>
+</div>
 
 <footer>
   <div class="wrap foot">
@@ -416,47 +507,60 @@
   const SUPABASE_URL = 'https://qtcgeuqqixmmpioucolx.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_8rol_CEvn7ECzAX5gcGwYw_Cdt8uJJy';  // المفتاح العام فقط
 
+  // ===== رقم واتساب الشركة =====
+  // اكتبي الرقم بصيغة دولية بدون + أو مسافات، مثال: '96891234567'. أزرار الواتساب تظهر تلقائياً بعد إضافته.
+  const WHATSAPP = '';
+
   // ===== الترجمة الإنجليزية (النص العربي هو الأصل في الصفحة) =====
   const EN = {
     title: 'Qareeb Minni | Furniture Moving & Storage in Muscat',
     desc: 'Qareeb Minni: furniture moving and storage in Muscat at a fixed price you know upfront, with a photo inventory and a closed, secure warehouse.',
     aBrand: 'Qareeb Minni, home', aNav: 'Site sections',
     navServices: 'Services', navHow: 'How it works', navPrices: 'Prices', navContact: 'Contact',
-    ctaHeader: 'Request a service',
+    ctaHeader: 'Get a quote',
+    ctaQuote: 'Get a quote', waBtn: 'WhatsApp', aMbar: 'Quick request',
     eyebrow: 'Furniture moving & storage in Muscat',
-    h1: 'From your home to your new home, with your things safe all the way',
-    lead: 'We move your furniture, store it in a closed, secure warehouse if you need, then deliver it to your new home. A fixed price you know before you start, and a photo inventory of every item.',
-    trust1: '<b>Fixed price</b>Sent to you within an hour',
-    trust2: '<b>Photo inventory</b>At pickup and delivery',
-    trust3: '<b>Secure warehouse</b>In Al Amerat',
-    formTitle: 'Request a service',
-    formSub: 'Fill in your details and we will call you to confirm the details and the date.',
+    h1: 'We move and store your furniture, with a written price, a photo inventory and clear responsibility',
+    lead: 'From your home to our warehouse to your new home, with one company responsible for every step. You get the price in writing before you start, and you sign the inventory of your things at loading and delivery.',
+    trust1: '<b>Moving + storage</b>One company, with our own warehouse in Al Amerat',
+    trust2: '<b>Written price</b>A clear quotation before you book',
+    trust3: '<b>Photo inventory</b>At loading and delivery, signed by you',
+    trust4: '<b>Licensed drivers</b>With a valid Naql operating card',
+    formTitle: 'Get a quote',
+    formSub: 'Just four fields. We will call you to confirm the details and the price.',
     lName: 'Name', lPhone: 'Mobile number', lService: 'Service needed',
     sMove: 'Moving<small>Home to home</small>',
     sStorage: 'Storage<small>Closed unit</small>',
     sBoth: 'Moving + storage<small>Full package</small>',
     lWilayat: 'Wilayat', wChoose: 'Choose wilayat',
     wMuscat: 'Muscat', wMuttrah: 'Muttrah', wBausher: 'Bausher', wSeeb: 'Seeb', wAmerat: 'Al Amerat', wQurayyat: 'Qurayyat',
-    lDate: 'Preferred date <span class="opt">(optional)</span>',
+    moreTitle: 'Add details for a faster quote', moreSub: 'Optional, and it saves questions on the call',
+    lSize: 'Home size', optChoose: '—', sz1: 'Room or studio', sz2: 'Two-bedroom apartment', sz3: '3-bedroom apartment or small house', sz4: 'Villa', sz5: 'Office',
+    lFloor: 'Floor', fl0: 'Ground', fl1: 'First', fl2: 'Second', fl3: 'Third or higher',
+    lLift: 'Lift', lf1: 'Yes', lf0: 'No',
+    lDate: 'Preferred date',
     lAddress: 'Address or area', phAddress: 'e.g. Al Khoudh 7, near the mosque',
     locBtn: 'Use my current location on the map',
-    lNotes: 'Notes <span class="opt">(optional)</span>',
-    phNotes: 'Number of rooms, heavy items, floor, storage period...',
+    lNotes: 'Notes',
+    phNotes: 'Heavy or fragile items, storage period, anything we should know...',
     consent: 'I agree that Qareeb Minni may use my details to contact me about this request only, and store them with a cloud provider outside Oman, under the <a href="#privacy">privacy policy</a>.',
-    submit: 'Send request',
+    submit: 'Send quote request',
     doneTitle: 'We received your request',
-    doneText: 'We will call you within an hour during working hours to confirm the service, date and price.',
+    doneText: 'We will call you within an hour during working hours to confirm the service and date, and send you a written quotation.',
     again: 'Send another request',
     demo: 'Demo mode: the form is not connected to the database yet, so the request was not saved.',
     svcTitle: 'Our services', svcSub: 'Three services that complete each other. Choose what suits you.',
     c1t: 'Furniture moving', c1p: 'Dismantling, packing, moving and assembly within Muscat, by a trained team and licensed trucks.', c1f: 'For families, residents and small offices',
     c2t: 'Storage', c2p: 'Closed units with your own lock, monthly or yearly, in a ventilated warehouse with camera monitoring.', c2f: 'For renovations, travel and online shops',
-    c3t: 'Moving + storage package', c3p: 'We pick up from your home, store for as long as you need, then deliver to your new home at a reduced price.', c3f: 'For families between two homes',
+    c3t: 'Store between homes', c3p: 'Left your home before the new one is ready? We pick up your furniture, store it for as long as you need, then deliver it to your new home at a reduced package price.', c3f: 'Something most movers cannot offer',
+    packsTitle: 'For special situations',
+    pk1t: 'Leaving Oman', pk1p: 'Packing and short-term storage until you sell or ship your furniture, with release to a person you authorise in writing.', pk1f: 'For residents at the end of their contract',
+    pk2t: 'Job relocations', pk2p: 'Moving on a fixed date within Muscat, or to another wilayat by arrangement, with an invoice in your name for your employer.', pk2f: 'For transferred employees',
     howTitle: 'How it works', howSub: 'From request to delivery in four clear steps.',
     st1: '<h3>Send your request</h3><p>Through the form or WhatsApp, with photos of your things if possible.</p>',
-    st2: '<h3>We call you</h3><p>We confirm the service and date, and send you a fixed price.</p>',
-    st3: '<h3>Confirm with a deposit</h3><p>We book your date and prepare the truck and team.</p>',
-    st4: '<h3>We move and deliver</h3><p>Photo inventory at pickup and delivery. You pay the rest when we finish.</p>',
+    st2: '<h3>We call you</h3><p>We confirm the details and send you a written quotation.</p>',
+    st3: '<h3>Sign and pay a deposit</h3><p>You sign the quotation and terms on your phone and pay the deposit, and we book your date.</p>',
+    st4: '<h3>We move and deliver</h3><p>Photo inventory signed by you at loading and delivery. You pay the rest in two instalments.</p>',
     prTitle: 'Prices', prSub: 'Approximate starting prices. Your final price comes once we know the size of your move.',
     prMove: 'Moving within Muscat',
     pm1: 'Room or studio', pm1v: 'From 60 OMR',
@@ -468,12 +572,12 @@
     ps2: 'Medium unit<small>10 m², fits a two-bedroom apartment</small>', ps2v: '65 OMR',
     ps3: 'Large unit<small>20 m², fits a house or villa</small>', ps3v: '120 OMR',
     prNote: 'Prices include dismantling, packing and assembly. 10% to 15% off when you prepay storage for six months or a year.',
-    whyTitle: 'Why Qareeb Minni',
-    w1: '<h3>Fixed price</h3><p>Agreed before booking, with no surprises on moving day.</p>',
-    w2: '<h3>Photo inventory</h3><p>We photograph your things at pickup and delivery.</p>',
-    w3: '<h3>Secure warehouse</h3><p>Closed and ventilated, with cameras and a fire alarm.</p>',
-    w4: '<h3>Clear follow-up</h3><p>We keep you updated at every step, from request to delivery.</p>',
-    ctaTitle: 'Ready to move?', ctaText: 'WhatsApp: [WhatsApp number] · Email: [email]', ctaBtn: 'Request a service now',
+    whyTitle: 'How we protect your furniture', whySub: 'What we promise is written in our terms, and what we receive from you is recorded with your signature.',
+    w1: '<h3>Inventory before loading</h3><p>We photograph your things and note their condition, and you sign the record before we move.</p>',
+    w2: '<h3>Delivery receipt</h3><p>You check your things with the crew and note anything before you sign.</p>',
+    w3: '<h3>Clear compensation</h3><p>We repair or compensate any damage we cause, within written limits, with an option for higher cover.</p>',
+    w4: '<h3>Secure warehouse</h3><p>Closed and ventilated, with cameras and a fire alarm. We release goods only to you or a person you authorise.</p>',
+    ctaTitle: 'Ready to move?', ctaText: 'WhatsApp: [WhatsApp number] · Email: [email]', ctaBtn: 'Get a quote',
     pvTitle: 'Privacy policy',
     pvText: 'We collect your name, mobile number, address and location only to contact you and carry out your request. We do not sell your data or share it with anyone except the moving team assigned to your request. You can ask to see, correct or delete your data at any time by contacting us. We store data securely with a cloud provider outside Oman, under the Personal Data Protection Law of the Sultanate of Oman.',
     foot: '© 2026 Qareeb Minni · قريب مني · Muscat, Sultanate of Oman'
@@ -483,14 +587,16 @@
     ar: {
       name: 'اكتب اسمك', phone: 'رقم الموبايل العُماني 8 أرقام ويبدأ بـ 7 أو 9', wilayat: 'اختر الولاية',
       consent: 'الموافقة مطلوبة لنتمكن من التواصل معك', submitFail: 'تعذّر إرسال الطلب. تحقق من الاتصال وحاول مرة أخرى، أو راسلنا على واتساب.',
-      sending: 'جارٍ الإرسال...', submit: 'إرسال الطلب',
+      sending: 'جارٍ الإرسال...', submit: 'أرسل طلب عرض السعر',
+      wa: 'مرحباً قريب مني، أريد عرض سعر لنقل أو تخزين الأثاث.',
       locNo: 'المتصفح لا يدعم تحديد الموقع. اكتب العنوان بدلاً من ذلك.', locWait: 'جارٍ تحديد موقعك...',
       locOk: 'تم تحديد موقعك على الخريطة ✓', locFail: 'لم نتمكن من تحديد موقعك. اكتب العنوان بدلاً من ذلك.'
     },
     en: {
       name: 'Enter your name', phone: 'Omani mobile numbers have 8 digits and start with 7 or 9', wilayat: 'Choose your wilayat',
       consent: 'Your consent is needed so we can contact you', submitFail: 'We could not send your request. Check your connection and try again, or message us on WhatsApp.',
-      sending: 'Sending...', submit: 'Send request',
+      sending: 'Sending...', submit: 'Send quote request',
+      wa: 'Hello Qareeb Minni, I would like a quote for moving or storing furniture.',
       locNo: 'Your browser cannot share location. Please type your address instead.', locWait: 'Finding your location...',
       locOk: 'Location added to your request ✓', locFail: 'We could not find your location. Please type your address instead.'
     }
@@ -523,6 +629,10 @@
     // مسح رسائل الخطأ الظاهرة لأنها بلغة سابقة
     ['e-name','e-phone','e-wilayat','e-consent','e-submit'].forEach(id => setErr(id));
     $('locStatus').textContent = coords ? MSG[l].locOk : '';
+    if (WHATSAPP) document.querySelectorAll('.wa-link').forEach(a => {
+      a.hidden = false; a.target = '_blank'; a.rel = 'noopener';
+      a.href = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(MSG[l].wa);
+    });
     try { localStorage.setItem('qm-lang', l); } catch (e) {}
   }
 
@@ -532,7 +642,7 @@
     try { saved = localStorage.getItem('qm-lang'); } catch (e) {}
     const fromUrl = new URLSearchParams(location.search).get('lang');
     const start = fromUrl === 'en' || fromUrl === 'ar' ? fromUrl : saved;
-    if (start === 'en') applyLang('en');
+    applyLang(start === 'en' ? 'en' : 'ar');
   })();
 
   // تاريخ اليوم كحد أدنى للتاريخ المفضل
@@ -552,6 +662,14 @@
       { enableHighAccuracy: true, timeout: 10000 }
     );
   });
+
+  // التفاصيل الاختيارية تُضاف إلى الملاحظات بالعربية، فتظهر للموظف في لوحة الطلبات دون تغيير قاعدة البيانات
+  function composeNotes(){
+    const parts = [['الحجم', $('size').value], ['الطابق', $('floor').value], ['المصعد', $('lift').value]]
+      .filter(([, v]) => v).map(([k, v]) => k + ': ' + v);
+    const text = [parts.join(' · '), $('notes').value.trim()].filter(Boolean).join('\n');
+    return text ? text.slice(0, 600) : null;
+  }
 
   function setErr(id, msg){ $(id).textContent = msg || ''; }
 
@@ -582,7 +700,7 @@
       lat: coords ? coords.lat : null,
       lng: coords ? coords.lng : null,
       preferred_date: $('date').value || null,
-      notes: $('notes').value.trim() || null,
+      notes: composeNotes(),
       consent: true
     };
 
