@@ -24,7 +24,7 @@
   *{box-sizing:border-box}
   body{margin:0;background:var(--ivory);color:var(--navy);font-family:var(--body);font-size:15px;line-height:1.6}
   .wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-  h1,h2,h3{font-family:var(--display);margin:0;line-height:1.3}
+  h1,h2,h3,h4{font-family:var(--display);margin:0;line-height:1.3}
   button,input,select,textarea{font:inherit;color:inherit}
   :focus-visible{outline:3px solid var(--brass);outline-offset:2px}
   .btn{border:0;border-radius:10px;padding:9px 16px;font-weight:600;cursor:pointer;background:var(--navy);color:var(--ivory)}
@@ -76,7 +76,7 @@
   /* Cards */
   .list{display:grid;gap:14px;padding-bottom:48px}
   .req{background:var(--card);border:1px solid var(--border);border-inline-start:4px solid var(--border);border-radius:14px;padding:18px;display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
-  .req-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .req-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .req-head h3{font-size:18px}
   .badge{font-size:12px;font-weight:700;border-radius:999px;padding:2px 10px;color:#fff}
   .code{font-family:var(--display);font-size:13px;color:var(--muted);direction:ltr}
@@ -102,22 +102,89 @@
   .flag{font-size:12px;font-weight:700;border-radius:6px;padding:1px 8px}
   .flag.bad{background:#F8E1DF;color:var(--error)}
   .flag.soon{background:#F6E9D2;color:var(--warn)}
+  .stars{color:var(--brass);letter-spacing:1px}
 
   /* Driver form */
   .dform{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
   .dform h3{grid-column:1/-1;font-size:18px}
+  .dform h4{grid-column:1/-1;font-size:14px;color:var(--brass-text);border-bottom:1px solid var(--border);padding-bottom:4px;margin-top:6px}
   .dform label{display:grid;gap:4px;font-size:13px;font-weight:600}
   .dform .wide{grid-column:1/-1}
   .dform .check{display:flex;gap:8px;align-items:flex-start;font-weight:500}
   .dform .check input{width:18px;height:18px;margin-top:2px;flex:none;accent-color:var(--navy)}
+  .dform .legal{font-size:12px;color:var(--muted);background:var(--sand);border-radius:8px;padding:8px 10px}
+  .rate{display:grid;grid-template-columns:1fr auto;gap:6px}
   .phone{display:flex;direction:ltr}
   .phone span{display:flex;align-items:center;padding:0 10px;background:var(--sand);border:1.5px solid var(--border);border-right:0;border-radius:8px 0 0 8px;font-weight:600;color:var(--muted)}
   .phone input{border-radius:0 8px 8px 0;direction:ltr;text-align:left}
+
+  /* Invoice: modal with an issue form or the printable invoice */
+  .inv-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px}
+  .inv-tag{font-weight:700;border-radius:6px;padding:1px 8px;background:var(--sand);color:var(--navy)}
+  .inv-tag.paid{background:#DDEEE5;color:var(--ok)}
+  .inv-tag.due{background:#F6E9D2;color:var(--warn)}
+  .modal{position:fixed;inset:0;z-index:50;background:rgba(31,58,77,.45);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 16px}
+  .sheet{background:var(--card);border-radius:16px;width:100%;max-width:820px;padding:20px;display:grid;gap:14px}
+  .sheet-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .sheet-top h3{font-size:19px}
+  .sheet-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .items{width:100%;border-collapse:collapse;font-size:14px}
+  .items th{font-size:12px;color:var(--muted);font-weight:600;text-align:start;padding:4px}
+  .items td{padding:4px;vertical-align:top}
+  .items td.num{width:110px}
+  .items td.qty{width:80px}
+  .items .x{background:none;border:0;color:var(--error);font-size:18px;cursor:pointer;padding:4px 8px}
+  .inv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .inv-grid label{display:grid;gap:4px;font-size:13px;font-weight:600}
+  .inv-grid .wide{grid-column:1/-1}
+  .sum{font-family:var(--display);font-size:17px;font-weight:700;font-variant-numeric:tabular-nums}
+
+  /* The invoice paper — bilingual, printed as-is */
+  .paper{background:#fff;color:#1F3A4D;border:1px solid var(--border);border-radius:10px;padding:28px;font-size:13.5px}
+  .paper .ph{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-bottom:2px solid var(--brass);padding-bottom:14px}
+  .paper .co{display:flex;gap:12px;align-items:center}
+  .paper .co svg{width:84px;height:auto}
+  .paper .co svg path,.paper .co svg circle{fill:none;stroke:#1F3A4D;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+  .paper .co svg .house{stroke:#B8915A}
+  .paper .co b{font-family:var(--display);font-size:20px;display:block}
+  .paper .small{font-size:12px;color:#5A6A76}
+  .paper .ttl{text-align:end}
+  .paper .ttl h2{font-size:22px;color:#85632F}
+  .paper .two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+  .paper .box{background:#FAF7F2;border-radius:8px;padding:10px 12px}
+  .paper .box dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:6px 0 0}
+  .paper .box dt{color:#5A6A76}
+  .paper .box dd{margin:0}
+  .paper table{width:100%;border-collapse:collapse;margin-top:6px}
+  .paper th{background:#1F3A4D;color:#FAF7F2;font-weight:600;font-size:12px;padding:7px 8px;text-align:start}
+  .paper td{border-bottom:1px solid #E3D9CA;padding:7px 8px}
+  .paper .n{text-align:end;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .paper .tot{margin-top:12px;margin-inline-start:auto;width:min(320px,100%);display:grid;grid-template-columns:1fr auto;gap:4px 16px}
+  .paper .tot .g{font-family:var(--display);font-weight:700;font-size:16px;border-top:2px solid #1F3A4D;padding-top:6px}
+  .paper .foot{margin-top:20px;border-top:1px solid #E3D9CA;padding-top:10px;text-align:center}
+  .paper .void{color:#B3261E;font-family:var(--display);font-weight:700;font-size:18px;text-align:center;border:2px solid #B3261E;border-radius:8px;padding:4px;margin-bottom:10px}
+  .paper .bi{display:block;font-size:11px;color:#5A6A76;font-weight:500}
+  .ltrnum{direction:ltr;unicode-bidi:isolate}
+
+  @media print{
+    body.printing > *:not(#invModal){display:none!important}
+    body.printing{background:#fff}
+    body.printing #invModal{position:static;background:none;padding:0;display:block}
+    body.printing .sheet{max-width:none;padding:0;background:#fff}
+    body.printing .sheet > *:not(.paper){display:none!important}
+    body.printing .paper{border:0;padding:0}
+    @page{size:A4;margin:14mm}
+  }
 
   @media (max-width:760px){
     .req{grid-template-columns:1fr}
     .dform{grid-template-columns:1fr}
     .who .email{display:none}
+    .inv-grid{grid-template-columns:1fr}
+    .paper{padding:16px}
+    .paper .two{grid-template-columns:1fr}
+    .items td.num{width:80px}
+    .items td.qty{width:56px}
   }
 </style>
 </head>
@@ -181,15 +248,33 @@
     </div>
     <form class="dform" id="drvForm" hidden novalidate>
       <h3 id="drvFormTitle"></h3>
-      <label><span data-t="dName">الاسم</span><input id="dName" maxlength="80" dir="auto"></label>
-      <label><span data-t="mobile">الموبايل</span><span class="phone"><span>+968</span><input id="dPhone" inputmode="numeric" maxlength="8" placeholder="9XXXXXXX"></span></label>
-      <label><span data-t="dTruck">حجم الشاحنة</span><select id="dTruck"></select></label>
-      <label><span data-t="dAreas">المناطق التي يغطيها</span><input id="dAreas" maxlength="200" dir="auto"></label>
-      <label><span data-t="dVoc">رقم بطاقة التشغيل (نقل)</span><input id="dVoc" maxlength="40" dir="ltr"></label>
-      <label><span data-t="dVocExp">تاريخ انتهاء البطاقة</span><input id="dVocExp" type="date"></label>
-      <label><span data-t="dStatus">حالة السائق</span><select id="dStatus"></select></label>
-      <label class="wide"><span data-t="dNotes">ملاحظات</span><textarea id="dNotes" maxlength="600" dir="auto"></textarea></label>
-      <label class="check wide"><input type="checkbox" id="dConsent"><span data-t="dConsent">وافق السائق على حفظ بياناته واستخدامها لإسناد الطلبات</span></label>
+      <p class="legal wide" data-t="legalNote"></p>
+
+      <h4 data-t="secBasic"></h4>
+      <label><span data-t="dName"></span><input id="dName" maxlength="80" dir="auto"></label>
+      <label><span data-t="mobile"></span><span class="phone"><span>+968</span><input id="dPhone" inputmode="numeric" maxlength="8" placeholder="9XXXXXXX"></span></label>
+      <label><span data-t="dContract"></span><select id="dContract"></select></label>
+      <label><span data-t="dCompany"></span><input id="dCompany" maxlength="120" dir="auto"></label>
+      <label><span data-t="dCr"></span><input id="dCr" maxlength="40" dir="ltr"></label>
+      <label><span data-t="dStatus"></span><select id="dStatus"></select></label>
+
+      <h4 data-t="secTruck"></h4>
+      <label><span data-t="dTruck"></span><select id="dTruck"></select></label>
+      <label><span data-t="dPlate"></span><input id="dPlate" maxlength="20" dir="auto"></label>
+      <label><span data-t="dVoc"></span><input id="dVoc" maxlength="40" dir="ltr"></label>
+      <label><span data-t="dVocExp"></span><input id="dVocExp" type="date"></label>
+      <label><span data-t="dLicType"></span><select id="dLicType"></select></label>
+      <label><span data-t="dLicExp"></span><input id="dLicExp" type="date"></label>
+      <label><span data-t="dInsExp"></span><input id="dInsExp" type="date"></label>
+
+      <h4 data-t="secOps"></h4>
+      <label><span data-t="dAreas"></span><input id="dAreas" maxlength="200" dir="auto"></label>
+      <label><span data-t="dHelpers"></span><input id="dHelpers" type="number" min="0" max="20" inputmode="numeric"></label>
+      <label><span data-t="dDays"></span><input id="dDays" maxlength="80" dir="auto"></label>
+      <label><span data-t="dRate"></span><span class="rate"><input id="dRate" type="number" min="0" step="0.5" inputmode="decimal"><select id="dRateUnit"></select></span></label>
+      <label><span data-t="dRating"></span><select id="dRating"></select></label>
+      <label class="wide"><span data-t="dNotes"></span><textarea id="dNotes" maxlength="600" dir="auto"></textarea></label>
+      <label class="check wide"><input type="checkbox" id="dConsent"><span data-t="dConsent"></span></label>
       <div class="save-row wide">
         <button class="btn" type="submit" data-t="save">حفظ</button>
         <button class="btn btn-ghost" type="button" id="drvCancel" data-t="cancel">إلغاء</button>
@@ -198,6 +283,11 @@
     </form>
     <div class="list" id="drvList"></div>
   </main>
+</div>
+
+<!-- الفاتورة / Invoice -->
+<div class="modal" id="invModal" hidden role="dialog" aria-modal="true">
+  <div class="sheet" id="invSheet"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
@@ -215,27 +305,53 @@
       badLogin: 'البريد أو كلمة المرور غير صحيحة.', noLib: 'تعذّر تحميل مكتبة الاتصال. تحقق من الإنترنت وحدّث الصفحة.',
       search: 'بحث بالاسم أو رقم الموبايل أو رقم الطلب', filterLabel: 'تصفية حسب الحالة',
       open: 'المفتوحة', all: 'الكل', updated: 'آخر تحديث', loadFail: 'تعذّر التحميل: ',
-      emptyNone: 'لا توجد طلبات بعد. ستظهر هنا فور إرسالها من الموقع.', emptyFilter: 'لا توجد طلبات تطابق هذا التصنيف أو البحث.',
+      emptyNone: 'لا توجد طلبات بعد. ستظهر هنا فور إرسالها من الموقع.', emptyFilter: 'لا توجد نتائج تطابق هذا التصنيف أو البحث.',
       sent: 'أُرسل', mobile: 'الموبايل', service: 'الخدمة', wilayat: 'الولاية', address: 'العنوان', prefDate: 'التاريخ المفضل', custNotes: 'ملاحظات العميل',
       call: 'اتصال', whatsapp: 'واتساب', map: 'الموقع على الخريطة',
       status: 'الحالة', driver: 'السائق المُسند', noDriver: '— بدون سائق —', adminNotes: 'ملاحظات الإدارة', adminNotesPh: 'السعر المتفق عليه، العربون، الموعد...',
       save: 'حفظ', cancel: 'إلغاء', edit: 'تعديل', saving: 'جارٍ الحفظ...', savedOk: 'تم الحفظ ✓', saveFail: 'لم يُحفظ: ', needDriver: 'اختر السائق قبل الإسناد', lastEdit: 'آخر تعديل',
       freeOn: 'متاح في هذا التاريخ', busyOn: n => `لديه ${n} طلب في هذا التاريخ`, noDate: 'بدون تاريخ محدد',
+      notAssignable: 'غير متاح للإسناد',
       driverWarnBusy: 'تنبيه: هذا السائق لديه طلب آخر في نفس التاريخ.', driverWarnStatus: 'تنبيه: حالة هذا السائق ليست "متاح".',
+      driverWarnDocs: 'تنبيه: وثائق هذا السائق غير مكتملة أو منتهية.',
       noDrivers: 'لا يوجد سائقون بعد. أضيفيهم من تبويب "السائقون".',
       st: { new: 'جديد', contacted: 'تم التواصل', confirmed: 'مؤكد', assigned: 'مُسند لسائق', done: 'منجز', cancelled: 'ملغي' },
       svc: { move: 'نقل', storage: 'تخزين', both: 'نقل وتخزين' },
       wil: {},
-      addDriver: 'إضافة سائق', drvSearch: 'بحث باسم السائق أو رقمه', newDriver: 'سائق جديد', editDriver: 'تعديل بيانات السائق',
-      dName: 'الاسم', dTruck: 'حجم الشاحنة', dAreas: 'المناطق التي يغطيها', dVoc: 'رقم بطاقة التشغيل (نقل)', dVocExp: 'تاريخ انتهاء البطاقة',
-      dStatus: 'حالة السائق', dNotes: 'ملاحظات', dConsent: 'وافق السائق على حفظ بياناته واستخدامها لإسناد الطلبات',
+      addDriver: 'إضافة سائق', drvSearch: 'بحث باسم السائق أو رقمه أو لوحة الشاحنة', newDriver: 'سائق جديد', editDriver: 'تعديل بيانات السائق',
+      legalNote: 'لا تُدخلي رقم البطاقة الشخصية أو جواز السفر أو البيانات البنكية. اجمعي فقط ما يلزم لإسناد الطلبات بأمان، وفق قانون حماية البيانات الشخصية في سلطنة عُمان، وبعد موافقة السائق.',
+      secBasic: 'البيانات الأساسية', secTruck: 'الشاحنة والوثائق', secOps: 'التشغيل',
+      dName: 'الاسم', dContract: 'نوع التعاقد', dCompany: 'اسم الشركة (إن وُجد)', dCr: 'رقم السجل التجاري', dStatus: 'حالة السائق',
+      dTruck: 'حجم الشاحنة', dPlate: 'رقم لوحة الشاحنة', dVoc: 'رقم بطاقة التشغيل (نقل)', dVocExp: 'انتهاء بطاقة التشغيل',
+      dLicType: 'نوع رخصة القيادة', dLicExp: 'انتهاء رخصة القيادة', dInsExp: 'انتهاء تأمين الشاحنة',
+      dAreas: 'المناطق التي يغطيها', dHelpers: 'عدد العمال المرافقين', dDays: 'أيام العمل', dRate: 'السعر المتفق عليه (ر.ع)', dRating: 'التقييم الداخلي',
+      dNotes: 'ملاحظات', dConsent: 'وافق السائق على حفظ بياناته واستخدامها لإسناد الطلبات',
+      contract: { independent: 'سائق مستقل بسجل تجاري', company: 'تابع لشركة نقل' },
+      lic: { '': '— اختر —', light: 'مركبات خفيفة', heavy: 'مركبات ثقيلة', other: 'أخرى' },
+      unit: { trip: 'للمشوار', day: 'لليوم' },
+      rating: { '': '— بدون تقييم —', 1: '1 ★', 2: '2 ★', 3: '3 ★', 4: '4 ★', 5: '5 ★' },
       truck: { small: 'صغيرة', medium: 'متوسطة', large: 'كبيرة' },
       dst: { available: 'متاح', busy: 'مشغول', leave: 'في إجازة', suspended: 'موقوف' },
-      vocExpired: 'البطاقة منتهية', vocSoon: 'البطاقة تنتهي قريباً', vocMissing: 'بدون بطاقة تشغيل',
-      jobsMonth: n => `${n} طلب منجز هذا الشهر`, activeJobs: n => `${n} طلب قيد التنفيذ`,
+      docs: { voc: 'بطاقة التشغيل', license: 'رخصة القيادة', insurance: 'وثيقة التأمين' },
+      docExpired: x => `${x} منتهية`, docSoon: x => `${x} تنتهي قريباً`, docMissing: x => `${x} غير مسجّلة`,
+      jobsMonth: n => `${n} طلب منجز هذا الشهر`, activeJobs: n => `${n} طلب قيد التنفيذ`, helpers: n => `${n} عامل`,
       errName: 'اكتب اسم السائق', errPhone: 'رقم الموبايل العُماني 8 أرقام ويبدأ بـ 7 أو 9', errConsent: 'موافقة السائق مطلوبة قبل حفظ بياناته',
+      errCompany: 'اكتب اسم شركة النقل التي يتبع لها السائق',
       noDriversList: 'لا يوجد سائقون بعد. اضغطي "إضافة سائق".',
-      locale: 'ar-OM', langBtn: 'EN', langAria: 'Switch to English'
+      omr: 'ر.ع', locale: 'ar-OM', langBtn: 'EN', langAria: 'Switch to English',
+      invIssue: 'إصدار فاتورة', invView: 'عرض الفاتورة', invNew: 'فاتورة جديدة للطلب', invTitle: 'الفاتورة',
+      itemDesc: 'الوصف', itemQty: 'الكمية', itemPrice: 'سعر الوحدة', itemTotal: 'المجموع', addItem: '+ إضافة بند', removeItem: 'حذف البند',
+      discount: 'الخصم (ر.ع)', amountPaid: 'المبلغ المدفوع (ر.ع)', payMethod: 'طريقة الدفع', invNotes: 'ملاحظة تظهر على الفاتورة',
+      pm: { '': '— غير محدد —', cash: 'نقداً', transfer: 'تحويل بنكي', card: 'بطاقة', other: 'أخرى' },
+      subtotal: 'المجموع', grand: 'الإجمالي', due: 'المتبقي',
+      issueBtn: 'إصدار الفاتورة', issueAgain: 'اضغطي مرة أخرى للتأكيد — لا يمكن تعديل البنود بعد الإصدار',
+      print: 'طباعة / حفظ PDF', sendWa: 'إرسال واتساب للعميل', close: 'إغلاق',
+      recordPay: 'تحديث الدفع', voidBtn: 'إلغاء الفاتورة', voidReason: 'سبب الإلغاء', voidNeedReason: 'اكتبي سبب الإلغاء', voidAgain: 'اضغطي مرة أخرى لتأكيد الإلغاء',
+      invPaid: 'مدفوعة', invDue: x => `متبقٍ ${x}`, invVoid: 'ملغاة',
+      reissueHint: 'لتصحيح فاتورة: ألغيها مع ذكر السبب ثم أصدري فاتورة جديدة.',
+      errItems: 'أضيفي بنداً واحداً على الأقل بوصف وكمية وسعر صحيحين', errDiscount: 'الخصم أكبر من المجموع', errPaid: 'المبلغ المدفوع أكبر من الإجمالي',
+      noInvTable: 'الفواتير غير مفعّلة بعد: نفّذي ملف supabase-invoices.sql',
+      waMsg: (no, total, due) => `عزيزي العميل، شكراً لاختيارك قريب مني.\nرقم الفاتورة: ${no}\nالإجمالي: ${total} ر.ع` + (Number(due) > 0 ? `\nالمتبقي: ${due} ر.ع` : `\nتم السداد بالكامل`) + `\nيومك سعيد.`
     },
     en: {
       docTitle: 'Requests board | Qareeb Minni', title: 'Requests board', brand: 'Qareeb Minni', staffOnly: 'Qareeb Minni · Staff only',
@@ -244,42 +360,80 @@
       badLogin: 'Wrong email or password.', noLib: 'Could not load the connection library. Check your internet and reload the page.',
       search: 'Search by name, mobile or request number', filterLabel: 'Filter by status',
       open: 'Open', all: 'All', updated: 'Updated', loadFail: 'Could not load: ',
-      emptyNone: 'No requests yet. They will appear here as soon as they are sent from the website.', emptyFilter: 'No requests match this filter or search.',
+      emptyNone: 'No requests yet. They will appear here as soon as they are sent from the website.', emptyFilter: 'Nothing matches this filter or search.',
       sent: 'Sent', mobile: 'Mobile', service: 'Service', wilayat: 'Wilayat', address: 'Address', prefDate: 'Preferred date', custNotes: 'Customer notes',
       call: 'Call', whatsapp: 'WhatsApp', map: 'Location on map',
       status: 'Status', driver: 'Assigned driver', noDriver: '— No driver —', adminNotes: 'Admin notes', adminNotesPh: 'Agreed price, deposit, date...',
       save: 'Save', cancel: 'Cancel', edit: 'Edit', saving: 'Saving...', savedOk: 'Saved ✓', saveFail: 'Not saved: ', needDriver: 'Choose a driver before assigning', lastEdit: 'Last edited',
       freeOn: 'Free on this date', busyOn: n => `Has ${n} job(s) on this date`, noDate: 'No date set',
+      notAssignable: 'Cannot be assigned',
       driverWarnBusy: 'Note: this driver has another job on the same date.', driverWarnStatus: 'Note: this driver is not marked "Available".',
+      driverWarnDocs: 'Note: this driver’s documents are incomplete or expired.',
       noDrivers: 'No drivers yet. Add them from the "Drivers" tab.',
       st: { new: 'New', contacted: 'Contacted', confirmed: 'Confirmed', assigned: 'Assigned to driver', done: 'Done', cancelled: 'Cancelled' },
       svc: { move: 'Moving', storage: 'Storage', both: 'Moving + storage' },
       wil: { 'مسقط': 'Muscat', 'مطرح': 'Muttrah', 'بوشر': 'Bausher', 'السيب': 'Seeb', 'العامرات': 'Al Amerat', 'قريات': 'Qurayyat' },
-      addDriver: 'Add driver', drvSearch: 'Search by driver name or number', newDriver: 'New driver', editDriver: 'Edit driver',
-      dName: 'Name', dTruck: 'Truck size', dAreas: 'Areas covered', dVoc: 'Vehicle operating card no. (Naql)', dVocExp: 'Card expiry date',
-      dStatus: 'Driver status', dNotes: 'Notes', dConsent: 'The driver agreed to have their details stored and used to assign requests',
+      addDriver: 'Add driver', drvSearch: 'Search by driver name, number or plate', newDriver: 'New driver', editDriver: 'Edit driver',
+      legalNote: 'Do not enter civil ID or passport numbers or bank details. Collect only what is needed to assign requests safely, under Oman’s Personal Data Protection Law, and with the driver’s consent.',
+      secBasic: 'Basic details', secTruck: 'Truck and documents', secOps: 'Operations',
+      dName: 'Name', dContract: 'Contract type', dCompany: 'Company name (if any)', dCr: 'Commercial registration no.', dStatus: 'Driver status',
+      dTruck: 'Truck size', dPlate: 'Truck plate number', dVoc: 'Vehicle operating card no. (Naql)', dVocExp: 'Operating card expiry',
+      dLicType: 'Driving licence type', dLicExp: 'Driving licence expiry', dInsExp: 'Truck insurance expiry',
+      dAreas: 'Areas covered', dHelpers: 'Number of helpers', dDays: 'Working days', dRate: 'Agreed rate (OMR)', dRating: 'Internal rating',
+      dNotes: 'Notes', dConsent: 'The driver agreed to have their details stored and used to assign requests',
+      contract: { independent: 'Independent driver with a CR', company: 'Works for a transport company' },
+      lic: { '': '— Choose —', light: 'Light vehicles', heavy: 'Heavy vehicles', other: 'Other' },
+      unit: { trip: 'per trip', day: 'per day' },
+      rating: { '': '— No rating —', 1: '1 ★', 2: '2 ★', 3: '3 ★', 4: '4 ★', 5: '5 ★' },
       truck: { small: 'Small', medium: 'Medium', large: 'Large' },
       dst: { available: 'Available', busy: 'Busy', leave: 'On leave', suspended: 'Suspended' },
-      vocExpired: 'Card expired', vocSoon: 'Card expires soon', vocMissing: 'No operating card',
-      jobsMonth: n => `${n} job(s) done this month`, activeJobs: n => `${n} active job(s)`,
+      docs: { voc: 'Operating card', license: 'Driving licence', insurance: 'Insurance' },
+      docExpired: x => `${x} expired`, docSoon: x => `${x} expires soon`, docMissing: x => `${x} not recorded`,
+      jobsMonth: n => `${n} job(s) done this month`, activeJobs: n => `${n} active job(s)`, helpers: n => `${n} helper(s)`,
       errName: 'Enter the driver name', errPhone: 'Omani mobile numbers have 8 digits and start with 7 or 9', errConsent: 'The driver’s consent is needed before saving their details',
+      errCompany: 'Enter the transport company the driver works for',
       noDriversList: 'No drivers yet. Press "Add driver".',
-      locale: 'en-GB', langBtn: 'عربي', langAria: 'التبديل إلى العربية'
+      omr: 'OMR', locale: 'en-GB', langBtn: 'عربي', langAria: 'التبديل إلى العربية',
+      invIssue: 'Issue invoice', invView: 'View invoice', invNew: 'New invoice for request', invTitle: 'Invoice',
+      itemDesc: 'Description', itemQty: 'Qty', itemPrice: 'Unit price', itemTotal: 'Amount', addItem: '+ Add line', removeItem: 'Remove line',
+      discount: 'Discount (OMR)', amountPaid: 'Amount paid (OMR)', payMethod: 'Payment method', invNotes: 'Note shown on the invoice',
+      pm: { '': '— Not set —', cash: 'Cash', transfer: 'Bank transfer', card: 'Card', other: 'Other' },
+      subtotal: 'Subtotal', grand: 'Total', due: 'Balance due',
+      issueBtn: 'Issue invoice', issueAgain: 'Press again to confirm — lines cannot be changed after issuing',
+      print: 'Print / Save PDF', sendWa: 'Send to customer on WhatsApp', close: 'Close',
+      recordPay: 'Update payment', voidBtn: 'Void invoice', voidReason: 'Reason for voiding', voidNeedReason: 'Enter the reason for voiding', voidAgain: 'Press again to confirm voiding',
+      invPaid: 'Paid', invDue: x => `${x} due`, invVoid: 'Void',
+      reissueHint: 'To correct an invoice: void it with a reason, then issue a new one.',
+      errItems: 'Add at least one line with a valid description, quantity and price', errDiscount: 'Discount is larger than the subtotal', errPaid: 'Amount paid is larger than the total',
+      noInvTable: 'Invoices are not enabled yet: run supabase-invoices.sql',
+      waMsg: (no, total, due) => `Dear customer, thank you for choosing Qareeb Minni.\nInvoice no.: ${no}\nTotal: OMR ${total}` + (Number(due) > 0 ? `\nBalance due: OMR ${due}` : `\nPaid in full`) + `\nHave a nice day.`
     }
+  };
+  // ===== بيانات الشركة على الفاتورة — عدّليها بعد إصدار السجل التجاري =====
+  const COMPANY = {
+    address: 'العامرات، مسقط، سلطنة عُمان · Al Amerat, Muscat, Oman',
+    cr: '[رقم السجل التجاري]',
+    phone: '[رقم الهاتف]',
+    email: '[البريد الإلكتروني]',
+    vatNote: 'المنشأة غير مسجّلة في ضريبة القيمة المضافة — هذه ليست فاتورة ضريبية · Not VAT-registered — this is not a tax invoice'
   };
   const STATUS_COLOR = { new: 'var(--s-new)', contacted: 'var(--s-contacted)', confirmed: 'var(--s-confirmed)', assigned: 'var(--s-assigned)', done: 'var(--s-done)', cancelled: 'var(--s-cancelled)' };
   const DSTATUS_COLOR = { available: 'var(--d-available)', busy: 'var(--d-busy)', leave: 'var(--d-leave)', suspended: 'var(--d-suspended)' };
   const ACTIVE = ['contacted', 'confirmed', 'assigned'];   // طلبات تشغل السائق
+  const DOCS = [['voc', 'voc_expiry'], ['license', 'license_expiry'], ['insurance', 'insurance_expiry']];
 
   const $ = id => document.getElementById(id);
-  let db = null, rows = [], drivers = [], filter = 'open', timer = null, lastLoad = null, tab = 'req', editingDriver = null;
+  let db = null, rows = [], drivers = [], invoices = [], invOk = true, filter = 'open', timer = null, lastLoad = null, editingDriver = null;
   let lang = 'ar';
   try { if (localStorage.getItem('qm-admin-lang') === 'en') lang = 'en'; } catch (e) {}
   const t = () => T[lang];
   const today = () => new Date().toISOString().slice(0, 10);
 
   function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
-  function fillSelect(sel, map, current){ sel.replaceChildren(...Object.entries(map).map(([k, v]) => { const o = el('option', null, v); o.value = k; if (k === current) o.selected = true; return o; })); }
+  function fillSelect(sel, map, current){
+    const cur = current == null ? '' : String(current);
+    sel.replaceChildren(...Object.entries(map).map(([k, v]) => { const o = el('option', null, v); o.value = k; if (k === cur) o.selected = true; return o; }));
+  }
 
   // ===== اللغة / Language =====
   function applyLang(){
@@ -294,6 +448,11 @@
     $('counters').setAttribute('aria-label', L.filterLabel);
     fillSelect($('dTruck'), L.truck, $('dTruck').value || 'medium');
     fillSelect($('dStatus'), L.dst, $('dStatus').value || 'available');
+    fillSelect($('dContract'), L.contract, $('dContract').value || 'independent');
+    fillSelect($('dLicType'), L.lic, $('dLicType').value);
+    fillSelect($('dRateUnit'), L.unit, $('dRateUnit').value || 'trip');
+    fillSelect($('dRating'), L.rating, $('dRating').value);
+    $('dDays').placeholder = lang === 'en' ? 'e.g. Saturday to Thursday' : 'مثال: السبت إلى الخميس';
     $('drvFormTitle').textContent = editingDriver ? L.editDriver : L.newDriver;
     $('loginMsg').textContent = '';
     stampText();
@@ -304,11 +463,9 @@
     try { localStorage.setItem('qm-admin-lang', lang); } catch (e) {}
     applyLang();
   }));
-  applyLang();
 
   // ===== التبويبات / Tabs =====
   function showTab(name){
-    tab = name;
     $('tabReq').setAttribute('aria-selected', String(name === 'req'));
     $('tabDrv').setAttribute('aria-selected', String(name === 'drv'));
     $('reqPane').hidden = name !== 'req';
@@ -318,6 +475,7 @@
   $('tabDrv').onclick = () => showTab('drv');
 
   // ===== الاتصال والدخول / Connection and login =====
+  applyLang();
   if (!window.supabase) {
     $('loginMsg').textContent = t().noLib;
   } else {
@@ -353,12 +511,14 @@
 
   // ===== تحميل البيانات / Load data =====
   async function load(){
-    const [r, d] = await Promise.all([
+    const [r, d, v] = await Promise.all([
       db.from('requests').select('*').order('created_at', { ascending: false }).limit(500),
-      db.from('drivers').select('*').order('name')
+      db.from('drivers').select('*').order('name'),
+      db.from('invoices').select('*').order('seq', { ascending: false }).limit(1000)
     ]);
     if (r.error) { $('stamp').textContent = t().loadFail + r.error.message; return; }
     rows = r.data; drivers = d.error ? [] : d.data; lastLoad = new Date();
+    invOk = !v.error; invoices = v.error ? [] : v.data;   // جدول الفواتير قد لا يكون مُنشأً بعد
     stampText();
     if (d.error) $('stamp').textContent += ' · ' + t().loadFail + d.error.message;   // جدول السائقين لم يُنشأ بعد
     render(); renderDrivers();
@@ -375,13 +535,26 @@
   const fmtDate = d => d ? new Date(d).toLocaleString(t().locale, { dateStyle: 'medium', timeStyle: 'short' }) : '';
   const fmtDay = d => d ? new Date(d + 'T00:00:00').toLocaleDateString(t().locale, { dateStyle: 'medium' }) : '';
 
-  // صلاحية بطاقة التشغيل: 'ok' | 'soon' | 'expired' | 'missing'
-  function vocState(d, onDate){
-    if (!d.voc_expiry) return 'missing';
-    const ref = onDate || today();
-    if (d.voc_expiry < ref) return 'expired';
+  // فحص الوثائق: لكل وثيقة 'ok' | 'soon' | 'expired' | 'missing'
+  function docStates(d, onDate){
+    const ref = onDate && onDate > today() ? onDate : today();
     const soon = new Date(); soon.setDate(soon.getDate() + 30);
-    return d.voc_expiry <= soon.toISOString().slice(0, 10) ? 'soon' : 'ok';
+    const soonStr = soon.toISOString().slice(0, 10);
+    return DOCS.map(([key, col]) => {
+      const v = d[col];
+      const state = !v ? 'missing' : v < ref ? 'expired' : v <= soonStr ? 'soon' : 'ok';
+      return { key, state };
+    });
+  }
+  // يمكن إسناده: غير موقوف وكل وثائقه مسجّلة وسارية في تاريخ الطلب
+  function assignable(d, onDate){
+    if (d.status === 'suspended') return { ok: false, why: t().dst.suspended };
+    const bad = docStates(d, onDate).filter(x => x.state === 'missing' || x.state === 'expired');
+    if (bad.length) {
+      const L = t();
+      return { ok: false, why: bad.map(x => x.state === 'missing' ? L.docMissing(L.docs[x.key]) : L.docExpired(L.docs[x.key])).join('، ') };
+    }
+    return { ok: true };
   }
   // عدد طلبات السائق في نفس التاريخ (غير هذا الطلب)
   const jobsOn = (driverId, date, exceptId) => date ? rows.filter(x => x.driver_id === driverId && x.preferred_date === date && x.id !== exceptId && ACTIVE.includes(x.status)).length : 0;
@@ -414,6 +587,12 @@
     $('list').replaceChildren(...shown.map(card));
   }
 
+  function addMeta(meta, k, v, ltr){
+    if (v == null || v === '') return;
+    const dd = el('dd', ltr ? 'ltr' : null, String(v)); if (!ltr) dd.dir = 'auto';
+    meta.append(el('dt', null, k), dd);
+  }
+
   function card(r){
     const L = t();
     const color = STATUS_COLOR[r.status] || STATUS_COLOR.new;
@@ -428,14 +607,13 @@
     info.append(head);
 
     const meta = el('dl', 'meta');
-    const add = (k, v, ltr) => { if (v) { const dd = el('dd', ltr ? 'ltr' : null, v); if (!ltr) dd.dir = 'auto'; meta.append(el('dt', null, k), dd); } };
-    add(L.sent, fmtDate(r.created_at));
-    add(L.mobile, r.phone, true);
-    add(L.service, L.svc[r.service] || r.service);
-    add(L.wilayat, L.wil[r.wilayat] || r.wilayat);
-    add(L.address, r.address);
-    add(L.prefDate, fmtDay(r.preferred_date));
-    add(L.custNotes, r.notes);
+    addMeta(meta, L.sent, fmtDate(r.created_at));
+    addMeta(meta, L.mobile, r.phone, true);
+    addMeta(meta, L.service, L.svc[r.service] || r.service);
+    addMeta(meta, L.wilayat, L.wil[r.wilayat] || r.wilayat);
+    addMeta(meta, L.address, r.address);
+    addMeta(meta, L.prefDate, fmtDay(r.preferred_date));
+    addMeta(meta, L.custNotes, r.notes);
     info.append(meta);
 
     const links = el('div', 'links');
@@ -450,27 +628,29 @@
     const sLab = el('label', null, L.status); const sel = el('select');
     fillSelect(sel, L.st, r.status); sLab.append(sel);
 
-    // قائمة السائقين: يُستبعد الموقوف ومن انتهت بطاقته، ويظهر المتاح في التاريخ أولاً
+    // قائمة السائقين: القابلون للإسناد والمتاحون في التاريخ أولاً، وغير القابلين يظهرون معطّلين مع السبب
     const dLab = el('label', null, L.driver); const drvSel = el('select');
-    const usable = drivers.filter(d => d.status !== 'suspended' && vocState(d, r.preferred_date) !== 'expired' || d.id === r.driver_id);
-    const scored = usable.map(d => ({ d, n: jobsOn(d.id, r.preferred_date, r.id) }))
-      .sort((a, b) => (a.d.status === 'available' ? 0 : 1) - (b.d.status === 'available' ? 0 : 1) || a.n - b.n || a.d.name.localeCompare(b.d.name));
+    const scored = drivers.map(d => ({ d, n: jobsOn(d.id, r.preferred_date, r.id), a: assignable(d, r.preferred_date) }))
+      .sort((x, y) => (x.a.ok ? 0 : 1) - (y.a.ok ? 0 : 1) || (x.d.status === 'available' ? 0 : 1) - (y.d.status === 'available' ? 0 : 1) || x.n - y.n || x.d.name.localeCompare(y.d.name));
     const none = el('option', null, L.noDriver); none.value = ''; drvSel.append(none);
-    scored.forEach(({ d, n }) => {
-      const avail = r.preferred_date ? (n ? L.busyOn(n) : L.freeOn) : L.noDate;
+    scored.forEach(({ d, n, a }) => {
+      const avail = !a.ok ? `${L.notAssignable}: ${a.why}` : r.preferred_date ? (n ? L.busyOn(n) : L.freeOn) : L.noDate;
       const o = el('option', null, `${d.name} · ${L.truck[d.truck_size]} · ${L.dst[d.status]} · ${avail}`);
-      o.value = d.id; if (d.id === r.driver_id) o.selected = true; drvSel.append(o);
+      o.value = d.id;
+      if (!a.ok && d.id !== r.driver_id) o.disabled = true;
+      if (d.id === r.driver_id) o.selected = true;
+      drvSel.append(o);
     });
     const dHint = el('span', 'hint');
-    if (!drivers.length) dHint.textContent = L.noDrivers;
     const updHint = () => {
       const d = drivers.find(x => x.id === drvSel.value);
       if (!d) { dHint.className = 'hint'; dHint.textContent = drivers.length ? '' : L.noDrivers; return; }
       const msgs = [];
+      if (!assignable(d, r.preferred_date).ok) msgs.push(L.driverWarnDocs);
       if (jobsOn(d.id, r.preferred_date, r.id)) msgs.push(L.driverWarnBusy);
       if (d.status !== 'available') msgs.push(L.driverWarnStatus);
       dHint.className = msgs.length ? 'hint warn' : 'hint';
-      dHint.textContent = msgs.join(' ') || d.phone;
+      dHint.textContent = msgs.join(' ') || [d.phone, d.plate_number].filter(Boolean).join(' · ');
     };
     drvSel.onchange = updHint; updHint();
     dLab.append(drvSel, dHint);
@@ -483,6 +663,21 @@
     row.append(btn, note);
     edit.append(sLab, dLab, nLab, row);
     if (r.updated_at) edit.append(el('span', 'audit', `${L.lastEdit}: ${fmtDate(r.updated_at)}${r.updated_by ? ' · ' + r.updated_by : ''}`));
+
+    // ----- الفواتير المرتبطة بالطلب -----
+    const ib = el('div', 'inv-bar');
+    if (!invOk) ib.append(el('span', 'hint', L.noInvTable));
+    else {
+      invoices.filter(v => v.request_id === r.id).forEach(v => {
+        const a = el('a', 'inv-tag', v.number); a.href = '#'; a.onclick = e => { e.preventDefault(); openInvoice(v); };
+        ib.append(a, invStateTag(v));
+      });
+      if (!invoices.some(v => v.request_id === r.id && v.status === 'issued')) {
+        const ibtn = el('button', 'btn btn-ghost', L.invIssue); ibtn.type = 'button'; ibtn.onclick = () => openInvoiceForm(r);
+        ib.append(ibtn);
+      }
+    }
+    edit.append(ib);
 
     btn.onclick = async () => {
       const L2 = t();
@@ -501,13 +696,213 @@
     return c;
   }
 
+  // ===== الفواتير / Invoices =====
+  const money = n => Number(n || 0).toFixed(3);
+  const dueOf = v => Math.max(0, Number(v.total) - Number(v.amount_paid));
+  const SVC_LINE = { move: 'نقل أثاث / Furniture moving', storage: 'تخزين أثاث / Furniture storage' };
+  const LOGO_SVG = '<svg viewBox="30 4 262 124" aria-hidden="true"><path d="M58 118C53 110 36 98 36 78A22 22 0 1 1 80 78C80 98 63 110 58 118Z"/><circle cx="58" cy="78" r="8"/><path d="M58 118c-4 3-1 7 4 5C100 112 150 128 168 108C182 92 140 86 150 70C160 54 210 70 236 76C248 79 256 80 262 78c4-2 2-6-2-4"/><path d="M262 74C257 66 240 54 240 34A22 22 0 1 1 284 34C284 54 267 66 262 74Z"/><path class="house" d="M253 37L262 29L271 37V45H253Z"/></svg>';
+
+  function invStateTag(v){
+    const L = t();
+    if (v.status === 'void') return el('span', 'inv-tag flag bad', L.invVoid);
+    const due = dueOf(v);
+    return due > 0 ? el('span', 'inv-tag due', L.invDue(money(due) + ' ' + L.omr)) : el('span', 'inv-tag paid', L.invPaid);
+  }
+
+  const modal = $('invModal'), sheet = $('invSheet');
+  function closeModal(){ modal.hidden = true; sheet.replaceChildren(); document.body.classList.remove('printing'); }
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
+  function sheetTop(title){
+    const top = el('div', 'sheet-top'); top.append(el('h3', null, title));
+    const acts = el('div', 'sheet-actions'); top.append(acts);
+    const x = el('button', 'btn btn-ghost', t().close); x.type = 'button'; x.onclick = closeModal; acts.append(x);
+    return { top, acts };
+  }
+
+  // نموذج إصدار فاتورة جديدة
+  function openInvoiceForm(r){
+    const L = t();
+    const { top } = sheetTop(`${L.invNew} ${shortCode(r)} · ${r.name}`);
+    const tbl = el('table', 'items');
+    const hr = el('tr'); [L.itemDesc, L.itemQty, L.itemPrice, ''].forEach(h => hr.append(el('th', null, h)));
+    const tb = el('tbody'); tbl.append(el('thead'), tb); tbl.tHead.append(hr);
+    const sumEl = el('div', 'sum');
+    const addLine = (desc = '', qty = 1, price = '') => {
+      const tr = el('tr');
+      const d = el('input'); d.maxLength = 120; d.dir = 'auto'; d.value = desc; d.setAttribute('aria-label', L.itemDesc);
+      const q = el('input'); q.type = 'number'; q.min = '0'; q.step = 'any'; q.value = qty; q.inputMode = 'decimal'; q.setAttribute('aria-label', L.itemQty);
+      const p = el('input'); p.type = 'number'; p.min = '0'; p.step = '0.001'; p.value = price; p.inputMode = 'decimal'; p.setAttribute('aria-label', L.itemPrice);
+      const x = el('button', 'x', '×'); x.type = 'button'; x.setAttribute('aria-label', L.removeItem); x.onclick = () => { tr.remove(); calc(); };
+      const td1 = el('td'), td2 = el('td', 'qty'), td3 = el('td', 'num'), td4 = el('td');
+      td1.append(d); td2.append(q); td3.append(p); td4.append(x); tr.append(td1, td2, td3, td4); tb.append(tr);
+      [d, q, p].forEach(i => i.addEventListener('input', calc));
+    };
+    const lines = r.service === 'both' ? [SVC_LINE.move, SVC_LINE.storage] : [SVC_LINE[r.service] || ''];
+    lines.forEach(x => addLine(x));
+    const add = el('button', 'btn btn-ghost', L.addItem); add.type = 'button'; add.onclick = () => { addLine(); calc(); };
+
+    const grid = el('div', 'inv-grid');
+    const mk = (label, input) => { const l = el('label', null, label); l.append(input); grid.append(l); return l; };
+    const disc = el('input'); disc.type = 'number'; disc.min = '0'; disc.step = '0.001'; disc.value = '0'; disc.inputMode = 'decimal';
+    const paid = el('input'); paid.type = 'number'; paid.min = '0'; paid.step = '0.001'; paid.value = '0'; paid.inputMode = 'decimal';
+    const pm = el('select'); fillSelect(pm, L.pm, '');
+    mk(L.discount, disc); mk(L.amountPaid, paid); mk(L.payMethod, pm);
+    const nt = el('textarea'); nt.maxLength = 400; nt.dir = 'auto'; mk(L.invNotes, nt).classList.add('wide');
+    [disc, paid].forEach(i => i.addEventListener('input', calc));
+
+    const readItems = () => [...tb.rows].map(tr => { const [d, q, p] = tr.querySelectorAll('input'); return { desc: d.value.trim(), qty: Number(q.value), price: Number(p.value) }; });
+    function calc(){
+      const sub = readItems().reduce((s, i) => s + (i.qty > 0 && i.price >= 0 ? Math.round(i.qty * i.price * 1000) / 1000 : 0), 0);
+      const tot = sub - Number(disc.value || 0);
+      sumEl.textContent = `${L.subtotal}: ${money(sub)} · ${L.grand}: ${money(tot)} ${L.omr} · ${L.due}: ${money(Math.max(0, tot - Number(paid.value || 0)))} ${L.omr}`;
+      return { sub, tot };
+    }
+    calc();
+
+    const row = el('div', 'save-row');
+    const go = el('button', 'btn', L.issueBtn); go.type = 'button';
+    const msg = el('span', 'saved'); msg.setAttribute('aria-live', 'polite');
+    row.append(go, msg);
+    let armed = false;
+    go.onclick = async () => {
+      const items = readItems();
+      const { sub, tot } = calc();
+      msg.className = 'saved err';
+      if (!items.length || items.some(i => !i.desc || !(i.qty > 0) || !(i.price >= 0) || Number.isNaN(i.price))) { msg.textContent = L.errItems; return; }
+      if (Number(disc.value || 0) > sub) { msg.textContent = L.errDiscount; return; }
+      if (Number(paid.value || 0) > tot + 0.0005) { msg.textContent = L.errPaid; return; }
+      if (!armed) { armed = true; msg.className = 'saved'; msg.textContent = L.issueAgain; return; }   // تأكيد بضغطة ثانية
+      go.disabled = true; msg.className = 'saved'; msg.textContent = L.saving;
+      const rec = { request_id: r.id, items, discount: Number(disc.value || 0), amount_paid: Number(paid.value || 0), payment_method: pm.value || null, notes: nt.value.trim() || null };
+      const { data, error } = await db.from('invoices').insert(rec).select().single();
+      go.disabled = false;
+      if (error) { armed = false; msg.className = 'saved err'; msg.textContent = L.saveFail + error.message; return; }
+      invoices.unshift(data); render();
+      openInvoice(data);
+    };
+
+    sheet.replaceChildren(top, tbl, add, grid, sumEl, row);
+    modal.hidden = false;
+    tb.querySelector('input').focus();
+  }
+
+  // عرض الفاتورة الصادرة: ورقة ثنائية اللغة + طباعة + واتساب + تحديث الدفع / الإلغاء
+  function openInvoice(v){
+    const L = t();
+    const r = rows.find(x => x.id === v.request_id) || {};
+    const { top, acts } = sheetTop(`${L.invTitle} ${v.number}`);
+    const pr = el('button', 'btn', L.print); pr.type = 'button';
+    pr.onclick = () => { document.body.classList.add('printing'); window.print(); };
+    acts.prepend(pr);
+    if (v.status === 'issued') {
+      const wa = el('a', 'btn btn-ghost', L.sendWa);
+      wa.href = 'https://wa.me/' + (v.customer_phone || '').replace(/[^\d]/g, '') + '?text=' + encodeURIComponent(L.waMsg(v.number, money(v.total), money(dueOf(v))));
+      wa.target = '_blank'; wa.rel = 'noopener'; wa.style.textDecoration = 'none';
+      acts.prepend(wa);
+    }
+
+    // ----- الورقة -----
+    const paper = el('div', 'paper'); paper.dir = 'rtl'; paper.lang = 'ar';
+    if (v.status === 'void') paper.append(el('div', 'void', `ملغاة / VOID — ${v.void_reason || ''}`));
+    const ph = el('div', 'ph');
+    const co = el('div', 'co'); co.innerHTML = LOGO_SVG;
+    const cot = el('div'); cot.append(el('b', null, 'قريب مني · Qareeb Minni'));
+    [COMPANY.address, `س.ت / CR: ${COMPANY.cr}`, `${COMPANY.phone} · ${COMPANY.email}`].forEach(x => cot.append(el('div', 'small', x)));
+    co.append(cot);
+    const ttl = el('div', 'ttl'); ttl.append(el('h2', null, 'فاتورة / Invoice'));
+    const no = el('div', 'ltrnum', v.number); no.style.fontWeight = '700'; ttl.append(no);
+    ttl.append(el('div', 'small', new Date(v.issued_at).toLocaleDateString('en-GB', { timeZone: 'Asia/Muscat' })));
+    ph.append(co, ttl);
+
+    const two = el('div', 'two');
+    const box = (title, pairs) => {
+      const b = el('div', 'box'); b.append(el('b', null, title));
+      const dl = el('dl'); pairs.forEach(([k, val, ltr]) => { if (val) { dl.append(el('dt', null, k)); const dd = el('dd', ltr ? 'ltrnum' : null, val); dl.append(dd); } });
+      b.append(dl); return b;
+    };
+    two.append(
+      box('العميل / Customer', [['الاسم / Name', v.customer_name], ['الموبايل / Mobile', v.customer_phone, true], ['العنوان / Address', [r.wilayat, r.address].filter(Boolean).join(' – ')]]),
+      box('الطلب / Request', [['رقم الطلب / Request No', r.id ? shortCode(r) : '', true], ['تاريخ الخدمة / Service date', r.preferred_date || '', true], ['طريقة الدفع / Payment', v.payment_method ? `${T.ar.pm[v.payment_method]} / ${T.en.pm[v.payment_method]}` : '']])
+    );
+
+    const tbl = el('table');
+    const hr = el('tr');
+    [['#', ''], ['الوصف', 'Description'], ['الكمية', 'Qty'], ['سعر الوحدة', 'Unit price'], ['المبلغ (ر.ع)', 'Amount (OMR)']].forEach(([a, e], i) => {
+      const th = el('th', i >= 2 ? 'n' : null, a); if (e) th.append(el('span', 'bi', e)); hr.append(th);
+    });
+    const thead = el('thead'); thead.append(hr);
+    const tbody = el('tbody');
+    v.items.forEach((it, i) => {
+      const tr = el('tr');
+      const d = el('td', null, it.desc); d.dir = 'auto';
+      tr.append(el('td', null, String(i + 1)), d, el('td', 'n', String(it.qty)), el('td', 'n', money(it.price)), el('td', 'n', money(it.qty * it.price)));
+      tbody.append(tr);
+    });
+    tbl.append(thead, tbody);
+
+    const tot = el('div', 'tot');
+    const sub = v.items.reduce((s, i) => s + Math.round(i.qty * i.price * 1000) / 1000, 0);
+    const line = (k, val, g) => { tot.append(el('span', g ? 'g' : null, k), el('span', 'n' + (g ? ' g' : ''), val)); };
+    line('المجموع / Subtotal', money(sub));
+    if (Number(v.discount) > 0) line('الخصم / Discount', '−' + money(v.discount));
+    line('الإجمالي / Total (OMR)', money(v.total), true);
+    line('المدفوع / Paid', money(v.amount_paid));
+    line('المتبقي / Balance due', money(dueOf(v)));
+
+    paper.append(ph, two, tbl, tot);
+    if (v.notes) { const n = el('p', 'small', v.notes); n.dir = 'auto'; paper.append(n); }
+    const foot = el('div', 'foot');
+    foot.append(el('div', 'small', COMPANY.vatNote), el('div', 'small', 'شكراً لاختياركم قريب مني · Thank you for choosing Qareeb Minni'));
+    paper.append(foot);
+
+    const parts = [top, paper];
+
+    // ----- تحديث الدفع أو الإلغاء (للفاتورة الفعّالة فقط) -----
+    if (v.status === 'issued') {
+      const grid = el('div', 'inv-grid');
+      const mk = (label, input) => { const l = el('label', null, label); l.append(input); grid.append(l); return l; };
+      const paid = el('input'); paid.type = 'number'; paid.min = '0'; paid.step = '0.001'; paid.value = money(v.amount_paid); paid.inputMode = 'decimal';
+      const pm = el('select'); fillSelect(pm, L.pm, v.payment_method || '');
+      mk(L.amountPaid, paid); mk(L.payMethod, pm);
+      const reason = el('input'); reason.maxLength = 200; reason.dir = 'auto'; mk(L.voidReason, reason);
+      const row = el('div', 'save-row wide');
+      const upd = el('button', 'btn', L.recordPay); upd.type = 'button';
+      const vd = el('button', 'btn btn-ghost', L.voidBtn); vd.type = 'button'; vd.style.color = 'var(--error)';
+      const msg = el('span', 'saved'); msg.setAttribute('aria-live', 'polite');
+      row.append(upd, vd, msg); grid.append(row);
+      grid.append(el('span', 'hint wide', L.reissueHint));
+      const save = async patch => {
+        msg.className = 'saved'; msg.textContent = L.saving;
+        const { data, error } = await db.from('invoices').update(patch).eq('id', v.id).select().single();
+        if (error) { msg.className = 'saved err'; msg.textContent = L.saveFail + error.message; return; }
+        const i = invoices.findIndex(x => x.id === v.id); if (i >= 0) invoices[i] = data;
+        render(); openInvoice(data);
+      };
+      upd.onclick = () => {
+        if (Number(paid.value || 0) > Number(v.total) + 0.0005) { msg.className = 'saved err'; msg.textContent = L.errPaid; return; }
+        save({ amount_paid: Number(paid.value || 0), payment_method: pm.value || null });
+      };
+      let armed = false;
+      vd.onclick = () => {
+        if (!reason.value.trim()) { msg.className = 'saved err'; msg.textContent = L.voidNeedReason; reason.focus(); return; }
+        if (!armed) { armed = true; msg.className = 'saved err'; msg.textContent = L.voidAgain; return; }
+        save({ status: 'void', void_reason: reason.value.trim() });
+      };
+      parts.push(grid);
+    }
+    sheet.replaceChildren(...parts);
+    modal.hidden = false;
+  }
+  window.addEventListener('afterprint', () => document.body.classList.remove('printing'));
+
   // ===== السائقون / Drivers =====
   function renderDrivers(){
     const L = t();
     const q = $('drvSearch').value.trim().toLowerCase();
-    const shown = drivers.filter(d => !q || [d.name, d.phone].some(v => (v || '').toLowerCase().includes(q)));
-    if (!shown.length) { $('drvList').replaceChildren(el('div', 'empty', drivers.length ? t().emptyFilter : L.noDriversList)); return; }
-    const monthStart = today().slice(0, 7);
+    const shown = drivers.filter(d => !q || [d.name, d.phone, d.plate_number].some(v => (v || '').toLowerCase().includes(q)));
+    if (!shown.length) { $('drvList').replaceChildren(el('div', 'empty', drivers.length ? L.emptyFilter : L.noDriversList)); return; }
+    const month = today().slice(0, 7);
     $('drvList').replaceChildren(...shown.map(d => {
       const color = DSTATUS_COLOR[d.status];
       const c = el('article', 'req'); c.style.borderInlineStartColor = color;
@@ -515,20 +910,32 @@
       const head = el('div', 'req-head');
       const nm = el('h3', null, d.name); nm.dir = 'auto'; head.append(nm);
       const badge = el('span', 'badge', L.dst[d.status]); badge.style.background = color; head.append(badge);
-      const vs = vocState(d);
-      if (vs === 'expired') head.append(el('span', 'flag bad', L.vocExpired));
-      if (vs === 'soon') head.append(el('span', 'flag soon', L.vocSoon));
-      if (vs === 'missing') head.append(el('span', 'flag soon', L.vocMissing));
+      docStates(d).forEach(({ key, state }) => {
+        if (state === 'expired') head.append(el('span', 'flag bad', L.docExpired(L.docs[key])));
+        if (state === 'missing') head.append(el('span', 'flag bad', L.docMissing(L.docs[key])));
+        if (state === 'soon') head.append(el('span', 'flag soon', L.docSoon(L.docs[key])));
+      });
+      if (d.rating) head.append(el('span', 'stars', '★'.repeat(d.rating)));
       info.append(head);
+
       const meta = el('dl', 'meta');
-      const add = (k, v, ltr) => { if (v) { const dd = el('dd', ltr ? 'ltr' : null, v); if (!ltr) dd.dir = 'auto'; meta.append(el('dt', null, k), dd); } };
-      add(L.mobile, d.phone, true);
-      add(L.dTruck, L.truck[d.truck_size]);
-      add(L.dAreas, d.areas);
-      add(L.dVoc, d.voc_number, true);
-      add(L.dVocExp, fmtDay(d.voc_expiry));
-      add(L.dNotes, d.notes);
+      addMeta(meta, L.mobile, d.phone, true);
+      addMeta(meta, L.dContract, (L.contract[d.contract_type] || '') + (d.company_name ? ' · ' + d.company_name : ''));
+      addMeta(meta, L.dCr, d.cr_number, true);
+      addMeta(meta, L.dTruck, L.truck[d.truck_size]);
+      addMeta(meta, L.dPlate, d.plate_number);
+      addMeta(meta, L.dVoc, d.voc_number, true);
+      addMeta(meta, L.dVocExp, fmtDay(d.voc_expiry));
+      addMeta(meta, L.dLicType, d.license_type ? L.lic[d.license_type] : '');
+      addMeta(meta, L.dLicExp, fmtDay(d.license_expiry));
+      addMeta(meta, L.dInsExp, fmtDay(d.insurance_expiry));
+      addMeta(meta, L.dAreas, d.areas);
+      addMeta(meta, L.dHelpers, d.helpers_count != null ? L.helpers(d.helpers_count) : '');
+      addMeta(meta, L.dDays, d.work_days);
+      addMeta(meta, L.dRate, d.agreed_rate != null ? `${Number(d.agreed_rate)} ${L.omr} ${L.unit[d.rate_unit] || ''}` : '');
+      addMeta(meta, L.dNotes, d.notes);
       info.append(meta);
+
       const links = el('div', 'links');
       const a1 = el('a', null, L.call); a1.href = 'tel:' + d.phone;
       const a2 = el('a', null, L.whatsapp); a2.href = 'https://wa.me/' + d.phone.replace(/[^\d]/g, ''); a2.target = '_blank'; a2.rel = 'noopener';
@@ -536,8 +943,10 @@
 
       const side = el('div', 'edit');
       const active = rows.filter(x => x.driver_id === d.id && ACTIVE.includes(x.status)).length;
-      const done = rows.filter(x => x.driver_id === d.id && x.status === 'done' && (x.updated_at || '').slice(0, 7) === monthStart).length;
+      const done = rows.filter(x => x.driver_id === d.id && x.status === 'done' && (x.updated_at || '').slice(0, 7) === month).length;
       side.append(el('span', null, L.activeJobs(active)), el('span', null, L.jobsMonth(done)));
+      const a = assignable(d);
+      if (!a.ok) side.append(el('span', 'hint warn', `${L.notAssignable}: ${a.why}`));
       const eb = el('button', 'btn btn-ghost', L.edit); eb.type = 'button'; eb.onclick = () => openDriverForm(d);
       side.append(eb);
       c.append(info, side);
@@ -551,16 +960,29 @@
     $('drvFormTitle').textContent = d ? L.editDriver : L.newDriver;
     $('dName').value = d ? d.name : '';
     $('dPhone').value = d ? d.phone.replace('+968', '') : '';
+    fillSelect($('dContract'), L.contract, d ? d.contract_type : 'independent');
+    $('dCompany').value = d ? (d.company_name || '') : '';
+    $('dCr').value = d ? (d.cr_number || '') : '';
+    fillSelect($('dStatus'), L.dst, d ? d.status : 'available');
     fillSelect($('dTruck'), L.truck, d ? d.truck_size : 'medium');
-    $('dAreas').value = d ? (d.areas || '') : '';
+    $('dPlate').value = d ? (d.plate_number || '') : '';
     $('dVoc').value = d ? (d.voc_number || '') : '';
     $('dVocExp').value = d ? (d.voc_expiry || '') : '';
-    fillSelect($('dStatus'), L.dst, d ? d.status : 'available');
+    fillSelect($('dLicType'), L.lic, d ? (d.license_type || '') : '');
+    $('dLicExp').value = d ? (d.license_expiry || '') : '';
+    $('dInsExp').value = d ? (d.insurance_expiry || '') : '';
+    $('dAreas').value = d ? (d.areas || '') : '';
+    $('dHelpers').value = d && d.helpers_count != null ? d.helpers_count : '';
+    $('dDays').value = d ? (d.work_days || '') : '';
+    $('dRate').value = d && d.agreed_rate != null ? Number(d.agreed_rate) : '';
+    fillSelect($('dRateUnit'), L.unit, d ? (d.rate_unit || 'trip') : 'trip');
+    fillSelect($('dRating'), L.rating, d && d.rating ? d.rating : '');
     $('dNotes').value = d ? (d.notes || '') : '';
     $('dConsent').checked = d ? d.consent : false;
     $('drvMsg').textContent = '';
     $('drvForm').hidden = false;
-    $('dName').focus();
+    $('drvForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    $('dName').focus({ preventScroll: true });
   }
   $('addDrvBtn').onclick = () => openDriverForm(null);
   $('drvCancel').onclick = () => { $('drvForm').hidden = true; editingDriver = null; };
@@ -572,11 +994,18 @@
     msg.className = 'saved err';
     if ($('dName').value.trim().length < 2) { msg.textContent = L.errName; return; }
     if (!/^[79]\d{7}$/.test($('dPhone').value)) { msg.textContent = L.errPhone; return; }
+    if ($('dContract').value === 'company' && !$('dCompany').value.trim()) { msg.textContent = L.errCompany; return; }
     if (!$('dConsent').checked) { msg.textContent = L.errConsent; return; }
+    const num = v => v === '' ? null : Number(v);
     const rec = {
-      name: $('dName').value.trim(), phone: '+968' + $('dPhone').value, truck_size: $('dTruck').value,
-      areas: $('dAreas').value.trim() || null, voc_number: $('dVoc').value.trim() || null, voc_expiry: $('dVocExp').value || null,
-      status: $('dStatus').value, notes: $('dNotes').value.trim() || null, consent: true
+      name: $('dName').value.trim(), phone: '+968' + $('dPhone').value,
+      contract_type: $('dContract').value, company_name: $('dCompany').value.trim() || null, cr_number: $('dCr').value.trim() || null,
+      status: $('dStatus').value, truck_size: $('dTruck').value, plate_number: $('dPlate').value.trim() || null,
+      voc_number: $('dVoc').value.trim() || null, voc_expiry: $('dVocExp').value || null,
+      license_type: $('dLicType').value || null, license_expiry: $('dLicExp').value || null, insurance_expiry: $('dInsExp').value || null,
+      areas: $('dAreas').value.trim() || null, helpers_count: num($('dHelpers').value), work_days: $('dDays').value.trim() || null,
+      agreed_rate: num($('dRate').value), rate_unit: $('dRate').value === '' ? null : $('dRateUnit').value,
+      rating: num($('dRating').value), notes: $('dNotes').value.trim() || null, consent: true
     };
     msg.className = 'saved'; msg.textContent = L.saving;
     const res = editingDriver ? await db.from('drivers').update(rec).eq('id', editingDriver.id) : await db.from('drivers').insert(rec);
