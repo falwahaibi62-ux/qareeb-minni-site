@@ -32,6 +32,8 @@
   .btn:disabled{opacity:.6;cursor:default}
   .btn-ghost{background:transparent;color:var(--navy);border:1.5px solid var(--border)}
   .btn-ghost:hover{background:var(--sand)}
+  .lang{background:transparent;border:1.5px solid var(--border);color:var(--navy);border-radius:999px;padding:6px 14px;font:600 14px var(--display);cursor:pointer}
+  .lang:hover{border-color:var(--navy)}
   input,select,textarea{width:100%;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;min-width:0}
   input:focus,select:focus,textarea:focus{border-color:var(--navy);outline:none}
   [hidden]{display:none!important}
@@ -39,6 +41,7 @@
   /* Login */
   .login{min-height:100vh;display:grid;place-items:center;padding:24px}
   .login-card{width:100%;max-width:380px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;display:grid;gap:14px}
+  .login-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
   .login-card h1{font-size:24px}
   .login-card p{margin:0;color:var(--muted)}
   .login-card label{display:grid;gap:6px;font-weight:600}
@@ -76,6 +79,8 @@
   .meta{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin-top:10px;font-size:14px}
   .meta dt{color:var(--muted)}
   .meta dd{margin:0;min-width:0;overflow-wrap:anywhere}
+  .meta dd.ltr{direction:ltr;text-align:start;unicode-bidi:isolate}
+  [dir=rtl] .meta dd.ltr{text-align:right}
   .links{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
   .links a{font-size:13px;font-weight:600;text-decoration:none;border:1.5px solid var(--border);border-radius:8px;padding:5px 10px;color:var(--navy);background:#fff}
   .links a:hover{border-color:var(--navy)}
@@ -96,19 +101,22 @@
 </head>
 <body>
 
-<!-- ===== شاشة الدخول ===== -->
+<!-- ===== شاشة الدخول / Login ===== -->
 <div class="login" id="loginView">
   <form class="login-card" id="loginForm">
-    <h1>لوحة الطلبات</h1>
-    <p>قريب مني · للموظفين فقط</p>
-    <label>البريد الإلكتروني<input type="email" id="email" autocomplete="username" required></label>
-    <label>كلمة المرور<input type="password" id="password" autocomplete="current-password" required></label>
-    <button class="btn" type="submit" id="loginBtn">دخول</button>
+    <div class="login-top">
+      <h1 data-t="title">لوحة الطلبات</h1>
+      <button class="lang" type="button" data-lang-btn>EN</button>
+    </div>
+    <p data-t="staffOnly">قريب مني · للموظفين فقط</p>
+    <label><span data-t="email">البريد الإلكتروني</span><input type="email" id="email" autocomplete="username" required dir="ltr"></label>
+    <label><span data-t="password">كلمة المرور</span><input type="password" id="password" autocomplete="current-password" required dir="ltr"></label>
+    <button class="btn" type="submit" id="loginBtn" data-t="login">دخول</button>
     <span class="msg" id="loginMsg" role="alert"></span>
   </form>
 </div>
 
-<!-- ===== اللوحة ===== -->
+<!-- ===== اللوحة / Board ===== -->
 <div id="appView" hidden>
   <header>
     <div class="wrap bar">
@@ -118,17 +126,21 @@
           <path d="M58 118c-4 3-1 7 4 5C100 112 150 128 168 108C182 92 140 86 150 70C160 54 210 70 236 76C248 79 256 80 262 78c4-2 2-6-2-4"/>
           <path d="M262 74C257 66 240 54 240 34A22 22 0 1 1 284 34C284 54 267 66 262 74Z"/><path class="house" d="M253 37L262 29L271 37V45H253Z"/>
         </svg>
-        <div><b>لوحة الطلبات</b><span>قريب مني</span></div>
+        <div><b data-t="title">لوحة الطلبات</b><span data-t="brand">قريب مني</span></div>
       </div>
-      <div class="who"><span class="email" id="userEmail"></span><button class="btn btn-ghost" id="logoutBtn" type="button">خروج</button></div>
+      <div class="who">
+        <span class="email" id="userEmail" dir="ltr"></span>
+        <button class="lang" type="button" data-lang-btn>EN</button>
+        <button class="btn btn-ghost" id="logoutBtn" type="button" data-t="logout">خروج</button>
+      </div>
     </div>
   </header>
 
   <main class="wrap">
-    <div class="counters" id="counters" role="group" aria-label="تصفية حسب الحالة"></div>
+    <div class="counters" id="counters" role="group"></div>
     <div class="tools">
-      <input type="search" id="search" placeholder="بحث بالاسم أو رقم الموبايل أو رقم الطلب">
-      <button class="btn btn-ghost" id="refreshBtn" type="button">تحديث</button>
+      <input type="search" id="search">
+      <button class="btn btn-ghost" id="refreshBtn" type="button" data-t="refresh">تحديث</button>
       <span class="stamp" id="stamp" aria-live="polite"></span>
     </div>
     <div class="list" id="list"></div>
@@ -141,21 +153,70 @@
   const SUPABASE_URL = 'https://qtcgeuqqixmmpioucolx.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_8rol_CEvn7ECzAX5gcGwYw_Cdt8uJJy';  // المفتاح العام فقط
 
-  const STATUS = {
-    new:       { label: 'جديد',          color: 'var(--s-new)' },
-    contacted: { label: 'تم التواصل',    color: 'var(--s-contacted)' },
-    confirmed: { label: 'مؤكد',          color: 'var(--s-confirmed)' },
-    assigned:  { label: 'مُسند لسائق',   color: 'var(--s-assigned)' },
-    done:      { label: 'منجز',          color: 'var(--s-done)' },
-    cancelled: { label: 'ملغي',          color: 'var(--s-cancelled)' }
+  // ===== النصوص باللغتين =====
+  const T = {
+    ar: {
+      docTitle: 'لوحة الطلبات | قريب مني', title: 'لوحة الطلبات', brand: 'قريب مني', staffOnly: 'قريب مني · للموظفين فقط',
+      email: 'البريد الإلكتروني', password: 'كلمة المرور', login: 'دخول', logout: 'خروج', refresh: 'تحديث',
+      badLogin: 'البريد أو كلمة المرور غير صحيحة.', noLib: 'تعذّر تحميل مكتبة الاتصال. تحقق من الإنترنت وحدّث الصفحة.',
+      search: 'بحث بالاسم أو رقم الموبايل أو رقم الطلب', filterLabel: 'تصفية حسب الحالة',
+      open: 'المفتوحة', all: 'الكل', updated: 'آخر تحديث', loadFail: 'تعذّر تحميل الطلبات: ',
+      emptyNone: 'لا توجد طلبات بعد. ستظهر هنا فور إرسالها من الموقع.', emptyFilter: 'لا توجد طلبات تطابق هذا التصنيف أو البحث.',
+      sent: 'أُرسل', mobile: 'الموبايل', service: 'الخدمة', wilayat: 'الولاية', address: 'العنوان', prefDate: 'التاريخ المفضل', custNotes: 'ملاحظات العميل',
+      call: 'اتصال', whatsapp: 'واتساب', map: 'الموقع على الخريطة',
+      status: 'الحالة', driver: 'السائق المُسند', driverPh: 'اسم السائق ورقمه', adminNotes: 'ملاحظات الإدارة', adminNotesPh: 'السعر المتفق عليه، العربون، الموعد...',
+      save: 'حفظ', saving: 'جارٍ الحفظ...', savedOk: 'تم الحفظ ✓', saveFail: 'لم يُحفظ: ', needDriver: 'اكتب اسم السائق قبل الإسناد', lastEdit: 'آخر تعديل',
+      st: { new: 'جديد', contacted: 'تم التواصل', confirmed: 'مؤكد', assigned: 'مُسند لسائق', done: 'منجز', cancelled: 'ملغي' },
+      svc: { move: 'نقل', storage: 'تخزين', both: 'نقل وتخزين' },
+      wil: {}, locale: 'ar-OM', langBtn: 'EN', langAria: 'Switch to English'
+    },
+    en: {
+      docTitle: 'Requests board | Qareeb Minni', title: 'Requests board', brand: 'Qareeb Minni', staffOnly: 'Qareeb Minni · Staff only',
+      email: 'Email', password: 'Password', login: 'Log in', logout: 'Log out', refresh: 'Refresh',
+      badLogin: 'Wrong email or password.', noLib: 'Could not load the connection library. Check your internet and reload the page.',
+      search: 'Search by name, mobile or request number', filterLabel: 'Filter by status',
+      open: 'Open', all: 'All', updated: 'Updated', loadFail: 'Could not load requests: ',
+      emptyNone: 'No requests yet. They will appear here as soon as they are sent from the website.', emptyFilter: 'No requests match this filter or search.',
+      sent: 'Sent', mobile: 'Mobile', service: 'Service', wilayat: 'Wilayat', address: 'Address', prefDate: 'Preferred date', custNotes: 'Customer notes',
+      call: 'Call', whatsapp: 'WhatsApp', map: 'Location on map',
+      status: 'Status', driver: 'Assigned driver', driverPh: 'Driver name and number', adminNotes: 'Admin notes', adminNotesPh: 'Agreed price, deposit, date...',
+      save: 'Save', saving: 'Saving...', savedOk: 'Saved ✓', saveFail: 'Not saved: ', needDriver: 'Enter the driver name before assigning', lastEdit: 'Last edited',
+      st: { new: 'New', contacted: 'Contacted', confirmed: 'Confirmed', assigned: 'Assigned to driver', done: 'Done', cancelled: 'Cancelled' },
+      svc: { move: 'Moving', storage: 'Storage', both: 'Moving + storage' },
+      wil: { 'مسقط': 'Muscat', 'مطرح': 'Muttrah', 'بوشر': 'Bausher', 'السيب': 'Seeb', 'العامرات': 'Al Amerat', 'قريات': 'Qurayyat' },
+      locale: 'en-GB', langBtn: 'عربي', langAria: 'التبديل إلى العربية'
+    }
   };
-  const SERVICE = { move: 'نقل', storage: 'تخزين', both: 'نقل وتخزين' };
+  const STATUS_COLOR = { new: 'var(--s-new)', contacted: 'var(--s-contacted)', confirmed: 'var(--s-confirmed)', assigned: 'var(--s-assigned)', done: 'var(--s-done)', cancelled: 'var(--s-cancelled)' };
 
   const $ = id => document.getElementById(id);
-  let db = null, rows = [], filter = 'open', timer = null;
+  let db = null, rows = [], filter = 'open', timer = null, lastLoad = null;
+  let lang = 'ar';
+  try { if (localStorage.getItem('qm-admin-lang') === 'en') lang = 'en'; } catch (e) {}
+  const t = () => T[lang];
+
+  function applyLang(){
+    const L = t();
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'en' ? 'ltr' : 'rtl';
+    document.title = L.docTitle;
+    document.querySelectorAll('[data-t]').forEach(e => { e.textContent = L[e.dataset.t]; });
+    document.querySelectorAll('[data-lang-btn]').forEach(b => { b.textContent = L.langBtn; b.setAttribute('aria-label', L.langAria); b.lang = lang === 'en' ? 'ar' : 'en'; });
+    $('search').placeholder = L.search;
+    $('counters').setAttribute('aria-label', L.filterLabel);
+    $('loginMsg').textContent = '';
+    stampText();
+    if (rows.length || !$('appView').hidden) render();
+  }
+  document.querySelectorAll('[data-lang-btn]').forEach(b => b.addEventListener('click', () => {
+    lang = lang === 'ar' ? 'en' : 'ar';
+    try { localStorage.setItem('qm-admin-lang', lang); } catch (e) {}
+    applyLang();
+  }));
+  applyLang();
 
   if (!window.supabase) {
-    $('loginMsg').textContent = 'تعذّر تحميل مكتبة الاتصال. تحقق من الإنترنت وحدّث الصفحة.';
+    $('loginMsg').textContent = t().noLib;
   } else {
     db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, storage: window.sessionStorage } });
     db.auth.getSession().then(({ data }) => { if (data.session) showApp(data.session); });
@@ -168,7 +229,7 @@
     const btn = $('loginBtn'); btn.disabled = true; $('loginMsg').textContent = '';
     const { data, error } = await db.auth.signInWithPassword({ email: $('email').value.trim(), password: $('password').value });
     btn.disabled = false;
-    if (error) { $('loginMsg').textContent = 'البريد أو كلمة المرور غير صحيحة.'; return; }
+    if (error) { $('loginMsg').textContent = t().badLogin; return; }
     $('password').value = '';
     showApp(data.session);
   });
@@ -191,25 +252,31 @@
   // ===== تحميل الطلبات =====
   async function load(){
     const { data, error } = await db.from('requests').select('*').order('created_at', { ascending: false }).limit(500);
-    if (error) { $('stamp').textContent = 'تعذّر تحميل الطلبات: ' + error.message; return; }
-    rows = data;
-    $('stamp').textContent = 'آخر تحديث ' + new Date().toLocaleTimeString('ar-OM', { hour: '2-digit', minute: '2-digit' });
+    if (error) { $('stamp').textContent = t().loadFail + error.message; return; }
+    rows = data; lastLoad = new Date();
+    stampText();
     render();
+  }
+  function stampText(){
+    if (!lastLoad) return;
+    $('stamp').textContent = t().updated + ' ' + lastLoad.toLocaleTimeString(t().locale, { hour: '2-digit', minute: '2-digit' });
   }
   $('refreshBtn').addEventListener('click', load);
   $('search').addEventListener('input', render);
 
   const shortCode = r => 'QM-' + r.id.slice(0, 6).toUpperCase();
-  const fmtDate = d => d ? new Date(d).toLocaleString('ar-OM', { dateStyle: 'medium', timeStyle: 'short' }) : '';
+  const fmtDate = d => d ? new Date(d).toLocaleString(t().locale, { dateStyle: 'medium', timeStyle: 'short' }) : '';
 
   function renderCounters(){
+    const L = t();
     const open = rows.filter(r => !['done','cancelled'].includes(r.status)).length;
-    const items = [['open', 'المفتوحة', open, 'var(--navy)'], ['all', 'الكل', rows.length, 'var(--muted)']]
-      .concat(Object.entries(STATUS).map(([k, s]) => [k, s.label, rows.filter(r => r.status === k).length, s.color]));
+    const items = [['open', L.open, open, 'var(--navy)'], ['all', L.all, rows.length, 'var(--muted)']]
+      .concat(Object.keys(STATUS_COLOR).map(k => [k, L.st[k], rows.filter(r => r.status === k).length, STATUS_COLOR[k]]));
     $('counters').replaceChildren(...items.map(([k, label, n, color]) => {
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'chip'; b.setAttribute('aria-pressed', String(filter === k));
-      b.innerHTML = `<span class="dot" style="background:${color}"></span>${label}<span class="n">${n}</span>`;
+      const dot = el('span', 'dot'); dot.style.background = color;
+      b.append(dot, document.createTextNode(label), el('span', 'n', String(n)));
       b.onclick = () => { filter = k; render(); };
       return b;
     }));
@@ -225,9 +292,7 @@
       return [r.name, r.phone, shortCode(r)].some(v => (v || '').toLowerCase().includes(q));
     });
     if (!shown.length) {
-      const d = document.createElement('div'); d.className = 'empty';
-      d.textContent = rows.length ? 'لا توجد طلبات تطابق هذا التصنيف أو البحث.' : 'لا توجد طلبات بعد. ستظهر هنا فور إرسالها من الموقع.';
-      $('list').replaceChildren(d); return;
+      $('list').replaceChildren(el('div', 'empty', rows.length ? t().emptyFilter : t().emptyNone)); return;
     }
     $('list').replaceChildren(...shown.map(card));
   }
@@ -235,59 +300,62 @@
   function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 
   function card(r){
-    const s = STATUS[r.status] || STATUS.new;
-    const c = el('article', 'req'); c.style.borderInlineStartColor = s.color;
+    const L = t();
+    const color = STATUS_COLOR[r.status] || STATUS_COLOR.new;
+    const c = el('article', 'req'); c.style.borderInlineStartColor = color;
 
     // ----- بيانات العميل -----
     const info = el('div');
     const head = el('div', 'req-head');
     head.append(el('h3', null, r.name));
-    const badge = el('span', 'badge', s.label); badge.style.background = s.color; head.append(badge);
+    const badge = el('span', 'badge', L.st[r.status] || r.status); badge.style.background = color; head.append(badge);
     head.append(el('span', 'code', shortCode(r)));
     info.append(head);
 
     const meta = el('dl', 'meta');
-    const add = (k, v, ltr) => { if (v) { const dd = el('dd', null, v); if (ltr) { dd.dir = 'ltr'; dd.style.textAlign = 'right'; } meta.append(el('dt', null, k), dd); } };
-    add('أُرسل', fmtDate(r.created_at));
-    add('الموبايل', r.phone, true);
-    add('الخدمة', SERVICE[r.service] || r.service);
-    add('الولاية', r.wilayat);
-    add('العنوان', r.address);
-    add('التاريخ المفضل', r.preferred_date);
-    add('ملاحظات العميل', r.notes);
+    const add = (k, v, ltr) => { if (v) { const dd = el('dd', ltr ? 'ltr' : null, v); if (!ltr) dd.dir = 'auto'; meta.append(el('dt', null, k), dd); } };
+    add(L.sent, fmtDate(r.created_at));
+    add(L.mobile, r.phone, true);
+    add(L.service, L.svc[r.service] || r.service);
+    add(L.wilayat, L.wil[r.wilayat] || r.wilayat);
+    add(L.address, r.address);
+    add(L.prefDate, r.preferred_date, true);
+    add(L.custNotes, r.notes);
     info.append(meta);
 
     const links = el('div', 'links');
     const phoneDigits = (r.phone || '').replace(/[^\d]/g, '');
-    const a1 = el('a', null, 'اتصال'); a1.href = 'tel:' + r.phone;
-    const a2 = el('a', null, 'واتساب'); a2.href = 'https://wa.me/' + phoneDigits; a2.target = '_blank'; a2.rel = 'noopener';
+    const a1 = el('a', null, L.call); a1.href = 'tel:' + r.phone;
+    const a2 = el('a', null, L.whatsapp); a2.href = 'https://wa.me/' + phoneDigits; a2.target = '_blank'; a2.rel = 'noopener';
     links.append(a1, a2);
-    if (r.lat && r.lng) { const a3 = el('a', null, 'الموقع على الخريطة'); a3.href = `https://www.google.com/maps?q=${r.lat},${r.lng}`; a3.target = '_blank'; a3.rel = 'noopener'; links.append(a3); }
+    if (r.lat && r.lng) { const a3 = el('a', null, L.map); a3.href = `https://www.google.com/maps?q=${r.lat},${r.lng}`; a3.target = '_blank'; a3.rel = 'noopener'; links.append(a3); }
     info.append(links);
 
     // ----- التحكم -----
     const edit = el('div', 'edit');
-    const sLab = el('label', null, 'الحالة'); const sel = el('select');
-    Object.entries(STATUS).forEach(([k, v]) => { const o = el('option', null, v.label); o.value = k; if (k === r.status) o.selected = true; sel.append(o); });
+    const sLab = el('label', null, L.status); const sel = el('select');
+    Object.keys(STATUS_COLOR).forEach(k => { const o = el('option', null, L.st[k]); o.value = k; if (k === r.status) o.selected = true; sel.append(o); });
     sLab.append(sel);
-    const dLab = el('label', null, 'السائق المُسند'); const drv = el('input'); drv.value = r.assigned_driver || ''; drv.placeholder = 'اسم السائق ورقمه'; dLab.append(drv);
-    const nLab = el('label', null, 'ملاحظات الإدارة'); const nts = el('textarea'); nts.value = r.admin_notes || ''; nts.placeholder = 'السعر المتفق عليه، العربون، الموعد...'; nLab.append(nts);
+    const dLab = el('label', null, L.driver); const drv = el('input'); drv.value = r.assigned_driver || ''; drv.placeholder = L.driverPh; dLab.append(drv);
+    const nLab = el('label', null, L.adminNotes); const nts = el('textarea'); nts.value = r.admin_notes || ''; nts.placeholder = L.adminNotesPh; nLab.append(nts);
 
     const row = el('div', 'save-row');
-    const btn = el('button', 'btn', 'حفظ'); btn.type = 'button';
+    const btn = el('button', 'btn', L.save); btn.type = 'button';
     const note = el('span', 'saved'); note.setAttribute('aria-live', 'polite');
     row.append(btn, note);
+    drv.dir = 'auto'; nts.dir = 'auto'; head.firstChild.dir = 'auto';
     edit.append(sLab, dLab, nLab, row);
-    if (r.updated_at) edit.append(el('span', 'audit', `آخر تعديل: ${fmtDate(r.updated_at)}${r.updated_by ? ' · ' + r.updated_by : ''}`));
+    if (r.updated_at) edit.append(el('span', 'audit', `${L.lastEdit}: ${fmtDate(r.updated_at)}${r.updated_by ? ' · ' + r.updated_by : ''}`));
 
     btn.onclick = async () => {
-      if (sel.value === 'assigned' && !drv.value.trim()) { note.className = 'saved err'; note.textContent = 'اكتب اسم السائق قبل الإسناد'; return; }
-      btn.disabled = true; note.className = 'saved'; note.textContent = 'جارٍ الحفظ...';
+      const L2 = t();
+      if (sel.value === 'assigned' && !drv.value.trim()) { note.className = 'saved err'; note.textContent = L2.needDriver; return; }
+      btn.disabled = true; note.className = 'saved'; note.textContent = L2.saving;
       const patch = { status: sel.value, assigned_driver: drv.value.trim() || null, admin_notes: nts.value.trim() || null };
       const { error } = await db.from('requests').update(patch).eq('id', r.id);
       btn.disabled = false;
-      if (error) { note.className = 'saved err'; note.textContent = 'لم يُحفظ: ' + error.message; return; }
-      note.textContent = 'تم الحفظ ✓';
+      if (error) { note.className = 'saved err'; note.textContent = L2.saveFail + error.message; return; }
+      note.textContent = L2.savedOk;
       setTimeout(load, 700);
     };
 
