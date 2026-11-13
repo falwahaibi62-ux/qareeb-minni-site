@@ -57,6 +57,8 @@
   .brand b{font-family:var(--display);font-size:18px}
   .brand span{display:block;font-size:12px;color:var(--muted)}
   .who{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
+  .pol{font-size:13px;font-weight:600;color:var(--brass-text);text-decoration:none;border-bottom:1px dashed var(--brass)}
+  .pol:hover{color:var(--navy);border-bottom-color:var(--navy)}
   .tabs{display:flex;gap:4px}
   .tab{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;font-weight:600;cursor:pointer;color:var(--muted)}
   .tab[aria-selected=true]{color:var(--navy);border-bottom-color:var(--brass)}
@@ -222,6 +224,7 @@
         <button class="tab" role="tab" id="tabDrv" aria-selected="false" data-t="tabDrivers">السائقون</button>
       </nav>
       <div class="who">
+        <a class="pol" href="policies.html" target="_blank" rel="noopener" data-t="policies">الشروط والسياسات</a>
         <span class="email" id="userEmail" dir="ltr"></span>
         <button class="lang" type="button" data-lang-btn>EN</button>
         <button class="btn btn-ghost" id="logoutBtn" type="button" data-t="logout">خروج</button>
@@ -301,7 +304,7 @@
     ar: {
       docTitle: 'لوحة الطلبات | قريب مني', title: 'لوحة الطلبات', brand: 'قريب مني', staffOnly: 'قريب مني · للموظفين فقط',
       email: 'البريد الإلكتروني', password: 'كلمة المرور', login: 'دخول', logout: 'خروج', refresh: 'تحديث',
-      tabRequests: 'الطلبات', tabDrivers: 'السائقون',
+      tabRequests: 'الطلبات', tabDrivers: 'السائقون', policies: 'الشروط والسياسات',
       badLogin: 'البريد أو كلمة المرور غير صحيحة.', noLib: 'تعذّر تحميل مكتبة الاتصال. تحقق من الإنترنت وحدّث الصفحة.',
       search: 'بحث بالاسم أو رقم الموبايل أو رقم الطلب', filterLabel: 'تصفية حسب الحالة',
       open: 'المفتوحة', all: 'الكل', updated: 'آخر تحديث', loadFail: 'تعذّر التحميل: ',
@@ -356,7 +359,7 @@
     en: {
       docTitle: 'Requests board | Qareeb Minni', title: 'Requests board', brand: 'Qareeb Minni', staffOnly: 'Qareeb Minni · Staff only',
       email: 'Email', password: 'Password', login: 'Log in', logout: 'Log out', refresh: 'Refresh',
-      tabRequests: 'Requests', tabDrivers: 'Drivers',
+      tabRequests: 'Requests', tabDrivers: 'Drivers', policies: 'Terms & policies',
       badLogin: 'Wrong email or password.', noLib: 'Could not load the connection library. Check your internet and reload the page.',
       search: 'Search by name, mobile or request number', filterLabel: 'Filter by status',
       open: 'Open', all: 'All', updated: 'Updated', loadFail: 'Could not load: ',
