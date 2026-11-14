@@ -77,6 +77,23 @@
 
   /* Cards */
   .list{display:grid;gap:14px;padding-bottom:48px}
+  .view-toggle{display:inline-flex;border:1.5px solid var(--border);border-radius:10px;overflow:hidden}
+  .view-toggle button{border:0;background:transparent;padding:8px 14px;font:600 14px var(--body);cursor:pointer;color:var(--muted)}
+  .view-toggle button[aria-pressed=true]{background:var(--navy);color:var(--ivory)}
+  .tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:auto;max-height:calc(100vh - 230px)}
+  table.reqs{width:100%;border-collapse:separate;border-spacing:0;font-size:14px}
+  table.reqs th{position:sticky;top:0;z-index:1;background:var(--navy);color:var(--ivory);font-weight:600;font-size:13px;text-align:start;padding:10px 12px;white-space:nowrap;cursor:pointer;user-select:none}
+  table.reqs th[aria-sort]::after{content:" ▾";opacity:.8}
+  table.reqs th[aria-sort=ascending]::after{content:" ▴"}
+  table.reqs td{padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap;vertical-align:middle}
+  table.reqs tbody tr{cursor:pointer}
+  table.reqs tbody tr:nth-child(even) td{background:#FBF8F3}
+  table.reqs tbody tr:hover td{background:var(--sand)}
+  table.reqs tbody tr:focus-visible{outline:3px solid var(--brass);outline-offset:-3px}
+  table.reqs .nm{font-weight:600;max-width:200px;overflow:hidden;text-overflow:ellipsis}
+  table.reqs .mut{color:var(--muted);font-size:13px}
+  table.reqs .badge{display:inline-block}
+  .tbl-count{font-size:13px;color:var(--muted);padding:8px 2px}
   .req{background:var(--card);border:1px solid var(--border);border-inline-start:4px solid var(--border);border-radius:14px;padding:18px;display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
   .req-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .req-head h3{font-size:18px}
@@ -280,6 +297,7 @@
       <button class="btn" type="button" id="addReqBtn" data-t="addReq">+ طلب جديد</button>
       <input type="search" id="search">
       <button class="btn btn-ghost" id="refreshBtn" type="button" data-t="refresh">تحديث</button>
+      <span class="view-toggle" role="group"><button type="button" id="vTable" data-t="vTable">جدول</button><button type="button" id="vCards" data-t="vCards">بطاقات</button></span>
       <span class="stamp" id="stamp" aria-live="polite"></span>
     </div>
     <form class="dform" id="reqForm" hidden novalidate>
@@ -384,7 +402,7 @@
       docTitle: 'لوحة الطلبات | قريب مني', title: 'لوحة الطلبات', brand: 'قريب مني', staffOnly: 'قريب مني · للموظفين فقط',
       email: 'البريد الإلكتروني', password: 'كلمة المرور', login: 'دخول', logout: 'خروج', refresh: 'تحديث',
       tabRequests: 'الطلبات', tabDrivers: 'السائقون', policies: 'الشروط والسياسات',
-      tabReports: 'التقارير', repPeriod: 'فترة التقرير', repPreset: 'الفترة', repFrom: 'من تاريخ', repTo: 'إلى تاريخ', repOpen: 'عرض التقرير',
+      tabReports: 'التقارير', vTable: 'جدول', vCards: 'بطاقات', colPref: 'الموعد', colInv: 'الفاتورة', openReq: 'فتح الطلب', shownN: n => `${n} طلب`, repPeriod: 'فترة التقرير', repPreset: 'الفترة', repFrom: 'من تاريخ', repTo: 'إلى تاريخ', repOpen: 'عرض التقرير',
       presets: { month: 'هذا الشهر', last: 'الشهر الماضي', quarter: 'آخر 3 أشهر', year: 'هذه السنة', custom: 'فترة مخصّصة' },
       repHint: 'الطلبات حسب تاريخ إرسالها، والفواتير حسب تاريخ إصدارها. التقارير تحتوي بيانات شخصية للعملاء، فلا تشاركيها خارج الإدارة.',
       repSumT: 'التقرير الإجمالي', repSumP: 'ملخص الطلبات والمالية للفترة: الأعداد والنسب والإيرادات والمحصّل والمتبقي.',
@@ -467,7 +485,7 @@
       docTitle: 'Requests board | Qareeb Minni', title: 'Requests board', brand: 'Qareeb Minni', staffOnly: 'Qareeb Minni · Staff only',
       email: 'Email', password: 'Password', login: 'Log in', logout: 'Log out', refresh: 'Refresh',
       tabRequests: 'Requests', tabDrivers: 'Drivers', policies: 'Terms & policies',
-      tabReports: 'Reports', repPeriod: 'Report period', repPreset: 'Period', repFrom: 'From date', repTo: 'To date', repOpen: 'View report',
+      tabReports: 'Reports', vTable: 'Table', vCards: 'Cards', colPref: 'Service date', colInv: 'Invoice', openReq: 'Open request', shownN: n => `${n} request(s)`, repPeriod: 'Report period', repPreset: 'Period', repFrom: 'From date', repTo: 'To date', repOpen: 'View report',
       presets: { month: 'This month', last: 'Last month', quarter: 'Last 3 months', year: 'This year', custom: 'Custom period' },
       repHint: 'Requests by the date they were sent; invoices by the date they were issued. Reports contain customers’ personal data, so do not share them outside management.',
       repSumT: 'Summary report', repSumP: 'Requests and finances for the period: counts, rates, invoiced, collected and outstanding.',
@@ -668,6 +686,7 @@
     stampText();
     if (d.error) $('stamp').textContent += ' · ' + t().loadFail + d.error.message;   // جدول السائقين لم يُنشأ بعد
     render(); renderDrivers();
+    if (reopenId) { const rr = rows.find(x => x.id === reopenId); reopenId = null; if (rr && !modal.hidden) openRequest(rr); }
   }
   function stampText(){
     if (!lastLoad) return;
@@ -730,7 +749,64 @@
       return [r.name, r.phone, shortCode(r)].some(v => (v || '').toLowerCase().includes(q));
     });
     if (!shown.length) { $('list').replaceChildren(el('div', 'empty', rows.length ? t().emptyFilter : t().emptyNone)); return; }
-    $('list').replaceChildren(...shown.map(card));
+    $('vTable').setAttribute('aria-pressed', String(view === 'table')); $('vCards').setAttribute('aria-pressed', String(view === 'cards'));
+    if (view === 'cards') { $('list').replaceChildren(...shown.map(card)); return; }
+    $('list').replaceChildren(...reqTable(shown));
+  }
+
+  // ===== عرض الجدول / Table view =====
+  let view = 'table', sortKey = 'created_at', sortDir = -1, reopenId = null;
+  try { const v0 = localStorage.getItem('qm-admin-view'); if (v0 === 'cards' || v0 === 'table') view = v0; } catch (e) {}
+  const setView = v => { view = v; try { localStorage.setItem('qm-admin-view', v); } catch (e) {} render(); };
+  $('vTable').onclick = () => setView('table');
+  $('vCards').onclick = () => setView('cards');
+  function reqTable(list){
+    const L = t();
+    const drvName = id => { const d = drivers.find(x => x.id === id); return d ? d.name : ''; };
+    const invOf = r => invoices.find(v => v.request_id === r.id && v.status === 'issued');
+    const cols = [
+      ['code', L.hReq, r => shortCode(r)], ['created_at', L.sent, r => r.created_at], ['name', L.hCust, r => r.name], ['phone', L.mobile, r => r.phone],
+      ['service', L.service, r => L.svc[r.service] || r.service], ['wilayat', L.wilayat, r => L.wil[r.wilayat] || r.wilayat],
+      ['preferred_date', L.colPref, r => r.preferred_date || ''], ['status', L.status, r => L.st[r.status] || r.status],
+      ['driver', L.hDriver, r => drvName(r.driver_id)], ['source', L.srcLabel, r => L.src[r.source || 'website'] || r.source], ['inv', L.colInv, r => { const v = invOf(r); return v ? v.number : ''; }],
+    ];
+    const getter = Object.fromEntries(cols.map(c => [c[0], c[2]]));
+    const sorted = list.slice().sort((a, b) => { const x = getter[sortKey](a) || '', y = getter[sortKey](b) || ''; return (x > y ? 1 : x < y ? -1 : 0) * sortDir; });
+    const wrap = el('div', 'tbl-wrap');
+    const tb = el('table', 'reqs');
+    const hr = el('tr');
+    cols.forEach(([k, label]) => {
+      const th = el('th', null, label); th.scope = 'col';
+      if (k === sortKey) th.setAttribute('aria-sort', sortDir === 1 ? 'ascending' : 'descending');
+      th.onclick = () => { if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = k === 'created_at' || k === 'preferred_date' ? -1 : 1; } render(); };
+      hr.append(th);
+    });
+    const thead = el('thead'); thead.append(hr);
+    const body = el('tbody');
+    sorted.forEach(r => {
+      const tr = el('tr'); tr.tabIndex = 0; tr.title = L.openReq;
+      const color = STATUS_COLOR[r.status] || STATUS_COLOR.new;
+      const badge = el('span', 'badge', L.st[r.status] || r.status); badge.style.background = color;
+      const st = el('td'); st.append(badge);
+      const v = invOf(r);
+      const inv = el('td'); if (v) { inv.append(el('span', 'ltrnum', v.number), document.createTextNode(' '), invStateTag(v)); }
+      const nm = el('td', 'nm', r.name); nm.dir = 'auto';
+      tr.append(el('td', 'mut ltrnum', shortCode(r)), el('td', 'mut', fmtDate(r.created_at)), nm, el('td', 'ltrnum', r.phone),
+        el('td', null, L.svc[r.service] || r.service), el('td', null, L.wil[r.wilayat] || r.wilayat), el('td', null, fmtDay(r.preferred_date)),
+        st, el('td', null, drvName(r.driver_id) || '—'), el('td', 'mut', L.src[r.source || 'website'] || r.source), inv);
+      const open = () => openRequest(r);
+      tr.onclick = open; tr.onkeydown = e => { if (e.key === 'Enter') open(); };
+      body.append(tr);
+    });
+    tb.append(thead, body); wrap.append(tb);
+    return [wrap, el('div', 'tbl-count', L.shownN(list.length))];
+  }
+  function openRequest(r){
+    const { top } = sheetTop(`${r.name} · ${shortCode(r)}`);
+    sheet.replaceChildren(top, card(r));
+    sheet.style.maxWidth = '1100px';
+    modal.dataset.req = r.id;
+    modal.hidden = false;
   }
 
   function addMeta(meta, k, v, ltr){
@@ -836,6 +912,7 @@
       btn.disabled = false;
       if (error) { note.className = 'saved err'; note.textContent = L2.saveFail + error.message; return; }
       note.textContent = L2.savedOk;
+      if (modal.dataset.req === r.id && !modal.hidden) reopenId = r.id;
       setTimeout(load, 700);
     };
 
@@ -904,6 +981,7 @@
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
   function sheetTop(title){
+    modal.dataset.req = ''; sheet.style.maxWidth = '';
     const top = el('div', 'sheet-top'); top.append(el('h3', null, title));
     const acts = el('div', 'sheet-actions'); top.append(acts);
     const x = el('button', 'btn btn-ghost', t().close); x.type = 'button'; x.onclick = closeModal; acts.append(x);
