@@ -85,7 +85,7 @@
   try { const s = localStorage.getItem('qm-lang'); if (s === 'en' || s === 'ar') lang = s; } catch (e) {}
   let doc = null, state = 'loading';
   const esc = v => String(v == null ? '' : v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const money = n => Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+  const money = n => { const v = Math.round(Number(n || 0) * 1000) / 1000; return Number.isInteger(v) ? v.toLocaleString('en-US') : v.toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 }); };
   const L = () => T[lang];
   const dt = (iso, time) => iso ? new Date(iso).toLocaleString(L().locale, Object.assign({ timeZone: 'Asia/Muscat', dateStyle: 'medium' }, time ? { timeStyle: 'short' } : {})) : '';
   const day = d => d ? new Date(d + 'T00:00:00').toLocaleDateString(L().locale, { dateStyle: 'medium' }) : '';
