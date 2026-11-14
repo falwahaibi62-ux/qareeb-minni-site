@@ -236,10 +236,31 @@
   <main class="wrap" id="reqPane">
     <div class="counters" id="counters" role="group"></div>
     <div class="tools">
+      <button class="btn" type="button" id="addReqBtn" data-t="addReq">+ طلب جديد</button>
       <input type="search" id="search">
       <button class="btn btn-ghost" id="refreshBtn" type="button" data-t="refresh">تحديث</button>
       <span class="stamp" id="stamp" aria-live="polite"></span>
     </div>
+    <form class="dform" id="reqForm" hidden novalidate>
+      <h3 data-t="newReq"></h3>
+      <p class="legal wide" data-t="reqLegal"></p>
+      <label><span data-t="rName"></span><input id="rName" maxlength="80" dir="auto" autocomplete="off"></label>
+      <label><span data-t="mobile"></span><span class="phone"><span>+968</span><input id="rPhone" inputmode="numeric" maxlength="8" placeholder="9XXXXXXX" autocomplete="off"></span></label>
+      <label><span data-t="rSource"></span><select id="rSource"></select></label>
+      <label><span data-t="service"></span><select id="rService"></select></label>
+      <label><span data-t="wilayat"></span><select id="rWilayat"></select></label>
+      <label><span data-t="prefDate"></span><input id="rDate" type="date"></label>
+      <label class="wide"><span data-t="address"></span><input id="rAddress" maxlength="200" dir="auto"></label>
+      <label class="wide"><span data-t="custNotes"></span><textarea id="rNotes" maxlength="600" dir="auto"></textarea></label>
+      <label><span data-t="status"></span><select id="rStatus"></select></label>
+      <label class="wide" style="grid-column:span 2"><span data-t="adminNotes"></span><input id="rAdminNotes" maxlength="600" dir="auto"></label>
+      <label class="check wide"><input type="checkbox" id="rConsent"><span data-t="rConsent"></span></label>
+      <div class="save-row wide">
+        <button class="btn" type="submit" data-t="createReq">إنشاء الطلب</button>
+        <button class="btn btn-ghost" type="button" id="reqCancel" data-t="cancel">إلغاء</button>
+        <span class="saved" id="reqMsg" aria-live="polite"></span>
+      </div>
+    </form>
     <div class="list" id="list"></div>
   </main>
 
@@ -305,6 +326,12 @@
       docTitle: 'لوحة الطلبات | قريب مني', title: 'لوحة الطلبات', brand: 'قريب مني', staffOnly: 'قريب مني · للموظفين فقط',
       email: 'البريد الإلكتروني', password: 'كلمة المرور', login: 'دخول', logout: 'خروج', refresh: 'تحديث',
       tabRequests: 'الطلبات', tabDrivers: 'السائقون', policies: 'الشروط والسياسات',
+      addReq: '+ طلب جديد', newReq: 'طلب جديد من الموظف', createReq: 'إنشاء الطلب', rName: 'اسم العميل', rSource: 'مصدر الطلب',
+      reqLegal: 'لطلبات العملاء الذين تواصلوا بالهاتف أو الواتساب أو بالحضور. اسألي العميل قبل الحفظ إن كان يوافق على حفظ بياناته واستخدامها لطلبه.',
+      rConsent: 'وافق العميل على حفظ بياناته واستخدامها للتواصل بخصوص هذا الطلب، وعلى حفظها لدى مزوّد خدمة سحابية خارج سلطنة عُمان',
+      errRConsent: 'موافقة العميل مطلوبة قبل حفظ بياناته', errCustName: 'اكتبي اسم العميل', errWil: 'اختاري الولاية', reqCreated: 'تم إنشاء الطلب ✓',
+      srcLabel: 'المصدر', src: { website: 'الموقع', phone: 'اتصال هاتفي', whatsapp: 'واتساب', walkin: 'حضور', other: 'أخرى' },
+      wilChoose: '— اختاري —',
       badLogin: 'البريد أو كلمة المرور غير صحيحة.', noLib: 'تعذّر تحميل مكتبة الاتصال. تحقق من الإنترنت وحدّث الصفحة.',
       search: 'بحث بالاسم أو رقم الموبايل أو رقم الطلب', filterLabel: 'تصفية حسب الحالة',
       open: 'المفتوحة', all: 'الكل', updated: 'آخر تحديث', loadFail: 'تعذّر التحميل: ',
@@ -360,6 +387,12 @@
       docTitle: 'Requests board | Qareeb Minni', title: 'Requests board', brand: 'Qareeb Minni', staffOnly: 'Qareeb Minni · Staff only',
       email: 'Email', password: 'Password', login: 'Log in', logout: 'Log out', refresh: 'Refresh',
       tabRequests: 'Requests', tabDrivers: 'Drivers', policies: 'Terms & policies',
+      addReq: '+ New request', newReq: 'New request by staff', createReq: 'Create request', rName: 'Customer name', rSource: 'Request source',
+      reqLegal: 'For customers who contacted us by phone, WhatsApp or in person. Ask the customer before saving whether they agree to their details being stored and used for their request.',
+      rConsent: 'The customer agreed to their details being stored and used to contact them about this request, and kept with a cloud provider outside Oman',
+      errRConsent: 'The customer’s consent is needed before saving their details', errCustName: 'Enter the customer’s name', errWil: 'Choose the wilayat', reqCreated: 'Request created ✓',
+      srcLabel: 'Source', src: { website: 'Website', phone: 'Phone call', whatsapp: 'WhatsApp', walkin: 'Walk-in', other: 'Other' },
+      wilChoose: '— Choose —',
       badLogin: 'Wrong email or password.', noLib: 'Could not load the connection library. Check your internet and reload the page.',
       search: 'Search by name, mobile or request number', filterLabel: 'Filter by status',
       open: 'Open', all: 'All', updated: 'Updated', loadFail: 'Could not load: ',
@@ -375,7 +408,7 @@
       noDrivers: 'No drivers yet. Add them from the "Drivers" tab.',
       st: { new: 'New', contacted: 'Contacted', confirmed: 'Confirmed', assigned: 'Assigned to driver', done: 'Done', cancelled: 'Cancelled' },
       svc: { move: 'Moving', storage: 'Storage', both: 'Moving + storage' },
-      wil: { 'مسقط': 'Muscat', 'مطرح': 'Muttrah', 'بوشر': 'Bausher', 'السيب': 'Seeb', 'العامرات': 'Al Amerat', 'قريات': 'Qurayyat' },
+      wil: { 'مسقط': 'Muscat', 'مطرح': 'Muttrah', 'بوشر': 'Bausher', 'السيب': 'Seeb', 'العامرات': 'Al Amerat', 'قريات': 'Qurayyat', 'ولاية أخرى': 'Another wilayat' },
       addDriver: 'Add driver', drvSearch: 'Search by driver name, number or plate', newDriver: 'New driver', editDriver: 'Edit driver',
       legalNote: 'Do not enter civil ID or passport numbers or bank details. Collect only what is needed to assign requests safely, under Oman’s Personal Data Protection Law, and with the driver’s consent.',
       secBasic: 'Basic details', secTruck: 'Truck and documents', secOps: 'Operations',
@@ -457,6 +490,7 @@
     fillSelect($('dRating'), L.rating, $('dRating').value);
     $('dDays').placeholder = lang === 'en' ? 'e.g. Saturday to Thursday' : 'مثال: السبت إلى الخميس';
     $('drvFormTitle').textContent = editingDriver ? L.editDriver : L.newDriver;
+    fillReqSelects();
     $('loginMsg').textContent = '';
     stampText();
     if (!$('appView').hidden) { render(); renderDrivers(); }
@@ -617,6 +651,7 @@
     addMeta(meta, L.address, r.address);
     addMeta(meta, L.prefDate, fmtDay(r.preferred_date));
     addMeta(meta, L.custNotes, r.notes);
+    addMeta(meta, L.srcLabel, (L.src[r.source || 'website'] || r.source) + (r.created_by ? ' · ' + r.created_by : ''));
     info.append(meta);
 
     const links = el('div', 'links');
@@ -698,6 +733,49 @@
     c.append(info, edit);
     return c;
   }
+
+  // ===== طلب جديد من الموظف / Staff-created request =====
+  function fillReqSelects(){
+    const L = t();
+    const WILAYATS = ['مسقط', 'مطرح', 'بوشر', 'السيب', 'العامرات', 'قريات', 'ولاية أخرى'];
+    fillSelect($('rSource'), { phone: L.src.phone, whatsapp: L.src.whatsapp, walkin: L.src.walkin, other: L.src.other }, $('rSource').value || 'phone');
+    fillSelect($('rService'), L.svc, $('rService').value || 'move');
+    fillSelect($('rWilayat'), Object.assign({ '': L.wilChoose }, Object.fromEntries(WILAYATS.map(w => [w, L.wil[w] || w]))), $('rWilayat').value);
+    fillSelect($('rStatus'), { new: L.st.new, contacted: L.st.contacted, confirmed: L.st.confirmed }, $('rStatus').value || 'contacted');
+  }
+  function openReqForm(){
+    ['rName', 'rPhone', 'rDate', 'rAddress', 'rNotes', 'rAdminNotes'].forEach(id => $(id).value = '');
+    $('rConsent').checked = false; $('rWilayat').value = ''; $('rStatus').value = 'contacted'; $('rSource').value = 'phone'; $('rService').value = 'move';
+    $('reqMsg').textContent = '';
+    $('rDate').min = today();
+    $('reqForm').hidden = false;
+    $('reqForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    $('rName').focus({ preventScroll: true });
+  }
+  $('addReqBtn').onclick = openReqForm;
+  $('reqCancel').onclick = () => { $('reqForm').hidden = true; };
+  $('rPhone').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^\d]/g, '').slice(0, 8); });
+  $('reqForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const L = t(), msg = $('reqMsg');
+    msg.className = 'saved err';
+    if ($('rName').value.trim().length < 2) { msg.textContent = L.errCustName; return; }
+    if (!/^[79]\d{7}$/.test($('rPhone').value)) { msg.textContent = L.errPhone; return; }
+    if (!$('rWilayat').value) { msg.textContent = L.errWil; return; }
+    if (!$('rConsent').checked) { msg.textContent = L.errRConsent; return; }
+    const rec = {
+      name: $('rName').value.trim(), phone: '+968' + $('rPhone').value, service: $('rService').value, wilayat: $('rWilayat').value,
+      address: $('rAddress').value.trim() || null, preferred_date: $('rDate').value || null, notes: $('rNotes').value.trim() || null,
+      consent: true, source: $('rSource').value, status: $('rStatus').value, admin_notes: $('rAdminNotes').value.trim() || null
+    };
+    msg.className = 'saved'; msg.textContent = L.saving;
+    const { error } = await db.from('requests').insert(rec);
+    if (error) { msg.className = 'saved err'; msg.textContent = L.saveFail + error.message; return; }
+    msg.textContent = L.reqCreated;
+    setTimeout(() => { $('reqForm').hidden = true; }, 600);
+    filter = 'open'; $('search').value = '';
+    load();
+  });
 
   // ===== الفواتير / Invoices =====
   const money = n => Number(n || 0).toFixed(3);
