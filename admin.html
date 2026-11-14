@@ -463,7 +463,7 @@
       noDriversList: 'لا يوجد سائقون بعد. اضغطي "إضافة سائق".',
       omr: 'ر.ع', locale: 'ar-OM', langBtn: 'EN', langAria: 'Switch to English',
       invIssue: 'إصدار فاتورة', invView: 'عرض الفاتورة', invNew: 'فاتورة جديدة للطلب', invTitle: 'الفاتورة',
-      itemDesc: 'الوصف', itemQty: 'الكمية', itemPrice: 'سعر الوحدة', itemTotal: 'المجموع', addItem: '+ إضافة بند', removeItem: 'حذف البند',
+      itemDesc: 'الوصف', itemQty: 'الكمية', itemPrice: 'سعر الوحدة (ر.ع)', itemTotal: 'المجموع', addItem: '+ إضافة بند', removeItem: 'حذف البند',
       discount: 'الخصم (ر.ع)', amountPaid: 'المبلغ المدفوع (ر.ع)', payMethod: 'طريقة الدفع', invNotes: 'ملاحظة تظهر على الفاتورة',
       pm: { '': '— غير محدد —', cash: 'نقداً', transfer: 'تحويل بنكي', card: 'بطاقة', other: 'أخرى' },
       subtotal: 'المجموع', grand: 'الإجمالي', due: 'المتبقي',
@@ -546,7 +546,7 @@
       noDriversList: 'No drivers yet. Press "Add driver".',
       omr: 'OMR', locale: 'en-GB', langBtn: 'عربي', langAria: 'التبديل إلى العربية',
       invIssue: 'Issue invoice', invView: 'View invoice', invNew: 'New invoice for request', invTitle: 'Invoice',
-      itemDesc: 'Description', itemQty: 'Qty', itemPrice: 'Unit price', itemTotal: 'Amount', addItem: '+ Add line', removeItem: 'Remove line',
+      itemDesc: 'Description', itemQty: 'Qty', itemPrice: 'Unit price (OMR)', itemTotal: 'Amount', addItem: '+ Add line', removeItem: 'Remove line',
       discount: 'Discount (OMR)', amountPaid: 'Amount paid (OMR)', payMethod: 'Payment method', invNotes: 'Note shown on the invoice',
       pm: { '': '— Not set —', cash: 'Cash', transfer: 'Bank transfer', card: 'Card', other: 'Other' },
       subtotal: 'Subtotal', grand: 'Total', due: 'Balance due',
@@ -964,7 +964,23 @@
   });
 
   // ===== الفواتير / Invoices =====
-  const money = n => Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+  // المبالغ: فاصلة الآلاف، والبيسات تظهر فقط إن وُجدت: 5,500 · 12.500 · 0.250
+  const money = n => { const v = Math.round(Number(n || 0) * 1000) / 1000; return Number.isInteger(v) ? v.toLocaleString('en-US') : v.toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 }); };
+  // مبالغ الريال العُماني: حقل نصي فارغ، أرقام وفاصلة عشرية واحدة وحتى 3 خانات (بيسة)، ويُنسَّق تلقائياً عند الخروج: 5500 ← 5,500 و 12.5 ← 12.500
+  const toLatin = s => String(s || '').replace(/[\u0660-\u0669]/g, d => d.charCodeAt(0) - 0x0660).replace(/[\u06F0-\u06F9]/g, d => d.charCodeAt(0) - 0x06F0).replace(/[\u066B٫]/g, '.');
+  const parseOmr = s => { const v = toLatin(s).replace(/[,،\s]/g, ''); return v === '' ? 0 : Number(v); };
+  function omrInput(value){
+    const i = el('input'); i.type = 'text'; i.inputMode = 'decimal'; i.dir = 'ltr'; i.placeholder = '0'; i.autocomplete = 'off';
+    i.style.textAlign = 'left'; i.style.fontVariantNumeric = 'tabular-nums';
+    if (value !== '' && value != null && Number(value) > 0) i.value = money(value);
+    i.addEventListener('input', () => {
+      let v = toLatin(i.value).replace(/[^\d.]/g, '');
+      const k = v.indexOf('.'); if (k >= 0) v = v.slice(0, k + 1) + v.slice(k + 1).replace(/\./g, '').slice(0, 3);
+      if (v !== i.value) i.value = v;
+    });
+    i.addEventListener('blur', () => { if (i.value.trim() !== '' && !Number.isNaN(parseOmr(i.value))) i.value = money(parseOmr(i.value)); });
+    return i;
+  }
   const dueOf = v => Math.max(0, Number(v.total) - Number(v.amount_paid));
   const SVC_LINE = { move: 'نقل أثاث / Furniture moving', storage: 'تخزين أثاث / Furniture storage' };
   const LOGO_SVG = '<svg viewBox="30 4 262 124" aria-hidden="true"><path d="M58 118C53 110 36 98 36 78A22 22 0 1 1 80 78C80 98 63 110 58 118Z"/><circle cx="58" cy="78" r="8"/><path d="M58 118c-4 3-1 7 4 5C100 112 150 128 168 108C182 92 140 86 150 70C160 54 210 70 236 76C248 79 256 80 262 78c4-2 2-6-2-4"/><path d="M262 74C257 66 240 54 240 34A22 22 0 1 1 284 34C284 54 267 66 262 74Z"/><path class="house" d="M253 37L262 29L271 37V45H253Z"/></svg>';
@@ -999,8 +1015,8 @@
     const addLine = (desc = '', qty = 1, price = '') => {
       const tr = el('tr');
       const d = el('input'); d.maxLength = 120; d.dir = 'auto'; d.value = desc; d.setAttribute('aria-label', L.itemDesc);
-      const q = el('input'); q.type = 'number'; q.min = '0'; q.step = 'any'; q.value = qty; q.inputMode = 'decimal'; q.setAttribute('aria-label', L.itemQty);
-      const p = el('input'); p.type = 'number'; p.min = '0'; p.step = '0.001'; p.value = price; p.inputMode = 'decimal'; p.setAttribute('aria-label', L.itemPrice);
+      const q = el('input'); q.type = 'number'; q.min = '1'; q.step = '1'; q.value = qty; q.inputMode = 'numeric'; q.setAttribute('aria-label', L.itemQty); q.addEventListener('wheel', e => e.target.blur());
+      const p = omrInput(price); p.setAttribute('aria-label', L.itemPrice);
       const x = el('button', 'x', '×'); x.type = 'button'; x.setAttribute('aria-label', L.removeItem); x.onclick = () => { tr.remove(); calc(); };
       const td1 = el('td'), td2 = el('td', 'qty'), td3 = el('td', 'num'), td4 = el('td');
       td1.append(d); td2.append(q); td3.append(p); td4.append(x); tr.append(td1, td2, td3, td4); tb.append(tr);
@@ -1012,18 +1028,18 @@
 
     const grid = el('div', 'inv-grid');
     const mk = (label, input) => { const l = el('label', null, label); l.append(input); grid.append(l); return l; };
-    const disc = el('input'); disc.type = 'number'; disc.min = '0'; disc.step = '0.001'; disc.value = '0'; disc.inputMode = 'decimal';
-    const paid = el('input'); paid.type = 'number'; paid.min = '0'; paid.step = '0.001'; paid.value = '0'; paid.inputMode = 'decimal';
+    const disc = omrInput('');
+    const paid = omrInput('');
     const pm = el('select'); fillSelect(pm, L.pm, '');
     mk(L.discount, disc); mk(recOk ? L.paidNow : L.amountPaid, paid); mk(L.payMethod, pm);
     const nt = el('textarea'); nt.maxLength = 400; nt.dir = 'auto'; mk(L.invNotes, nt).classList.add('wide');
     [disc, paid].forEach(i => i.addEventListener('input', calc));
 
-    const readItems = () => [...tb.rows].map(tr => { const [d, q, p] = tr.querySelectorAll('input'); return { desc: d.value.trim(), qty: Number(q.value), price: Number(p.value) }; });
+    const readItems = () => [...tb.rows].map(tr => { const [d, q, p] = tr.querySelectorAll('input'); return { desc: d.value.trim(), qty: Number(q.value), price: p.value.trim() === '' ? NaN : parseOmr(p.value) }; });
     function calc(){
       const sub = readItems().reduce((s, i) => s + (i.qty > 0 && i.price >= 0 ? Math.round(i.qty * i.price * 1000) / 1000 : 0), 0);
-      const tot = sub - Number(disc.value || 0);
-      sumEl.textContent = `${L.subtotal}: ${money(sub)} · ${L.grand}: ${money(tot)} ${L.omr} · ${L.due}: ${money(Math.max(0, tot - Number(paid.value || 0)))} ${L.omr}`;
+      const tot = sub - parseOmr(disc.value);
+      sumEl.textContent = `${L.subtotal}: ${money(sub)} · ${L.grand}: ${money(tot)} ${L.omr} · ${L.due}: ${money(Math.max(0, tot - parseOmr(paid.value)))} ${L.omr}`;
       return { sub, tot };
     }
     calc();
@@ -1037,14 +1053,14 @@
       const items = readItems();
       const { sub, tot } = calc();
       msg.className = 'saved err';
-      if (!items.length || items.some(i => !i.desc || !(i.qty > 0) || !(i.price >= 0) || Number.isNaN(i.price))) { msg.textContent = L.errItems; return; }
-      if (Number(disc.value || 0) > sub) { msg.textContent = L.errDiscount; return; }
-      const paidNow = Number(paid.value || 0);
+      if (!items.length || items.some(i => !i.desc || !(i.qty > 0) || !(i.price > 0) || Number.isNaN(i.price))) { msg.textContent = L.errItems; return; }
+      if (parseOmr(disc.value) > sub) { msg.textContent = L.errDiscount; return; }
+      const paidNow = parseOmr(paid.value);
       if (paidNow > tot + 0.0005) { msg.textContent = L.errPaid; return; }
       if (paidNow > 0 && recOk && !pm.value) { msg.textContent = L.errMethod; return; }
       if (!armed) { armed = true; msg.className = 'saved'; msg.textContent = L.issueAgain; return; }   // تأكيد بضغطة ثانية
       go.disabled = true; msg.className = 'saved'; msg.textContent = L.saving;
-      const rec = { request_id: r.id, items, discount: Number(disc.value || 0), payment_method: pm.value || null, notes: nt.value.trim() || null };
+      const rec = { request_id: r.id, items, discount: parseOmr(disc.value), payment_method: pm.value || null, notes: nt.value.trim() || null };
       if (!recOk) rec.amount_paid = paidNow;   // قبل تفعيل الإيصالات
       const { data, error } = await db.from('invoices').insert(rec).select().single();
       if (error) { go.disabled = false; armed = false; msg.className = 'saved err'; msg.textContent = L.saveFail + error.message; return; }
@@ -1159,7 +1175,7 @@
       if (v.status === 'issued' && dueOf(v) > 0) {
         box2.append(el('h4', 'sec-h wide', L.recNew));
         const mk = (label, input, wide) => { const l = el('label', wide ? 'wide' : null, label); l.append(input); box2.append(l); return l; };
-        const amt = el('input'); amt.type = 'number'; amt.min = '0'; amt.step = '0.001'; amt.inputMode = 'decimal'; amt.value = String(Math.round(dueOf(v) * 1000) / 1000);
+        const amt = omrInput(dueOf(v));
         const pm = el('select'); fillSelect(pm, Object.fromEntries(Object.entries(L.pm).filter(([k]) => k)), 'cash');
         const ref = el('input'); ref.maxLength = 60; ref.dir = 'ltr';
         const nts = el('input'); nts.maxLength = 200; nts.dir = 'auto';
@@ -1170,7 +1186,7 @@
         row.append(go, msg); box2.append(row);
         let armed = false;
         go.onclick = async () => {
-          const a = Number(amt.value || 0);
+          const a = parseOmr(amt.value);
           msg.className = 'saved err';
           if (!(a > 0) || a > dueOf(v) + 0.0005) { msg.textContent = L.errAmount; return; }
           if (!armed) { armed = true; msg.className = 'saved'; msg.textContent = L.recAgain; return; }
