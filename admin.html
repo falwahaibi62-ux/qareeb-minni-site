@@ -164,9 +164,45 @@
   .paper .tot{margin-top:12px;margin-inline-start:auto;width:min(320px,100%);display:grid;grid-template-columns:1fr auto;gap:4px 16px}
   .paper .tot .g{font-family:var(--display);font-weight:700;font-size:16px;border-top:2px solid #1F3A4D;padding-top:6px}
   .paper .foot{margin-top:20px;border-top:1px solid #E3D9CA;padding-top:10px;text-align:center}
+  .paper .amt{display:flex;justify-content:space-between;align-items:center;gap:16px;background:#1F3A4D;color:#FAF7F2;border-radius:10px;padding:14px 18px;margin:16px 0}
+  .paper .amt b{font-family:var(--display);font-size:26px;font-variant-numeric:tabular-nums}
+  .rec-list{width:100%;border-collapse:collapse;font-size:14px}
+  .rec-list th{font-size:12px;color:var(--muted);text-align:start;padding:6px;border-bottom:1px solid var(--border)}
+  .rec-list td{padding:7px 6px;border-bottom:1px solid var(--border)}
+  .rec-list .btn{padding:4px 12px;font-size:13px}
+  .sec-h{font-family:var(--display);font-size:16px;margin:4px 0 0}
   .paper .void{color:#B3261E;font-family:var(--display);font-weight:700;font-size:18px;text-align:center;border:2px solid #B3261E;border-radius:8px;padding:4px;margin-bottom:10px}
   .paper .bi{display:block;font-size:11px;color:#5A6A76;font-weight:500}
   .ltrnum{direction:ltr;unicode-bidi:isolate}
+
+  /* Reports */
+  .rp-controls{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin:20px 0;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:end}
+  .rp-controls label{display:grid;gap:4px;font-size:13px;font-weight:600}
+  .rp-controls h3{grid-column:1/-1;font-size:18px}
+  .rp-controls .hint{grid-column:1/-1}
+  .rp-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding-bottom:48px}
+  .rp-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;display:grid;gap:8px;align-content:start}
+  .rp-card h4{margin:0;font-family:var(--display);font-size:17px}
+  .rp-card p{margin:0;font-size:13.5px;color:var(--muted)}
+  .rp-card .btn{justify-self:start;margin-top:6px}
+  .paper .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0 4px}
+  .paper .kpi{background:#FAF7F2;border:1px solid #E3D9CA;border-radius:8px;padding:10px 12px}
+  .paper .kpi b{display:block;font-family:var(--display);font-size:20px;font-variant-numeric:tabular-nums}
+  .paper .kpi span{font-size:11.5px;color:#5A6A76}
+  .paper h3.rs{font-size:15px;margin:18px 0 6px;color:#85632F;font-family:var(--display);break-after:avoid}
+  .paper .kpis,.paper .two-t > div{break-inside:avoid}
+  .paper .two-t{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .paper table.rt{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}
+  .paper table.rt th{background:#1F3A4D;color:#FAF7F2;font-weight:600;padding:6px 7px;text-align:start;white-space:nowrap}
+  .paper table.rt td{border-bottom:1px solid #E3D9CA;padding:5px 7px;vertical-align:top}
+  .paper table.rt tr:nth-child(even) td{background:#FBF8F3}
+  .paper table.rt tfoot td{font-weight:700;border-top:2px solid #1F3A4D;background:#fff}
+  .paper .meta-line{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:12px;color:#5A6A76;margin-top:10px}
+  .paper .meta-line b{color:#1F3A4D}
+  .paper .bad{color:#B3261E;font-weight:600} .paper .soon{color:#8A5A00;font-weight:600}
+  .paper .conf{margin-top:18px;border-top:1px solid #E3D9CA;padding-top:8px;font-size:11px;color:#5A6A76;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .rt-wrap{overflow-x:auto}
+  @media screen and (max-width:860px){ .rp-controls,.rp-cards{grid-template-columns:1fr 1fr} .paper .kpis{grid-template-columns:1fr 1fr} .paper .two-t{grid-template-columns:1fr} }
 
   @media print{
     body.printing > *:not(#invModal){display:none!important}
@@ -175,7 +211,11 @@
     body.printing .sheet{max-width:none;padding:0;background:#fff}
     body.printing .sheet > *:not(.paper){display:none!important}
     body.printing .paper{border:0;padding:0}
-    @page{size:A4;margin:14mm}
+    @page{size:A4;margin:12mm}
+    body.printing .rt-wrap{overflow:visible}
+    body.printing .paper table.rt{font-size:10.5px}
+    body.printing .paper tr{break-inside:avoid}
+    body.printing .paper thead{display:table-header-group}
   }
 
   @media (max-width:760px){
@@ -222,6 +262,7 @@
       <nav class="tabs" role="tablist">
         <button class="tab" role="tab" id="tabReq" aria-selected="true" data-t="tabRequests">الطلبات</button>
         <button class="tab" role="tab" id="tabDrv" aria-selected="false" data-t="tabDrivers">السائقون</button>
+        <button class="tab" role="tab" id="tabRep" aria-selected="false" data-t="tabReports">التقارير</button>
       </nav>
       <div class="who">
         <a class="pol" href="policies.html" target="_blank" rel="noopener" data-t="policies">الشروط والسياسات</a>
@@ -307,6 +348,23 @@
     </form>
     <div class="list" id="drvList"></div>
   </main>
+
+  <!-- التقارير / Reports -->
+  <main class="wrap" id="repPane" hidden>
+    <div class="rp-controls">
+      <h3 data-t="repPeriod">فترة التقرير</h3>
+      <label><span data-t="repPreset">الفترة</span><select id="rpPreset"></select></label>
+      <label><span data-t="repFrom">من تاريخ</span><input type="date" id="rpFrom"></label>
+      <label><span data-t="repTo">إلى تاريخ</span><input type="date" id="rpTo"></label>
+      <span class="hint" id="rpHint"></span>
+    </div>
+    <div class="rp-cards">
+      <div class="rp-card"><h4 data-t="repSumT">التقرير الإجمالي</h4><p data-t="repSumP"></p><button class="btn" type="button" data-rep="summary" data-t="repOpen">عرض التقرير</button></div>
+      <div class="rp-card"><h4 data-t="repReqT">تقرير الطلبات التفصيلي</h4><p data-t="repReqP"></p><button class="btn" type="button" data-rep="requests" data-t="repOpen">عرض التقرير</button></div>
+      <div class="rp-card"><h4 data-t="repInvT">تقرير الفواتير التفصيلي</h4><p data-t="repInvP"></p><button class="btn" type="button" data-rep="invoices" data-t="repOpen">عرض التقرير</button></div>
+      <div class="rp-card"><h4 data-t="repDrvT">تقرير السائقين التفصيلي</h4><p data-t="repDrvP"></p><button class="btn" type="button" data-rep="drivers" data-t="repOpen">عرض التقرير</button></div>
+    </div>
+  </main>
 </div>
 
 <!-- الفاتورة / Invoice -->
@@ -326,6 +384,23 @@
       docTitle: 'لوحة الطلبات | قريب مني', title: 'لوحة الطلبات', brand: 'قريب مني', staffOnly: 'قريب مني · للموظفين فقط',
       email: 'البريد الإلكتروني', password: 'كلمة المرور', login: 'دخول', logout: 'خروج', refresh: 'تحديث',
       tabRequests: 'الطلبات', tabDrivers: 'السائقون', policies: 'الشروط والسياسات',
+      tabReports: 'التقارير', repPeriod: 'فترة التقرير', repPreset: 'الفترة', repFrom: 'من تاريخ', repTo: 'إلى تاريخ', repOpen: 'عرض التقرير',
+      presets: { month: 'هذا الشهر', last: 'الشهر الماضي', quarter: 'آخر 3 أشهر', year: 'هذه السنة', custom: 'فترة مخصّصة' },
+      repHint: 'الطلبات حسب تاريخ إرسالها، والفواتير حسب تاريخ إصدارها. التقارير تحتوي بيانات شخصية للعملاء، فلا تشاركيها خارج الإدارة.',
+      repSumT: 'التقرير الإجمالي', repSumP: 'ملخص الطلبات والمالية للفترة: الأعداد والنسب والإيرادات والمحصّل والمتبقي.',
+      repReqT: 'تقرير الطلبات التفصيلي', repReqP: 'جدول لكل خدمة (نقل، تخزين، نقل وتخزين)، وفيه كل طلب في سطر بالرقم والتاريخ والعميل والولاية والمصدر والحالة والسائق.',
+      repInvT: 'تقرير الفواتير التفصيلي', repInvP: 'جدول لكل خدمة، وفيه كل فاتورة بالرقم والتاريخ والعميل والإجمالي والمدفوع والمتبقي، ثم الإجمالي العام.',
+      repDrvT: 'تقرير السائقين التفصيلي', repDrvP: 'كل سائق ببياناته وتواريخ انتهاء وثائقه وعدد طلباته في الفترة.',
+      repBadRange: 'تاريخ البداية بعد تاريخ النهاية', repPeriodL: 'الفترة', repIssued: 'تاريخ الإصدار', repBy: 'أصدره', repNo: 'رقم التقرير',
+      repConf: 'تقرير داخلي سري، يحتوي بيانات شخصية. لا يُشارك خارج إدارة قريب مني.', repTotal: 'الإجمالي', repEmpty: 'لا توجد بيانات في هذه الفترة.',
+      kReq: 'إجمالي الطلبات', kConf: 'طلبات مؤكدة أو أعلى', kDone: 'طلبات منجزة', kRate: 'نسبة التأكيد', kCanc: 'طلبات ملغاة',
+      kInv: 'فواتير صادرة', kTotal: 'إجمالي الفواتير', kPaid: 'المحصّل', kDue: 'المتبقي', kVoid: 'فواتير ملغاة',
+      secReq: 'الطلبات', secFin: 'المالية', byStatus: 'حسب الحالة', byService: 'حسب الخدمة', byWil: 'حسب الولاية', bySource: 'حسب المصدر', byPm: 'حسب طريقة الدفع',
+      cCount: 'العدد', cShare: 'النسبة', cItem: 'البند', cAmount: 'المبلغ (ر.ع)',
+      hNo: '#', hReq: 'رقم الطلب', hDate: 'التاريخ', hCust: 'العميل', hMobile: 'الموبايل', hSvc: 'الخدمة', hWil: 'الولاية', hSrc: 'المصدر', hStatus: 'الحالة', hDriver: 'السائق',
+      hInv: 'رقم الفاتورة', hTotal: 'الإجمالي', hPaid: 'المدفوع', hDue: 'المتبقي', hPm: 'الدفع',
+      hName: 'الاسم', hContract: 'التعاقد', hTruck: 'الشاحنة', hPlate: 'اللوحة', hVoc: 'بطاقة التشغيل', hLic: 'الرخصة', hIns: 'التأمين', hDoneP: 'منجزة في الفترة', hActive: 'قيد التنفيذ',
+      nonVat: 'المبالغ بالريال العُماني، والمنشأة غير مسجّلة في ضريبة القيمة المضافة.', stDue: 'عليها متبقٍ', repGrand: 'الإجمالي العام', svcUnknown: 'خدمة غير محددة', invNA: 'الفواتير غير مفعّلة بعد.',
       addReq: '+ طلب جديد', newReq: 'طلب جديد من الموظف', createReq: 'إنشاء الطلب', rName: 'اسم العميل', rSource: 'مصدر الطلب',
       reqLegal: 'لطلبات العملاء الذين تواصلوا بالهاتف أو الواتساب أو بالحضور. اسألي العميل قبل الحفظ إن كان يوافق على حفظ بياناته واستخدامها لطلبه.',
       rConsent: 'وافق العميل على حفظ بياناته واستخدامها للتواصل بخصوص هذا الطلب، وعلى حفظها لدى مزوّد خدمة سحابية خارج سلطنة عُمان',
@@ -381,12 +456,34 @@
       reissueHint: 'لتصحيح فاتورة: ألغيها مع ذكر السبب ثم أصدري فاتورة جديدة.',
       errItems: 'أضيفي بنداً واحداً على الأقل بوصف وكمية وسعر صحيحين', errDiscount: 'الخصم أكبر من المجموع', errPaid: 'المبلغ المدفوع أكبر من الإجمالي',
       noInvTable: 'الفواتير غير مفعّلة بعد: نفّذي ملف supabase-invoices.sql',
-      waMsg: (no, total, due) => `عزيزي العميل، شكراً لاختيارك قريب مني.\nرقم الفاتورة: ${no}\nالإجمالي: ${total} ر.ع` + (Number(due) > 0 ? `\nالمتبقي: ${due} ر.ع` : `\nتم السداد بالكامل`) + `\nيومك سعيد.`
+      waMsg: (no, total, due, link) => `عزيزي العميل، شكراً لاختيارك قريب مني.\nرقم الفاتورة: ${no}\nالإجمالي: ${total} ر.ع` + (Number(due) > 0 ? `\nالمتبقي: ${due} ر.ع` : `\nتم السداد بالكامل`) + (link ? `\nعرض الفاتورة: ${link}` : '') + `\nيومك سعيد.`,
+      waRec: (no, amt, inv, due, link) => `عزيزي العميل، استلمنا منك مبلغ ${amt} ر.ع، شكراً لك.\nرقم الإيصال: ${no}\nعن الفاتورة: ${inv}` + (Number(due) > 0 ? `\nالمتبقي: ${due} ر.ع` : `\nتم السداد بالكامل`) + (link ? `\nعرض الإيصال: ${link}` : '') + `\nقريب مني`,
+      recTitle: 'إيصال استلام', recList: 'الإيصالات', recNone: 'لا توجد إيصالات بعد.', recNew: 'تسجيل دفعة وإصدار إيصال', recAmount: 'المبلغ المستلم (ر.ع)', recRef: 'رقم التحويل أو العملية (اختياري)', recNotes: 'ملاحظة (اختياري)',
+      recIssue: 'إصدار الإيصال', recAgain: 'اضغطي مرة أخرى للتأكيد — لا يمكن تعديل الإيصال بعد إصداره', recView: 'عرض', recVoidBtn: 'إلغاء الإيصال', recVoided: 'ملغى', recActive: 'فعّال',
+      errAmount: 'المبلغ يجب أن يكون أكبر من صفر ولا يتجاوز المتبقي', errMethod: 'اختاري طريقة الدفع', recSendWa: 'إرسال الإيصال واتساب', noRecTable: 'الإيصالات غير مفعّلة بعد: نفّذي ملف supabase-receipts.sql',
+      paidNow: 'دفعة مستلمة الآن (اختياري)', voidInvTitle: 'إلغاء الفاتورة', recFirst: 'لا يمكن إلغاء فاتورة عليها إيصالات فعّالة. ألغي الإيصالات أولاً.', paidFull: 'الفاتورة مسددة بالكامل.', hRec: 'رقم الإيصال', hAmt: 'المبلغ', hAct: '',
     },
     en: {
       docTitle: 'Requests board | Qareeb Minni', title: 'Requests board', brand: 'Qareeb Minni', staffOnly: 'Qareeb Minni · Staff only',
       email: 'Email', password: 'Password', login: 'Log in', logout: 'Log out', refresh: 'Refresh',
       tabRequests: 'Requests', tabDrivers: 'Drivers', policies: 'Terms & policies',
+      tabReports: 'Reports', repPeriod: 'Report period', repPreset: 'Period', repFrom: 'From date', repTo: 'To date', repOpen: 'View report',
+      presets: { month: 'This month', last: 'Last month', quarter: 'Last 3 months', year: 'This year', custom: 'Custom period' },
+      repHint: 'Requests by the date they were sent; invoices by the date they were issued. Reports contain customers’ personal data, so do not share them outside management.',
+      repSumT: 'Summary report', repSumP: 'Requests and finances for the period: counts, rates, invoiced, collected and outstanding.',
+      repReqT: 'Detailed requests report', repReqP: 'One table per service (moving, storage, both), with one line per request: number, date, customer, wilayat, source, status and driver.',
+      repInvT: 'Detailed invoices report', repInvP: 'One table per service, with each invoice’s number, date, customer, total, paid and outstanding, then a grand total.',
+      repDrvT: 'Detailed drivers report', repDrvP: 'Each driver with their details, document expiry dates and jobs in the period.',
+      repBadRange: 'The start date is after the end date', repPeriodL: 'Period', repIssued: 'Issued', repBy: 'Issued by', repNo: 'Report no.',
+      repConf: 'Confidential internal report containing personal data. Not to be shared outside Qareeb Minni management.', repTotal: 'Total', repEmpty: 'No data in this period.',
+      kReq: 'Total requests', kConf: 'Confirmed or later', kDone: 'Completed', kRate: 'Confirmation rate', kCanc: 'Cancelled',
+      kInv: 'Invoices issued', kTotal: 'Total invoiced', kPaid: 'Collected', kDue: 'Outstanding', kVoid: 'Voided invoices',
+      secReq: 'Requests', secFin: 'Finance', byStatus: 'By status', byService: 'By service', byWil: 'By wilayat', bySource: 'By source', byPm: 'By payment method',
+      cCount: 'Count', cShare: 'Share', cItem: 'Item', cAmount: 'Amount (OMR)',
+      hNo: '#', hReq: 'Request', hDate: 'Date', hCust: 'Customer', hMobile: 'Mobile', hSvc: 'Service', hWil: 'Wilayat', hSrc: 'Source', hStatus: 'Status', hDriver: 'Driver',
+      hInv: 'Invoice', hTotal: 'Total', hPaid: 'Paid', hDue: 'Outstanding', hPm: 'Payment',
+      hName: 'Name', hContract: 'Contract', hTruck: 'Truck', hPlate: 'Plate', hVoc: 'Operating card', hLic: 'Licence', hIns: 'Insurance', hDoneP: 'Done in period', hActive: 'Active',
+      nonVat: 'Amounts in Omani rials. The business is not VAT-registered.', stDue: 'Balance due', repGrand: 'Grand total', svcUnknown: 'Unspecified service', invNA: 'Invoices are not enabled yet.',
       addReq: '+ New request', newReq: 'New request by staff', createReq: 'Create request', rName: 'Customer name', rSource: 'Request source',
       reqLegal: 'For customers who contacted us by phone, WhatsApp or in person. Ask the customer before saving whether they agree to their details being stored and used for their request.',
       rConsent: 'The customer agreed to their details being stored and used to contact them about this request, and kept with a cloud provider outside Oman',
@@ -442,7 +539,12 @@
       reissueHint: 'To correct an invoice: void it with a reason, then issue a new one.',
       errItems: 'Add at least one line with a valid description, quantity and price', errDiscount: 'Discount is larger than the subtotal', errPaid: 'Amount paid is larger than the total',
       noInvTable: 'Invoices are not enabled yet: run supabase-invoices.sql',
-      waMsg: (no, total, due) => `Dear customer, thank you for choosing Qareeb Minni.\nInvoice no.: ${no}\nTotal: OMR ${total}` + (Number(due) > 0 ? `\nBalance due: OMR ${due}` : `\nPaid in full`) + `\nHave a nice day.`
+      waMsg: (no, total, due, link) => `Dear customer, thank you for choosing Qareeb Minni.\nInvoice no.: ${no}\nTotal: OMR ${total}` + (Number(due) > 0 ? `\nBalance due: OMR ${due}` : `\nPaid in full`) + (link ? `\nView invoice: ${link}` : '') + `\nHave a nice day.`,
+      waRec: (no, amt, inv, due, link) => `Dear customer, we received OMR ${amt}. Thank you.\nReceipt no.: ${no}\nFor invoice: ${inv}` + (Number(due) > 0 ? `\nBalance due: OMR ${due}` : `\nPaid in full`) + (link ? `\nView receipt: ${link}` : '') + `\nQareeb Minni`,
+      recTitle: 'Payment receipt', recList: 'Receipts', recNone: 'No receipts yet.', recNew: 'Record a payment and issue a receipt', recAmount: 'Amount received (OMR)', recRef: 'Transfer or transaction no. (optional)', recNotes: 'Note (optional)',
+      recIssue: 'Issue receipt', recAgain: 'Press again to confirm — a receipt cannot be changed after it is issued', recView: 'View', recVoidBtn: 'Void receipt', recVoided: 'Void', recActive: 'Active',
+      errAmount: 'The amount must be above zero and not more than the balance due', errMethod: 'Choose the payment method', recSendWa: 'Send receipt on WhatsApp', noRecTable: 'Receipts are not enabled yet: run supabase-receipts.sql',
+      paidNow: 'Payment received now (optional)', voidInvTitle: 'Void invoice', recFirst: 'An invoice with active receipts cannot be voided. Void the receipts first.', paidFull: 'The invoice is paid in full.', hRec: 'Receipt', hAmt: 'Amount', hAct: '',
     }
   };
   // ===== بيانات الشركة على الفاتورة — عدّليها بعد إصدار السجل التجاري =====
@@ -459,7 +561,7 @@
   const DOCS = [['voc', 'voc_expiry'], ['license', 'license_expiry'], ['insurance', 'insurance_expiry']];
 
   const $ = id => document.getElementById(id);
-  let db = null, rows = [], drivers = [], invoices = [], invOk = true, filter = 'open', timer = null, lastLoad = null, editingDriver = null;
+  let db = null, rows = [], drivers = [], invoices = [], invOk = true, receipts = [], recOk = true, filter = 'open', timer = null, lastLoad = null, editingDriver = null;
   let lang = 'ar';
   try { if (localStorage.getItem('qm-admin-lang') === 'en') lang = 'en'; } catch (e) {}
   const t = () => T[lang];
@@ -491,6 +593,8 @@
     $('dDays').placeholder = lang === 'en' ? 'e.g. Saturday to Thursday' : 'مثال: السبت إلى الخميس';
     $('drvFormTitle').textContent = editingDriver ? L.editDriver : L.newDriver;
     fillReqSelects();
+    fillSelect($('rpPreset'), L.presets, $('rpPreset').value || 'month');
+    $('rpHint').textContent = L.repHint;
     $('loginMsg').textContent = '';
     stampText();
     if (!$('appView').hidden) { render(); renderDrivers(); }
@@ -505,11 +609,14 @@
   function showTab(name){
     $('tabReq').setAttribute('aria-selected', String(name === 'req'));
     $('tabDrv').setAttribute('aria-selected', String(name === 'drv'));
+    $('tabRep').setAttribute('aria-selected', String(name === 'rep'));
     $('reqPane').hidden = name !== 'req';
     $('drvPane').hidden = name !== 'drv';
+    $('repPane').hidden = name !== 'rep';
   }
   $('tabReq').onclick = () => showTab('req');
   $('tabDrv').onclick = () => showTab('drv');
+  $('tabRep').onclick = () => showTab('rep');
 
   // ===== الاتصال والدخول / Connection and login =====
   applyLang();
@@ -548,14 +655,16 @@
 
   // ===== تحميل البيانات / Load data =====
   async function load(){
-    const [r, d, v] = await Promise.all([
+    const [r, d, v, rc] = await Promise.all([
       db.from('requests').select('*').order('created_at', { ascending: false }).limit(500),
       db.from('drivers').select('*').order('name'),
-      db.from('invoices').select('*').order('seq', { ascending: false }).limit(1000)
+      db.from('invoices').select('*').order('seq', { ascending: false }).limit(1000),
+      db.from('receipts').select('*').order('seq', { ascending: false }).limit(2000)
     ]);
     if (r.error) { $('stamp').textContent = t().loadFail + r.error.message; return; }
     rows = r.data; drivers = d.error ? [] : d.data; lastLoad = new Date();
-    invOk = !v.error; invoices = v.error ? [] : v.data;   // جدول الفواتير قد لا يكون مُنشأً بعد
+    invOk = !v.error; invoices = v.error ? [] : v.data;
+    recOk = !rc.error; receipts = rc.error ? [] : rc.data;   // جدول الإيصالات قد لا يكون مُنشأً بعد   // جدول الفواتير قد لا يكون مُنشأً بعد
     stampText();
     if (d.error) $('stamp').textContent += ' · ' + t().loadFail + d.error.message;   // جدول السائقين لم يُنشأ بعد
     render(); renderDrivers();
@@ -778,7 +887,7 @@
   });
 
   // ===== الفواتير / Invoices =====
-  const money = n => Number(n || 0).toFixed(3);
+  const money = n => Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
   const dueOf = v => Math.max(0, Number(v.total) - Number(v.amount_paid));
   const SVC_LINE = { move: 'نقل أثاث / Furniture moving', storage: 'تخزين أثاث / Furniture storage' };
   const LOGO_SVG = '<svg viewBox="30 4 262 124" aria-hidden="true"><path d="M58 118C53 110 36 98 36 78A22 22 0 1 1 80 78C80 98 63 110 58 118Z"/><circle cx="58" cy="78" r="8"/><path d="M58 118c-4 3-1 7 4 5C100 112 150 128 168 108C182 92 140 86 150 70C160 54 210 70 236 76C248 79 256 80 262 78c4-2 2-6-2-4"/><path d="M262 74C257 66 240 54 240 34A22 22 0 1 1 284 34C284 54 267 66 262 74Z"/><path class="house" d="M253 37L262 29L271 37V45H253Z"/></svg>';
@@ -791,7 +900,7 @@
   }
 
   const modal = $('invModal'), sheet = $('invSheet');
-  function closeModal(){ modal.hidden = true; sheet.replaceChildren(); document.body.classList.remove('printing'); }
+  function closeModal(){ modal.hidden = true; sheet.replaceChildren(); sheet.style.maxWidth = ''; document.body.classList.remove('printing'); }
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
   function sheetTop(title){
@@ -828,7 +937,7 @@
     const disc = el('input'); disc.type = 'number'; disc.min = '0'; disc.step = '0.001'; disc.value = '0'; disc.inputMode = 'decimal';
     const paid = el('input'); paid.type = 'number'; paid.min = '0'; paid.step = '0.001'; paid.value = '0'; paid.inputMode = 'decimal';
     const pm = el('select'); fillSelect(pm, L.pm, '');
-    mk(L.discount, disc); mk(L.amountPaid, paid); mk(L.payMethod, pm);
+    mk(L.discount, disc); mk(recOk ? L.paidNow : L.amountPaid, paid); mk(L.payMethod, pm);
     const nt = el('textarea'); nt.maxLength = 400; nt.dir = 'auto'; mk(L.invNotes, nt).classList.add('wide');
     [disc, paid].forEach(i => i.addEventListener('input', calc));
 
@@ -852,15 +961,23 @@
       msg.className = 'saved err';
       if (!items.length || items.some(i => !i.desc || !(i.qty > 0) || !(i.price >= 0) || Number.isNaN(i.price))) { msg.textContent = L.errItems; return; }
       if (Number(disc.value || 0) > sub) { msg.textContent = L.errDiscount; return; }
-      if (Number(paid.value || 0) > tot + 0.0005) { msg.textContent = L.errPaid; return; }
+      const paidNow = Number(paid.value || 0);
+      if (paidNow > tot + 0.0005) { msg.textContent = L.errPaid; return; }
+      if (paidNow > 0 && recOk && !pm.value) { msg.textContent = L.errMethod; return; }
       if (!armed) { armed = true; msg.className = 'saved'; msg.textContent = L.issueAgain; return; }   // تأكيد بضغطة ثانية
       go.disabled = true; msg.className = 'saved'; msg.textContent = L.saving;
-      const rec = { request_id: r.id, items, discount: Number(disc.value || 0), amount_paid: Number(paid.value || 0), payment_method: pm.value || null, notes: nt.value.trim() || null };
+      const rec = { request_id: r.id, items, discount: Number(disc.value || 0), payment_method: pm.value || null, notes: nt.value.trim() || null };
+      if (!recOk) rec.amount_paid = paidNow;   // قبل تفعيل الإيصالات
       const { data, error } = await db.from('invoices').insert(rec).select().single();
-      go.disabled = false;
-      if (error) { armed = false; msg.className = 'saved err'; msg.textContent = L.saveFail + error.message; return; }
-      invoices.unshift(data); render();
-      openInvoice(data);
+      if (error) { go.disabled = false; armed = false; msg.className = 'saved err'; msg.textContent = L.saveFail + error.message; return; }
+      invoices.unshift(data);
+      let inv = data, newRec = null;
+      if (recOk && paidNow > 0) {
+        const rr = await db.from('receipts').insert({ invoice_id: data.id, amount: paidNow, method: pm.value }).select().single();
+        if (!rr.error) { newRec = rr.data; receipts.unshift(rr.data); inv = await refreshInvoice(data.id) || data; }
+      }
+      go.disabled = false; render();
+      newRec ? openReceipt(newRec) : openInvoice(inv);
     };
 
     sheet.replaceChildren(top, tbl, add, grid, sumEl, row);
@@ -878,7 +995,7 @@
     acts.prepend(pr);
     if (v.status === 'issued') {
       const wa = el('a', 'btn btn-ghost', L.sendWa);
-      wa.href = 'https://wa.me/' + (v.customer_phone || '').replace(/[^\d]/g, '') + '?text=' + encodeURIComponent(L.waMsg(v.number, money(v.total), money(dueOf(v))));
+      wa.href = waLink(v.customer_phone, L.waMsg(v.number, money(v.total), money(dueOf(v)), v.public_token ? docUrl(v.public_token) : ''));
       wa.target = '_blank'; wa.rel = 'noopener'; wa.style.textDecoration = 'none';
       acts.prepend(wa);
     }
@@ -939,43 +1056,321 @@
 
     const parts = [top, paper];
 
-    // ----- تحديث الدفع أو الإلغاء (للفاتورة الفعّالة فقط) -----
+    // ----- الإيصالات -----
+    const box2 = el('div', 'inv-grid');
+    box2.append(Object.assign(el('h4', 'sec-h wide', L.recList)));
+    if (!recOk) box2.append(el('span', 'hint wide', L.noRecTable));
+    else {
+      const mine = receipts.filter(x => x.invoice_id === v.id).sort((a, b) => a.seq - b.seq);
+      if (!mine.length) box2.append(el('span', 'hint wide', L.recNone));
+      else {
+        const wrap = el('div', 'wide'); const tb = el('table', 'rec-list');
+        tb.innerHTML = `<thead><tr><th>${L.hRec}</th><th>${L.hDate}</th><th>${L.hAmt}</th><th>${L.hPm}</th><th>${L.hStatus}</th><th></th></tr></thead>`;
+        const body = el('tbody');
+        mine.forEach(x => {
+          const tr = el('tr');
+          const c1 = el('td', 'ltrnum', x.number);
+          const c5 = el('td', x.status === 'void' ? 'hint warn' : null, x.status === 'void' ? L.recVoided : L.recActive);
+          const c6 = el('td'); const b = el('button', 'btn btn-ghost', L.recView); b.type = 'button'; b.onclick = () => openReceipt(x); c6.append(b);
+          tr.append(c1, el('td', null, fmtDate(x.issued_at)), el('td', 'ltrnum', money(x.amount)), el('td', null, L.pm[x.method] || x.method), c5, c6);
+          body.append(tr);
+        });
+        tb.append(body); wrap.append(tb); box2.append(wrap);
+      }
+      // تسجيل دفعة جديدة
+      if (v.status === 'issued' && dueOf(v) > 0) {
+        box2.append(el('h4', 'sec-h wide', L.recNew));
+        const mk = (label, input, wide) => { const l = el('label', wide ? 'wide' : null, label); l.append(input); box2.append(l); return l; };
+        const amt = el('input'); amt.type = 'number'; amt.min = '0'; amt.step = '0.001'; amt.inputMode = 'decimal'; amt.value = String(Math.round(dueOf(v) * 1000) / 1000);
+        const pm = el('select'); fillSelect(pm, Object.fromEntries(Object.entries(L.pm).filter(([k]) => k)), 'cash');
+        const ref = el('input'); ref.maxLength = 60; ref.dir = 'ltr';
+        const nts = el('input'); nts.maxLength = 200; nts.dir = 'auto';
+        mk(L.recAmount, amt); mk(L.payMethod, pm); mk(L.recRef, ref); mk(L.recNotes, nts, true);
+        const row = el('div', 'save-row wide');
+        const go = el('button', 'btn', L.recIssue); go.type = 'button';
+        const msg = el('span', 'saved'); msg.setAttribute('aria-live', 'polite');
+        row.append(go, msg); box2.append(row);
+        let armed = false;
+        go.onclick = async () => {
+          const a = Number(amt.value || 0);
+          msg.className = 'saved err';
+          if (!(a > 0) || a > dueOf(v) + 0.0005) { msg.textContent = L.errAmount; return; }
+          if (!armed) { armed = true; msg.className = 'saved'; msg.textContent = L.recAgain; return; }
+          go.disabled = true; msg.className = 'saved'; msg.textContent = L.saving;
+          const { data, error } = await db.from('receipts').insert({ invoice_id: v.id, amount: a, method: pm.value, reference: ref.value.trim() || null, notes: nts.value.trim() || null }).select().single();
+          go.disabled = false;
+          if (error) { armed = false; msg.className = 'saved err'; msg.textContent = L.saveFail + error.message; return; }
+          receipts.unshift(data);
+          await refreshInvoice(v.id); render();
+          openReceipt(data);
+        };
+      } else if (v.status === 'issued') box2.append(el('span', 'hint wide', L.paidFull));
+    }
+    parts.push(box2);
+
+    // ----- إلغاء الفاتورة -----
     if (v.status === 'issued') {
       const grid = el('div', 'inv-grid');
-      const mk = (label, input) => { const l = el('label', null, label); l.append(input); grid.append(l); return l; };
-      const paid = el('input'); paid.type = 'number'; paid.min = '0'; paid.step = '0.001'; paid.value = money(v.amount_paid); paid.inputMode = 'decimal';
-      const pm = el('select'); fillSelect(pm, L.pm, v.payment_method || '');
-      mk(L.amountPaid, paid); mk(L.payMethod, pm);
-      const reason = el('input'); reason.maxLength = 200; reason.dir = 'auto'; mk(L.voidReason, reason);
+      grid.append(el('h4', 'sec-h wide', L.voidInvTitle));
+      const reason = el('input'); reason.maxLength = 200; reason.dir = 'auto';
+      const l = el('label', 'wide', L.voidReason); l.append(reason); grid.append(l);
       const row = el('div', 'save-row wide');
-      const upd = el('button', 'btn', L.recordPay); upd.type = 'button';
       const vd = el('button', 'btn btn-ghost', L.voidBtn); vd.type = 'button'; vd.style.color = 'var(--error)';
       const msg = el('span', 'saved'); msg.setAttribute('aria-live', 'polite');
-      row.append(upd, vd, msg); grid.append(row);
+      row.append(vd, msg); grid.append(row);
       grid.append(el('span', 'hint wide', L.reissueHint));
-      const save = async patch => {
+      let armed = false;
+      vd.onclick = async () => {
+        if (receipts.some(x => x.invoice_id === v.id && x.status === 'issued')) { msg.className = 'saved err'; msg.textContent = L.recFirst; return; }
+        if (!reason.value.trim()) { msg.className = 'saved err'; msg.textContent = L.voidNeedReason; reason.focus(); return; }
+        if (!armed) { armed = true; msg.className = 'saved err'; msg.textContent = L.voidAgain; return; }
         msg.className = 'saved'; msg.textContent = L.saving;
-        const { data, error } = await db.from('invoices').update(patch).eq('id', v.id).select().single();
+        const { data, error } = await db.from('invoices').update({ status: 'void', void_reason: reason.value.trim() }).eq('id', v.id).select().single();
         if (error) { msg.className = 'saved err'; msg.textContent = L.saveFail + error.message; return; }
         const i = invoices.findIndex(x => x.id === v.id); if (i >= 0) invoices[i] = data;
         render(); openInvoice(data);
-      };
-      upd.onclick = () => {
-        if (Number(paid.value || 0) > Number(v.total) + 0.0005) { msg.className = 'saved err'; msg.textContent = L.errPaid; return; }
-        save({ amount_paid: Number(paid.value || 0), payment_method: pm.value || null });
-      };
-      let armed = false;
-      vd.onclick = () => {
-        if (!reason.value.trim()) { msg.className = 'saved err'; msg.textContent = L.voidNeedReason; reason.focus(); return; }
-        if (!armed) { armed = true; msg.className = 'saved err'; msg.textContent = L.voidAgain; return; }
-        save({ status: 'void', void_reason: reason.value.trim() });
       };
       parts.push(grid);
     }
     sheet.replaceChildren(...parts);
     modal.hidden = false;
   }
-  window.addEventListener('afterprint', () => document.body.classList.remove('printing'));
+  // ===== الإيصالات / Receipts =====
+  const docUrl = token => new URL('doc.html?t=' + token, location.href).href;
+  const waLink = (phone, text) => 'https://wa.me/' + (phone || '').replace(/[^\d]/g, '') + '?text=' + encodeURIComponent(text);
+  async function refreshInvoice(id){
+    const { data, error } = await db.from('invoices').select('*').eq('id', id).single();
+    if (error || !data) return null;
+    const i = invoices.findIndex(x => x.id === id); if (i >= 0) invoices[i] = data; else invoices.unshift(data);
+    return data;
+  }
+  function openReceipt(rc){
+    const L = t();
+    const v = invoices.find(x => x.id === rc.invoice_id) || {};
+    const r = rows.find(x => x.id === v.request_id) || {};
+    const { top, acts } = sheetTop(`${L.recTitle} ${rc.number}`);
+    const pr = el('button', 'btn', L.print); pr.type = 'button';
+    pr.onclick = () => { document.body.classList.add('printing'); window.print(); };
+    const back = el('button', 'btn btn-ghost', L.invTitle + ' ' + (v.number || '')); back.type = 'button'; back.onclick = () => openInvoice(v);
+    acts.prepend(back);
+    acts.prepend(pr);
+    if (rc.status === 'issued') {
+      const wa = el('a', 'btn btn-ghost', L.recSendWa);
+      wa.href = waLink(rc.customer_phone, L.waRec(rc.number, money(rc.amount), v.number || '', money(dueOf(v)), rc.public_token ? docUrl(rc.public_token) : ''));
+      wa.target = '_blank'; wa.rel = 'noopener'; wa.style.textDecoration = 'none';
+      acts.prepend(wa);
+    }
+    const paper = el('div', 'paper'); paper.dir = 'rtl'; paper.lang = 'ar';
+    if (rc.status === 'void') paper.append(el('div', 'void', `ملغى / VOID — ${rc.void_reason || ''}`));
+    const ph = el('div', 'ph');
+    const co = el('div', 'co'); co.innerHTML = LOGO_SVG;
+    const cot = el('div'); cot.append(el('b', null, 'قريب مني · Qareeb Minni'));
+    [COMPANY.address, `س.ت / CR: ${COMPANY.cr}`, `${COMPANY.phone} · ${COMPANY.email}`].forEach(x => cot.append(el('div', 'small', x)));
+    co.append(cot);
+    const ttl = el('div', 'ttl'); ttl.append(el('h2', null, 'إيصال استلام'), el('div', 'small', 'Payment Receipt'));
+    const no = el('div', 'ltrnum', rc.number); no.style.fontWeight = '700'; ttl.append(no);
+    ttl.append(el('div', 'small', new Date(rc.issued_at).toLocaleString('en-GB', { timeZone: 'Asia/Muscat', dateStyle: 'medium', timeStyle: 'short' })));
+    ph.append(co, ttl);
+    const amt = el('div', 'amt');
+    amt.append(el('span', null, 'المبلغ المستلم / Amount received'), el('b', 'ltrnum', `${money(rc.amount)} OMR`));
+    const two = el('div', 'two');
+    const box = (title, pairs) => {
+      const b = el('div', 'box'); b.append(el('b', null, title));
+      const dl = el('dl'); pairs.forEach(([k, val, ltr]) => { if (val) { dl.append(el('dt', null, k)); dl.append(el('dd', ltr ? 'ltrnum' : null, val)); } });
+      b.append(dl); return b;
+    };
+    two.append(
+      box('استلمنا من / Received from', [['الاسم / Name', rc.customer_name], ['الموبايل / Mobile', rc.customer_phone, true], ['رقم الطلب / Request No', r.id ? shortCode(r) : '', true]]),
+      box('تفاصيل الدفع / Payment details', [['عن الفاتورة / For invoice', v.number, true], ['طريقة الدفع / Method', `${T.ar.pm[rc.method]} / ${T.en.pm[rc.method]}`], ['رقم العملية / Reference', rc.reference, true], ['استلمه / Received by', rc.issued_by, true]])
+    );
+    const tot = el('div', 'tot');
+    const line = (k, val, g) => { tot.append(el('span', g ? 'g' : null, k), el('span', 'n' + (g ? ' g' : ''), val)); };
+    line('إجمالي الفاتورة / Invoice total', money(v.total));
+    line('المدفوع حتى الآن / Paid to date', money(v.amount_paid));
+    line('المتبقي / Balance due', money(dueOf(v)), true);
+    paper.append(ph, amt, two, tot);
+    if (rc.notes) { const n = el('p', 'small', rc.notes); n.dir = 'auto'; paper.append(n); }
+    const foot = el('div', 'foot');
+    foot.append(el('div', 'small', 'إيصال إلكتروني صادر من نظام قريب مني ولا يحتاج إلى توقيع · Electronic receipt issued by the Qareeb Minni system, valid without signature'), el('div', 'small', COMPANY.vatNote));
+    paper.append(foot);
+    const parts = [top, paper];
+    if (rc.status === 'issued') {
+      const grid = el('div', 'inv-grid');
+      const reason = el('input'); reason.maxLength = 200; reason.dir = 'auto';
+      const l = el('label', 'wide', L.voidReason); l.append(reason); grid.append(l);
+      const row = el('div', 'save-row wide');
+      const vd = el('button', 'btn btn-ghost', L.recVoidBtn); vd.type = 'button'; vd.style.color = 'var(--error)';
+      const msg = el('span', 'saved'); msg.setAttribute('aria-live', 'polite');
+      row.append(vd, msg); grid.append(row);
+      let armed = false;
+      vd.onclick = async () => {
+        if (!reason.value.trim()) { msg.className = 'saved err'; msg.textContent = L.voidNeedReason; reason.focus(); return; }
+        if (!armed) { armed = true; msg.className = 'saved err'; msg.textContent = L.voidAgain; return; }
+        msg.className = 'saved'; msg.textContent = L.saving;
+        const { data, error } = await db.from('receipts').update({ status: 'void', void_reason: reason.value.trim() }).eq('id', rc.id).select().single();
+        if (error) { msg.className = 'saved err'; msg.textContent = L.saveFail + error.message; return; }
+        const i = receipts.findIndex(x => x.id === rc.id); if (i >= 0) receipts[i] = data;
+        await refreshInvoice(rc.invoice_id); render(); openReceipt(data);
+      };
+      parts.push(grid);
+    }
+    sheet.replaceChildren(...parts);
+    modal.hidden = false;
+  }
+
+  window.addEventListener('afterprint', () => { document.body.classList.remove('printing'); const ps = $('pageSize'); if (ps) ps.remove(); });
+
+  // ===== التقارير / Reports =====
+  const ymd = d => { const z = new Date(d.getTime() - d.getTimezoneOffset() * 60000); return z.toISOString().slice(0, 10); };
+  const muscatDay = iso => iso ? new Date(iso).toLocaleDateString('en-CA', { timeZone: 'Asia/Muscat' }) : '';
+  function setPreset(p){
+    const now = new Date(), y = now.getFullYear(), m = now.getMonth();
+    let a, b;
+    if (p === 'month') { a = new Date(y, m, 1); b = now; }
+    else if (p === 'last') { a = new Date(y, m - 1, 1); b = new Date(y, m, 0); }
+    else if (p === 'quarter') { a = new Date(y, m - 2, 1); b = now; }
+    else if (p === 'year') { a = new Date(y, 0, 1); b = now; }
+    else return;
+    $('rpFrom').value = ymd(a); $('rpTo').value = ymd(b);
+  }
+  $('rpPreset').addEventListener('change', e => setPreset(e.target.value));
+  ['rpFrom', 'rpTo'].forEach(id => $(id).addEventListener('change', () => { $('rpPreset').value = 'custom'; }));
+  setPreset('month');
+
+  function el2(tag, cls, html){ const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  const esc = v => String(v == null ? '' : v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const pct = (a, b) => b ? Math.round(a * 1000 / b) / 10 + '%' : '—';
+  function countBy(list, key, labels){
+    const m = {}; list.forEach(x => { const k = x[key] || '—'; m[k] = (m[k] || 0) + 1; });
+    return Object.entries(m).sort((a, b) => b[1] - a[1]).map(([k, n]) => [labels ? (labels[k] || k) : k, n]);
+  }
+  function table(head, rows, foot, numCols = []){
+    const wrap = el2('div', 'rt-wrap');
+    const th = head.map((h, i) => `<th${numCols.includes(i) ? ' class="n"' : ''}>${esc(h)}</th>`).join('');
+    const tr = rows.map(r => '<tr>' + r.map((c, i) => `<td${numCols.includes(i) ? ' class="n"' : ''}>${c && c.html ? c.html : esc(c)}</td>`).join('') + '</tr>').join('');
+    const tf = foot ? '<tfoot><tr>' + foot.map((c, i) => `<td${numCols.includes(i) ? ' class="n"' : ''}>${esc(c)}</td>`).join('') + '</tr></tfoot>' : '';
+    wrap.innerHTML = `<table class="rt"><thead><tr>${th}</tr></thead><tbody>${tr}</tbody>${tf}</table>`;
+    return wrap;
+  }
+  function kpis(items){ const k = el2('div', 'kpis'); items.forEach(([v, l]) => k.append(el2('div', 'kpi', `<b>${esc(v)}</b><span>${esc(l)}</span>`))); return k; }
+
+  function reportPaper(title, from, to){
+    const L = t();
+    const paper = el2('div', 'paper'); paper.dir = lang === 'en' ? 'ltr' : 'rtl'; paper.lang = lang;
+    const ph = el2('div', 'ph');
+    const co = el2('div', 'co'); co.innerHTML = LOGO_SVG;
+    const cot = el2('div'); cot.append(el2('b', null, 'قريب مني · Qareeb Minni'), el2('div', 'small', esc(COMPANY.address)), el2('div', 'small', esc((lang === 'en' ? 'CR: ' : 'س.ت: ') + COMPANY.cr)));
+    co.append(cot);
+    const ttl = el2('div', 'ttl'); ttl.append(el2('h2', null, esc(title)));
+    ph.append(co, ttl);
+    const stamp = new Date();
+    const no = 'RPT-' + ymd(stamp).replace(/-/g, '') + '-' + String(stamp.getHours()).padStart(2, '0') + String(stamp.getMinutes()).padStart(2, '0');
+    const line = el2('div', 'meta-line',
+      `<span>${esc(L.repPeriodL)}: <b class="ltrnum">${esc(fmtDay(from))} – ${esc(fmtDay(to))}</b></span>` +
+      `<span>${esc(L.repIssued)}: <b>${esc(stamp.toLocaleString(L.locale, { dateStyle: 'medium', timeStyle: 'short' }))}</b></span>` +
+      `<span>${esc(L.repBy)}: <b dir="ltr">${esc($('userEmail').textContent)}</b></span>` +
+      `<span>${esc(L.repNo)}: <b dir="ltr">${no}</b></span>`);
+    paper.append(ph, line);
+    return paper;
+  }
+  function finishPaper(paper){
+    const L = t();
+    paper.append(el2('div', 'conf', `<span>${esc(L.repConf)}</span><span>قريب مني · Qareeb Minni</span>`));
+  }
+
+  const SVC_ORDER = ['move', 'storage', 'both'];
+  function openReport(kind){
+    const L = t();
+    const from = $('rpFrom').value, to = $('rpTo').value;
+    if (!from || !to || from > to) { $('rpHint').textContent = L.repBadRange; $('rpHint').className = 'hint warn'; return; }
+    $('rpHint').className = 'hint'; $('rpHint').textContent = L.repHint;
+    const inR = iso => { const d = muscatDay(iso); return d >= from && d <= to; };
+    const reqs = rows.filter(r => inR(r.created_at)).sort((a, b) => a.created_at < b.created_at ? -1 : 1);
+    const invs = invoices.filter(v => inR(v.issued_at)).sort((a, b) => a.seq - b.seq);
+    const titles = { summary: L.repSumT, requests: L.repReqT, invoices: L.repInvT, drivers: L.repDrvT };
+    const paper = reportPaper(titles[kind], from, to);
+    const drvName = id => { const d = drivers.find(x => x.id === id); return d ? d.name : ''; };
+    const reqCode = id => { const r = rows.find(x => x.id === id); return r ? shortCode(r) : ''; };
+
+    if (kind === 'summary') {
+      const conf = reqs.filter(r => ['confirmed', 'assigned', 'done'].includes(r.status)).length;
+      paper.append(el2('h3', 'rs', esc(L.secReq)));
+      paper.append(kpis([[reqs.length, L.kReq], [conf, L.kConf], [reqs.filter(r => r.status === 'done').length, L.kDone], [pct(conf, reqs.length), L.kRate]]));
+      const mk = (title, data) => { const d = el2('div'); d.append(el2('h3', 'rs', esc(title)), table([L.cItem, L.cCount, L.cShare], data.map(([k, n]) => [k, n, pct(n, reqs.length)]), [L.repTotal, reqs.length, reqs.length ? '100%' : '—'], [1, 2])); return d; };
+      const g1 = el2('div', 'two-t'); g1.append(mk(L.byStatus, countBy(reqs, 'status', L.st)), mk(L.byService, countBy(reqs, 'service', L.svc)));
+      const g2 = el2('div', 'two-t'); g2.append(mk(L.byWil, countBy(reqs, 'wilayat', L.wil)), mk(L.bySource, countBy(reqs.map(r => ({ source: r.source || 'website' })), 'source', L.src)));
+      paper.append(g1, g2);
+
+      paper.append(el2('h3', 'rs', esc(L.secFin)));
+      if (!invOk) paper.append(el2('p', 'small', esc(L.invNA)));
+      else {
+        const live = invs.filter(v => v.status === 'issued'), voided = invs.filter(v => v.status === 'void');
+        const sum = (list, f) => list.reduce((s, v) => s + Number(f(v) || 0), 0);
+        const tot = sum(live, v => v.total), paid = sum(live, v => v.amount_paid);
+        paper.append(kpis([[live.length, L.kInv], [money(tot), L.kTotal], [money(paid), L.kPaid], [money(tot - paid), L.kDue]]));
+        const pmRows = Object.keys(L.pm).filter(k => k).concat(['']).map(k => {
+          const l = live.filter(v => (v.payment_method || '') === k);
+          return l.length ? [k ? L.pm[k] : L.pm[''], l.length, money(sum(l, v => v.total)), money(sum(l, v => v.amount_paid))] : null;
+        }).filter(Boolean);
+        paper.append(el2('h3', 'rs', esc(L.byPm)), table([L.hPm, L.cCount, L.hTotal, L.hPaid], pmRows, [L.repTotal, live.length, money(tot), money(paid)], [1, 2, 3]));
+        if (voided.length) paper.append(el2('p', 'small', esc(`${L.kVoid}: ${voided.length} · ${money(sum(voided, v => v.total))} ${L.omr}`)));
+        paper.append(el2('p', 'small', esc(L.nonVat)));
+      }
+    } else if (kind === 'requests') {
+      // جدول مستقل لكل خدمة
+      const groups = SVC_ORDER.map(k => [k, reqs.filter(r => r.service === k)]).filter(([, l]) => l.length);
+      if (!groups.length) paper.append(el2('p', null, esc(L.repEmpty)));
+      groups.forEach(([k, list]) => {
+        paper.append(el2('h3', 'rs', esc(`${L.svc[k] || k} · ${list.length}`)));
+        const data = list.map((r, i) => [i + 1, { html: `<span dir="ltr">${esc(shortCode(r))}</span>` }, muscatDay(r.created_at), r.name, { html: `<span dir="ltr">${esc(r.phone)}</span>` }, L.wil[r.wilayat] || r.wilayat, L.src[r.source || 'website'] || r.source, L.st[r.status] || r.status, drvName(r.driver_id)]);
+        paper.append(table([L.hNo, L.hReq, L.hDate, L.hCust, L.hMobile, L.hWil, L.hSrc, L.hStatus, L.hDriver], data, [L.repTotal, list.length, '', '', '', '', '', '', '']));
+      });
+      if (groups.length > 1) paper.append(kpis(groups.map(([k, l]) => [l.length, L.svc[k] || k]).concat([[reqs.length, L.repGrand]])));
+    } else if (kind === 'invoices') {
+      if (!invOk) paper.append(el2('p', null, esc(L.invNA)));
+      else {
+        const svcOf = v => { const r = rows.find(x => x.id === v.request_id); return r ? r.service : '—'; };
+        const sum = (list, f) => list.filter(v => v.status === 'issued').reduce((s, v) => s + Number(f(v) || 0), 0);
+        const groups = SVC_ORDER.concat(['—']).map(k => [k, invs.filter(v => svcOf(v) === k)]).filter(([, l]) => l.length);
+        if (!groups.length) paper.append(el2('p', null, esc(L.repEmpty)));
+        groups.forEach(([k, list]) => {
+          paper.append(el2('h3', 'rs', esc(`${L.svc[k] || L.svcUnknown} · ${list.length}`)));
+          const data = list.map((v, i) => [i + 1, { html: `<span dir="ltr">${esc(v.number)}</span>` }, muscatDay(v.issued_at), v.customer_name, { html: `<span dir="ltr">${esc(reqCode(v.request_id))}</span>` }, money(v.total), money(v.amount_paid), v.status === 'void' ? '—' : money(dueOf(v)), v.payment_method ? L.pm[v.payment_method] : '—', v.status === 'void' ? L.invVoid : (dueOf(v) > 0 ? L.stDue : L.invPaid)]);
+          const live = list.filter(v => v.status === 'issued').length;
+          paper.append(table([L.hNo, L.hInv, L.hDate, L.hCust, L.hReq, L.hTotal, L.hPaid, L.hDue, L.hPm, L.hStatus], data, [L.repTotal, live, '', '', '', money(sum(list, v => v.total)), money(sum(list, v => v.amount_paid)), money(sum(list, v => dueOf(v))), '', ''], [5, 6, 7]));
+        });
+        if (groups.length) {
+          const all = invs;
+          paper.append(el2('h3', 'rs', esc(L.repGrand)));
+          paper.append(kpis([[all.filter(v => v.status === 'issued').length, L.kInv], [money(sum(all, v => v.total)), L.kTotal], [money(sum(all, v => v.amount_paid)), L.kPaid], [money(sum(all, v => dueOf(v))), L.kDue]]));
+        }
+        paper.append(el2('p', 'small', esc(L.nonVat)));
+      }
+    } else if (kind === 'drivers') {
+      const docCell = (d, col, key) => {
+        const st = docStates(d).find(x => x.key === key).state, v = d[col];
+        const cls = st === 'expired' || st === 'missing' ? 'bad' : st === 'soon' ? 'soon' : '';
+        return { html: `<span class="${cls}">${v ? esc(fmtDay(v)) : esc(L.docMissing(''))}</span>` };
+      };
+      const data = drivers.map((d, i) => [i + 1, d.name, { html: `<span dir="ltr">${esc(d.phone)}</span>` }, (L.contract[d.contract_type] || '') + (d.company_name ? ' · ' + d.company_name : ''), L.truck[d.truck_size] || '', d.plate_number || '',
+        docCell(d, 'voc_expiry', 'voc'), docCell(d, 'license_expiry', 'license'), docCell(d, 'insurance_expiry', 'insurance'), L.dst[d.status] || d.status,
+        reqs.filter(r => r.driver_id === d.id && r.status === 'done').length, rows.filter(r => r.driver_id === d.id && ACTIVE.includes(r.status)).length]);
+      paper.append(data.length ? table([L.hNo, L.hName, L.hMobile, L.hContract, L.hTruck, L.hPlate, L.hVoc, L.hLic, L.hIns, L.hStatus, L.hDoneP, L.hActive], data, null, [10, 11]) : el2('p', null, esc(L.repEmpty)));
+    }
+    finishPaper(paper);
+
+    const { top, acts } = sheetTop(titles[kind]);
+    const pr = el2('button', 'btn', esc(L.print)); pr.type = 'button';
+    pr.onclick = () => {
+      if (kind !== 'summary') { const st = document.createElement('style'); st.id = 'pageSize'; st.textContent = '@page{size:A4 landscape;margin:10mm}'; document.head.append(st); }
+      document.body.classList.add('printing'); window.print();
+    };
+    acts.prepend(pr);
+    sheet.replaceChildren(top, paper);
+    sheet.style.maxWidth = kind === 'summary' ? '' : '1180px';
+    modal.hidden = false;
+  }
+  document.querySelectorAll('[data-rep]').forEach(b => b.addEventListener('click', () => openReport(b.dataset.rep)));
 
   // ===== السائقون / Drivers =====
   function renderDrivers(){
