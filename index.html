@@ -7,7 +7,7 @@
 <meta name="description" content="قريب مني (Qareeb Minni): نقل الأثاث وتخزينه في مسقط بسعر ثابت تعرفه مسبقاً، مع جرد مصوّر ومستودع مغلق ومؤمّن.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300..700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap">
 <style>
   /* Layout: hero splits text and the request form side by side; sections stack below on a quiet ivory ground. */
   :root{
@@ -193,6 +193,74 @@
     .bar .btn-ghost{display:none}
     section{padding-block:52px}
   }
+
+  [hidden]{display:none!important}
+  /* ===== v4 theme: petrol + mint + gold, Tajawal ===== */
+  :root{
+    --ivory:#F3F7F6; --sand:#E8F3F0; --card:#FFFFFF;
+    --navy:#0D2B33; --navy-2:#164550; --muted:#4E6266;
+    --brass:#D9B77C; --brass-text:#1F7F6C; --mint:#6EE0C8; --mint-d:#1F8F79;
+    --petrol-0:#08232A; --border:#D3E1DD;
+    --display:"Tajawal",Tahoma,sans-serif; --body:"Tajawal",Tahoma,sans-serif;
+  }
+  body{font-size:17.5px}
+  h1,h2,h3{font-weight:800}
+  :focus-visible{outline-color:var(--mint)}
+  header{background:rgba(8,35,42,.82);border-bottom:1px solid rgba(255,255,255,.08);color:#fff;backdrop-filter:blur(14px) saturate(140%)}
+  header .brand .ar{color:#fff} header .brand .en{color:#9FC9C0}
+  header .brand svg path,header .brand svg circle{stroke:var(--mint)} header .brand svg .house{stroke:var(--brass)}
+  nav a{color:#B9D0CC} nav a:hover{color:#fff}
+  .lang{color:#fff;border-color:rgba(255,255,255,.25)} .lang:hover{border-color:var(--mint)}
+  header .btn-ghost{color:var(--petrol-0);background:var(--mint);border-color:var(--mint)}
+  .btn{transition:background .2s,transform .2s,box-shadow .2s}
+  .btn-primary{background:var(--navy);color:#fff}
+  .btn-primary:hover{background:var(--navy-2);transform:translateY(-2px);box-shadow:0 10px 24px -12px rgba(13,43,51,.6)}
+
+  .hero{background:radial-gradient(900px 500px at 85% -10%,rgba(110,224,200,.22),transparent 60%),radial-gradient(700px 500px at 0% 110%,rgba(217,183,124,.16),transparent 60%),linear-gradient(160deg,var(--petrol-0),#0D3139 55%,#0B2A31);color:#fff;padding-block:64px 84px}
+  .hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse at 30% 30%,#000 20%,transparent 70%);pointer-events:none}
+  .hero .wrap{position:relative}
+  .hero .eyebrow{background:rgba(110,224,200,.12);color:var(--mint);border:1px solid rgba(110,224,200,.35)}
+  .hero h1 .hl{color:var(--mint)}
+  .hero p.lead{color:#C4D6D3}
+  .hero .btn-primary{background:var(--mint);color:var(--petrol-0);font-weight:800}
+  .hero .btn-primary:hover{background:#8AEAD6;box-shadow:0 12px 30px -10px rgba(110,224,200,.6)}
+  .hero .route path,.hero .route circle{stroke:rgba(255,255,255,.85)} .hero .route .house{stroke:var(--brass)}
+  .hero .route .truck rect,.hero .route .truck circle{fill:var(--mint);stroke:none}
+  .hero .route .truck .cab{fill:var(--brass)}
+  .trust li{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#B9CECB;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  .trust b{color:#fff}
+  .form-card{background:rgba(255,255,255,.98);color:var(--navy);border:1px solid rgba(255,255,255,.6);box-shadow:0 30px 70px -30px rgba(0,0,0,.6),0 0 0 8px rgba(255,255,255,.06)}
+  .form-card .err{color:var(--error)}
+  .form-card input[type=text],.form-card input[type=tel],.form-card input[type=date],.form-card select,.form-card textarea{background:#F4F8F7;border-color:#D3E1DD}
+  .form-card input:focus,.form-card select:focus,.form-card textarea:focus{border-color:var(--mint-d);background:#fff;box-shadow:0 0 0 3px rgba(110,224,200,.25)}
+  .phone span{background:#E8F3F0;color:var(--navy)}
+  .seg label{background:#F4F8F7}
+  details.more[open]{background:#F9FCFB}
+  .consent input{accent-color:var(--mint-d)}
+  .demo{background:#E8F3F0;color:var(--navy)}
+  .seg input:checked+label{border-color:var(--mint-d);box-shadow:inset 0 0 0 1px var(--mint-d);background:#F1FBF8}
+  details.more summary,.loc-btn{color:var(--mint-d)}
+
+  .alt{background:var(--sand)}
+  .card{transition:transform .25s,box-shadow .25s}
+  .card:hover{transform:translateY(-4px);box-shadow:0 20px 40px -24px rgba(13,43,51,.45)}
+  .icon{stroke:var(--mint-d)}
+  .card.feature{background:linear-gradient(160deg,var(--navy),var(--navy-2));border-color:transparent}
+  .card.feature p{color:#C4D6D3} .card.feature .for{color:var(--mint)} .feature .icon{stroke:var(--mint)}
+  .steps{position:relative}
+  .steps-track{position:absolute;top:44px;inset-inline:40px;height:3px;background:rgba(13,43,51,.1);border-radius:3px;overflow:hidden;z-index:0}
+  .steps-track i{position:absolute;inset:0;background:linear-gradient(90deg,var(--mint),var(--brass));transform-origin:right center;transform:scaleX(0)}
+  [dir=ltr] .steps-track i{transform-origin:left center}
+  .steps li{position:relative;z-index:1}
+  .steps li::before{background:var(--navy);color:var(--mint)}
+  .ptable td:last-child{color:var(--navy)}
+  .why div{border-top-color:var(--mint)}
+  .cta{background:radial-gradient(600px 300px at 90% 0%,rgba(110,224,200,.25),transparent 60%),linear-gradient(150deg,var(--petrol-0),var(--navy-2))}
+  .cta p{color:#C4D6D3}
+  .cta .btn-primary{background:var(--mint);color:var(--petrol-0)}
+  .mbar{background:rgba(8,35,42,.92)!important;border-top-color:rgba(255,255,255,.08)!important}
+  .mbar .btn-primary{background:var(--mint);color:var(--petrol-0)}
+  @media (max-width:960px){.steps-track{display:none}}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
 </style>
 </head>
@@ -241,6 +309,7 @@
           <path d="M58 118c-4 3-1 7 4 5C100 112 150 128 168 108C182 92 140 86 150 70C160 54 210 70 236 76C248 79 256 80 262 78c4-2 2-6-2-4"/>
           <path d="M262 74C257 66 240 54 240 34A22 22 0 1 1 284 34C284 54 267 66 262 74Z"/>
           <path class="house" d="M253 37L262 29L271 37V45H253Z"/>
+          <g class="truck" opacity="0"><rect x="-9" y="-6" width="12" height="9" rx="1.5"/><rect class="cab" x="3" y="-3" width="6" height="6" rx="1.5"/><circle cx="-5" cy="4.5" r="2"/><circle cx="5" cy="4.5" r="2"/></g>
         </svg>
         <ul class="trust">
           <li data-i18n="trust1"><b>نقل وتخزين</b>من جهة واحدة، بمستودعنا في العامرات</li>
@@ -409,12 +478,12 @@
         <h2 data-i18n="howTitle">كيف نعمل</h2>
         <p data-i18n="howSub">من الطلب إلى التسليم في أربع خطوات واضحة.</p>
       </div>
-      <ol class="steps">
+      <div style="position:relative"><div class="steps-track" aria-hidden="true"><i></i></div><ol class="steps">
         <li data-i18n="st1"><h3>أرسل طلبك</h3><p>عبر الاستمارة أو واتساب، مع صور أغراضك إن أمكن.</p></li>
         <li data-i18n="st2"><h3>نتصل بك</h3><p>نؤكد التفاصيل، ونرسل لك عرض سعر مكتوباً.</p></li>
         <li data-i18n="st3"><h3>وقّع وأكّد بعربون</h3><p>توقّع على العرض والشروط من جوالك، وتدفع العربون فنثبّت موعدك.</p></li>
         <li data-i18n="st4"><h3>ننقل ونسلّم</h3><p>جرد مصوّر وتوقيعك عند التحميل والتسليم، وتدفع الباقي على دفعتين.</p></li>
-      </ol>
+      </ol></div>
     </div>
   </section>
 
@@ -737,6 +806,62 @@
     $('formView').hidden = false;
     $('name').focus();
   });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/MotionPathPlugin.min.js"></script>
+<script>
+/* ===== GSAP motion (preview). Content stays visible if GSAP fails to load or motion is reduced. ===== */
+(function(){
+  if(!window.gsap) return;
+  gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+  const mm = gsap.matchMedia();
+  mm.add('(prefers-reduced-motion: no-preference)', () => {
+    const ease='power3.out';
+    // 1) Hero entrance
+    const tl=gsap.timeline({defaults:{ease,duration:.8}});
+    tl.from('.hero .eyebrow',{y:16,opacity:0})
+      .from('.hero h1',{y:28,opacity:0,clipPath:'inset(0 0 100% 0)'},'-=.5')
+      .from('.hero p.lead',{y:18,opacity:0},'-=.5')
+      .from('.hero .hero-cta > *',{y:14,opacity:0,stagger:.08},'-=.5')
+      .from('.form-card',{y:30,opacity:0,duration:.7},'<-.3')
+      .from('.trust li',{y:18,opacity:0,stagger:.08},'-=.3');
+    // 2) Route draws, then the truck drives to the new home
+    const svg=document.querySelector('.hero .route');
+    if(svg){
+      const paths=svg.querySelectorAll('path,circle');
+      paths.forEach(p=>{const L=p.getTotalLength?p.getTotalLength():300;gsap.set(p,{strokeDasharray:L,strokeDashoffset:L});});
+      const road=svg.querySelectorAll('path')[1];
+      tl.to(paths,{strokeDashoffset:0,duration:1.6,stagger:.15,ease:'power2.inOut'},.4)
+        .set('.hero .route .truck',{opacity:1},'-=.9')
+        .to('.hero .route .truck',{duration:2.2,ease:'power1.inOut',motionPath:{path:road,align:road,alignOrigin:[.5,.5],autoRotate:true}},'-=.9')
+        .to('.hero .route .truck',{opacity:0,duration:.3})
+        .from('.hero .route .house',{scale:.6,transformOrigin:'50% 100%',duration:.5,ease:'back.out(3)'},'-=.3');
+    }
+    // 3) Section headings + cards reveal on scroll
+    gsap.utils.toArray('.sec-head').forEach(h=>gsap.from(h.children,{y:24,opacity:0,stagger:.1,duration:.7,ease,scrollTrigger:{trigger:h,start:'top 85%'}}));
+    ['.cards .card','.packs .pack','.ptable','.why > div'].forEach(sel=>{
+      const els=gsap.utils.toArray(sel); if(!els.length) return;
+      gsap.from(els,{y:40,opacity:0,stagger:.12,duration:.8,ease,scrollTrigger:{trigger:els[0].parentElement,start:'top 82%'}});
+    });
+    // 4) "How it works": progress line grows with scroll, steps pop in
+    gsap.to('.steps-track i',{scaleX:1,ease:'none',scrollTrigger:{trigger:'#how .steps',start:'top 75%',end:'bottom 55%',scrub:.6}});
+    gsap.from('.steps li',{y:30,opacity:0,stagger:.18,duration:.7,ease,scrollTrigger:{trigger:'#how .steps',start:'top 80%'}});
+    // 5) Price counters (reads the current language text, so AR/EN both work)
+    document.querySelectorAll('.ptable td:last-child').forEach(td=>{
+      ScrollTrigger.create({trigger:td,start:'top 90%',once:true,onEnter:()=>{
+        const txt=td.textContent, m=txt.match(/\d+/); if(!m) return;
+        const o={v:0}, n=+m[0];
+        gsap.to(o,{v:n,duration:1.2,ease:'power2.out',onUpdate:()=>{td.textContent=txt.replace(m[0],Math.round(o.v));},onComplete:()=>{td.textContent=txt;}});
+      }});
+    });
+    // 6) Closing CTA
+    gsap.from('.cta',{scale:.96,opacity:0,duration:.8,ease,scrollTrigger:{trigger:'.cta',start:'top 85%'}});
+    // 7) Gentle WhatsApp pulse (only when the number is set and buttons are shown)
+    if(document.querySelector('.wa-link:not([hidden])')) gsap.to('.wa-link:not([hidden])',{scale:1.05,duration:.6,repeat:-1,yoyo:true,repeatDelay:2.4,ease:'sine.inOut'});
+  });
+})();
 </script>
 </body>
 </html>
