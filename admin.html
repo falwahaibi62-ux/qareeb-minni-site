@@ -46,6 +46,9 @@
   .login-card p{margin:0;color:var(--muted)}
   .login-card label{display:grid;gap:6px;font-weight:600}
   .msg{font-size:14px;color:var(--error);min-height:1em}
+  .msg.ok{color:var(--ok)}
+  .login-card[hidden]{display:none}
+  .link-btn{background:none;border:0;padding:0;color:var(--muted);text-decoration:underline;cursor:pointer;justify-self:start;font:inherit;font-size:14px}
 
   /* Header + tabs */
   header{position:sticky;top:0;z-index:10;background:rgba(250,247,242,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
@@ -284,6 +287,15 @@
     <label><span data-t="password">كلمة المرور</span><input type="password" id="password" autocomplete="current-password" required dir="ltr"></label>
     <button class="btn" type="submit" id="loginBtn" data-t="login">دخول</button>
     <span class="msg" id="loginMsg" role="alert"></span>
+    <button class="link-btn" type="button" id="forgotBtn" data-t="forgot">نسيت كلمة المرور؟</button>
+  </form>
+  <form class="login-card" id="newPassForm" hidden>
+    <h1 data-t="newPassT">كلمة مرور جديدة</h1>
+    <p data-t="newPassP"></p>
+    <label><span data-t="newPass1">كلمة المرور الجديدة</span><input type="password" id="newPass1" autocomplete="new-password" minlength="8" required dir="ltr"></label>
+    <label><span data-t="newPass2">أعيدي كتابتها</span><input type="password" id="newPass2" autocomplete="new-password" minlength="8" required dir="ltr"></label>
+    <button class="btn" type="submit" id="newPassBtn" data-t="newPassSave">حفظ كلمة المرور</button>
+    <span class="msg" id="newPassMsg" role="alert"></span>
   </form>
 </div>
 
@@ -466,7 +478,7 @@
       errRConsent: 'موافقة العميل مطلوبة قبل حفظ بياناته', errCustName: 'اكتبي اسم العميل', errWil: 'اختاري الولاية', reqCreated: 'تم إنشاء الطلب ✓',
       srcLabel: 'المصدر', src: { website: 'الموقع', phone: 'اتصال هاتفي', whatsapp: 'واتساب', walkin: 'حضور', other: 'أخرى' },
       wilChoose: '— اختاري —',
-      badLogin: 'البريد أو كلمة المرور غير صحيحة.', noLib: 'تعذّر تحميل مكتبة الاتصال. تحقق من الإنترنت وحدّث الصفحة.',
+      badLogin: 'البريد أو كلمة المرور غير صحيحة.', forgot: 'نسيت كلمة المرور؟', forgotNeedEmail: 'اكتبي بريدك الإلكتروني أولاً ثم اضغطي «نسيت كلمة المرور؟».', forgotSent: 'إذا كان البريد مسجّلاً، سيصلك رابط لتعيين كلمة مرور جديدة. افحصي البريد وقسم Spam.', forgotErr: 'تعذّر الإرسال: ', newPassT: 'كلمة مرور جديدة', newPassP: 'اكتبي كلمة مرور جديدة من 8 أحرف على الأقل.', newPass1: 'كلمة المرور الجديدة', newPass2: 'أعيدي كتابتها', newPassSave: 'حفظ كلمة المرور', newPassShort: 'كلمة المرور يجب أن تكون 8 أحرف على الأقل.', newPassMismatch: 'الكلمتان غير متطابقتين.', newPassDone: 'تم تغيير كلمة المرور ✓', noLib: 'تعذّر تحميل مكتبة الاتصال. تحقق من الإنترنت وحدّث الصفحة.',
       search: 'بحث بالاسم أو رقم الموبايل أو رقم الطلب', filterLabel: 'تصفية حسب الحالة',
       open: 'المفتوحة', all: 'الكل', updated: 'آخر تحديث', loadFail: 'تعذّر التحميل: ',
       emptyNone: 'لا توجد طلبات بعد. ستظهر هنا فور إرسالها من الموقع.', emptyFilter: 'لا توجد نتائج تطابق هذا التصنيف أو البحث.',
@@ -549,7 +561,7 @@
       errRConsent: 'The customer’s consent is needed before saving their details', errCustName: 'Enter the customer’s name', errWil: 'Choose the wilayat', reqCreated: 'Request created ✓',
       srcLabel: 'Source', src: { website: 'Website', phone: 'Phone call', whatsapp: 'WhatsApp', walkin: 'Walk-in', other: 'Other' },
       wilChoose: '— Choose —',
-      badLogin: 'Wrong email or password.', noLib: 'Could not load the connection library. Check your internet and reload the page.',
+      badLogin: 'Wrong email or password.', forgot: 'Forgot password?', forgotNeedEmail: 'Type your email first, then press “Forgot password?”.', forgotSent: 'If this email is registered, you will receive a link to set a new password. Check your inbox and Spam.', forgotErr: 'Could not send: ', newPassT: 'New password', newPassP: 'Type a new password of at least 8 characters.', newPass1: 'New password', newPass2: 'Repeat it', newPassSave: 'Save password', newPassShort: 'Password must be at least 8 characters.', newPassMismatch: 'The passwords do not match.', newPassDone: 'Password changed ✓', noLib: 'Could not load the connection library. Check your internet and reload the page.',
       search: 'Search by name, mobile or request number', filterLabel: 'Filter by status',
       open: 'Open', all: 'All', updated: 'Updated', loadFail: 'Could not load: ',
       emptyNone: 'No requests yet. They will appear here as soon as they are sent from the website.', emptyFilter: 'Nothing matches this filter or search.',
@@ -701,7 +713,7 @@
     const L = t(), inp = priceInputs[row.id];
     const p = parseOmr(inp.price.value), pct = Number(toLatin(inp.pct.value) || 0), ends = inp.ends.value;
     cell.replaceChildren();
-    const from = row.category === 'move' ? L.prFrom + ' ' : '';
+    const from = '';
     if (!(p > 0)) return;
     if (!(pct > 0)) { cell.append(el('span', null, from + money(p) + ' ' + (lang === 'en' ? 'OMR' : 'ر.ع'))); return; }
     cell.append(el('s', null, money(p)), el('b', null, from + money(discounted(p, pct)) + ' ' + (lang === 'en' ? 'OMR' : 'ر.ع')), el('span', 'off', '-' + pct + '%')); cell.lastChild.dir = 'ltr';
@@ -772,8 +784,40 @@
     $('loginMsg').textContent = t().noLib;
   } else {
     db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, storage: window.sessionStorage } });
-    db.auth.getSession().then(({ data }) => { if (data.session) showApp(data.session); });
+    // رابط «نسيت كلمة المرور» يعود إلى هذه الصفحة: نعرض نموذج كلمة المرور الجديدة بدل اللوحة
+    let recovering = /type=recovery/.test(location.hash);
+    const showNewPass = () => { recovering = true; $('loginForm').hidden = true; $('newPassForm').hidden = false; $('loginView').hidden = false; $('appView').hidden = true; };
+    if (recovering) showNewPass();
+    db.auth.onAuthStateChange(ev => { if (ev === 'PASSWORD_RECOVERY') showNewPass(); });
+    db.auth.getSession().then(({ data }) => { if (data.session && !recovering) showApp(data.session); });
+    $('newPassForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const L = t(), a = $('newPass1').value, b = $('newPass2').value, m = $('newPassMsg'); m.className = 'msg';
+      if (a.length < 8) { m.textContent = L.newPassShort; return; }
+      if (a !== b) { m.textContent = L.newPassMismatch; return; }
+      $('newPassBtn').disabled = true;
+      const { data, error } = await db.auth.updateUser({ password: a });
+      $('newPassBtn').disabled = false;
+      if (error) { m.textContent = L.forgotErr + error.message; return; }
+      m.textContent = L.newPassDone; m.className = 'msg ok';
+      history.replaceState(null, '', location.pathname);
+      recovering = false; $('newPass1').value = $('newPass2').value = '';
+      setTimeout(async () => { const { data: s } = await db.auth.getSession(); $('newPassForm').hidden = true; $('loginForm').hidden = false; if (s.session) showApp(s.session); }, 1200);
+    });
   }
+
+  $('forgotBtn').addEventListener('click', async () => {
+    const L = t(), m = $('loginMsg'), email = $('email').value.trim(); m.className = 'msg';
+    if (!db) return;
+    if (!email || !$('email').checkValidity()) { m.textContent = L.forgotNeedEmail; $('email').focus(); return; }
+    // الرابط يعود دائماً إلى لوحة الإدارة على الموقع المنشور (لا يعمل الرجوع إلى ملف على الجهاز)
+    const back = location.protocol.startsWith('http') ? location.origin + location.pathname : 'https://falwahaibi62-ux.github.io/qareeb-minni-site/admin.html';
+    $('forgotBtn').disabled = true;
+    const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo: back });
+    $('forgotBtn').disabled = false;
+    if (error) { m.textContent = L.forgotErr + error.message; return; }
+    m.textContent = L.forgotSent; m.className = 'msg ok';
+  });
 
   $('loginForm').addEventListener('submit', async e => {
     e.preventDefault();
