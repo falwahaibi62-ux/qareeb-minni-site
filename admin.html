@@ -245,6 +245,29 @@
     .items td.num{width:80px}
     .items td.qty{width:56px}
   }
+
+  /* الأسعار والعروض */
+  .pr-head{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:end;margin:20px 0 14px}
+  .pr-head h3{margin:0;font-family:var(--display);font-size:20px}
+  .pr-promo{display:flex;gap:10px;flex-wrap:wrap}
+  .pr-promo label{display:grid;gap:4px;font-size:13px;font-weight:600;min-width:220px}
+  .pr-cat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:6px 18px 12px;margin-bottom:16px;overflow-x:auto}
+  .pr-cat h4{font-family:var(--display);font-size:17px;margin:12px 0 6px}
+  .pr-cat table{width:100%;border-collapse:collapse;min-width:640px}
+  .pr-cat th{font-size:12.5px;color:var(--muted);font-weight:600;text-align:start;padding:6px 6px}
+  .pr-cat td{border-top:1px solid var(--border);padding:8px 6px;vertical-align:middle}
+  .pr-cat td.lbl{font-weight:600}
+  .pr-cat input.pct{width:80px;text-align:center}
+  .pr-cat input.omr{width:110px}
+  .pr-prev{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .pr-prev > *{display:inline-block;unicode-bidi:isolate;margin-inline-end:8px}
+  .pr-prev s{color:var(--muted)}
+  .pr-prev b{color:#1F7F6C}
+  .pr-prev .off{display:inline-block;background:#E3F7F1;color:#0D5C4E;border-radius:99px;padding:1px 8px;font-size:12px;font-weight:700;margin-inline-start:6px}
+  .pr-prev .exp{color:var(--error);font-size:12px;font-weight:600}
+  .pr-save{padding-bottom:10px}
+  .pr-legal{padding-bottom:48px;max-width:760px}
+  .pr-cat .rowerr{color:var(--error);font-size:12px;display:block}
 </style>
 </head>
 <body>
@@ -280,6 +303,7 @@
         <button class="tab" role="tab" id="tabReq" aria-selected="true" data-t="tabRequests">الطلبات</button>
         <button class="tab" role="tab" id="tabDrv" aria-selected="false" data-t="tabDrivers">السائقون</button>
         <button class="tab" role="tab" id="tabRep" aria-selected="false" data-t="tabReports">التقارير</button>
+        <button class="tab" role="tab" id="tabPri" aria-selected="false" data-t="tabPrices">الأسعار والعروض</button>
       </nav>
       <div class="who">
         <a class="pol" href="policies.html" target="_blank" rel="noopener" data-t="policies">الشروط والسياسات</a>
@@ -383,6 +407,23 @@
       <div class="rp-card"><h4 data-t="repDrvT">تقرير السائقين التفصيلي</h4><p data-t="repDrvP"></p><button class="btn" type="button" data-rep="drivers" data-t="repOpen">عرض التقرير</button></div>
     </div>
   </main>
+  <!-- الأسعار والعروض / Prices & offers -->
+  <main class="wrap" id="priPane" hidden>
+    <div class="pr-head">
+      <div><h3 data-t="prT">الأسعار والعروض</h3><p class="hint" data-t="prHint"></p></div>
+      <div class="pr-promo">
+        <label><span data-t="prPromoAr">عنوان العرض (عربي)</span><input id="prPromoAr" maxlength="60"></label>
+        <label><span data-t="prPromoEn">عنوان العرض (إنجليزي)</span><input id="prPromoEn" maxlength="60" dir="ltr"></label>
+      </div>
+    </div>
+    <div id="prBody"></div>
+    <div class="save-row pr-save">
+      <button class="btn" type="button" id="prSave" data-t="prSave">حفظ ونشر في الموقع</button>
+      <button class="btn btn-ghost" type="button" id="prClear" data-t="prClear">إلغاء كل الخصومات</button>
+      <span class="saved" id="prMsg" aria-live="polite"></span>
+    </div>
+    <p class="hint pr-legal" data-t="prLegal"></p>
+  </main>
 </div>
 
 <!-- الفاتورة / Invoice -->
@@ -402,7 +443,7 @@
       docTitle: 'لوحة الطلبات | قريب مني', title: 'لوحة الطلبات', brand: 'قريب مني', staffOnly: 'قريب مني · للموظفين فقط',
       email: 'البريد الإلكتروني', password: 'كلمة المرور', login: 'دخول', logout: 'خروج', refresh: 'تحديث',
       tabRequests: 'الطلبات', tabDrivers: 'السائقون', policies: 'الشروط والسياسات',
-      tabReports: 'التقارير', vTable: 'جدول', vCards: 'بطاقات', colPref: 'الموعد', colInv: 'الفاتورة', openReq: 'فتح الطلب', shownN: n => `${n} طلب`, repPeriod: 'فترة التقرير', repPreset: 'الفترة', repFrom: 'من تاريخ', repTo: 'إلى تاريخ', repOpen: 'عرض التقرير',
+      tabReports: 'التقارير', tabPrices: 'الأسعار والعروض', prT: 'الأسعار والعروض', prHint: 'غيّري السعر أو أضيفي نسبة خصم وتاريخ انتهائه، ثم اضغطي حفظ. يظهر التغيير في الموقع فوراً.', prPromoAr: 'عنوان العرض (عربي)', prPromoEn: 'عنوان العرض (إنجليزي)', prSave: 'حفظ ونشر في الموقع', prClear: 'إلغاء كل الخصومات', prMove: 'النقل داخل مسقط', prStore: 'التخزين الشهري', prColItem: 'البند', prColPrice: 'السعر (ر.ع)', prColPct: 'الخصم %', prColEnds: 'ينتهي في', prColPrev: 'كما يظهر في الموقع', prNoDisc: 'بدون خصم', prExpired: 'انتهى العرض', prSaved: 'تم الحفظ والنشر ✓', prErr: 'تعذّر الحفظ: ', prBadPrice: 'السعر يجب أن يكون أكبر من صفر', prBadPct: 'الخصم بين 0 و90%', prNeedEnd: 'حدّدي تاريخ انتهاء الخصم', prPastEnd: 'تاريخ الانتهاء مضى', prFix: 'صحّحي الأخطاء المظهرة أولاً', prNoTable: 'جدول الأسعار غير موجود. نفّذي ملف supabase-prices.sql أولاً.', prPlace: 'مثال: عرض الافتتاح', prConfirmClear: 'إلغاء كل الخصومات ونشر الأسعار الأصلية؟', prLegal: 'تنبيه: الخصم يُحسب من السعر الحالي ويُحفظ كل تغيير في سجل (السعر قبل وبعد، ومن غيّره). على حد علمي قد تتطلب العروض الترويجية في عُمان موافقة مسبقة من هيئة حماية المستهلك، فتأكدي منها قبل نشر أي خصم.', prFrom: 'من', vTable: 'جدول', vCards: 'بطاقات', colPref: 'الموعد', colInv: 'الفاتورة', openReq: 'فتح الطلب', shownN: n => `${n} طلب`, repPeriod: 'فترة التقرير', repPreset: 'الفترة', repFrom: 'من تاريخ', repTo: 'إلى تاريخ', repOpen: 'عرض التقرير',
       presets: { month: 'هذا الشهر', last: 'الشهر الماضي', quarter: 'آخر 3 أشهر', year: 'هذه السنة', custom: 'فترة مخصّصة' },
       repHint: 'الطلبات حسب تاريخ إرسالها، والفواتير حسب تاريخ إصدارها. التقارير تحتوي بيانات شخصية للعملاء، فلا تشاركيها خارج الإدارة.',
       repSumT: 'التقرير الإجمالي', repSumP: 'ملخص الطلبات والمالية للفترة: الأعداد والنسب والإيرادات والمحصّل والمتبقي.',
@@ -485,7 +526,7 @@
       docTitle: 'Requests board | Qareeb Minni', title: 'Requests board', brand: 'Qareeb Minni', staffOnly: 'Qareeb Minni · Staff only',
       email: 'Email', password: 'Password', login: 'Log in', logout: 'Log out', refresh: 'Refresh',
       tabRequests: 'Requests', tabDrivers: 'Drivers', policies: 'Terms & policies',
-      tabReports: 'Reports', vTable: 'Table', vCards: 'Cards', colPref: 'Service date', colInv: 'Invoice', openReq: 'Open request', shownN: n => `${n} request(s)`, repPeriod: 'Report period', repPreset: 'Period', repFrom: 'From date', repTo: 'To date', repOpen: 'View report',
+      tabReports: 'Reports', tabPrices: 'Prices & offers', prT: 'Prices & offers', prHint: 'Change a price or add a discount % with an end date, then press Save. The website updates immediately.', prPromoAr: 'Offer title (Arabic)', prPromoEn: 'Offer title (English)', prSave: 'Save & publish', prClear: 'Remove all discounts', prMove: 'Moving within Muscat', prStore: 'Monthly storage', prColItem: 'Item', prColPrice: 'Price (OMR)', prColPct: 'Discount %', prColEnds: 'Ends on', prColPrev: 'As shown on the website', prNoDisc: 'No discount', prExpired: 'Offer ended', prSaved: 'Saved and published ✓', prErr: 'Could not save: ', prBadPrice: 'Price must be more than zero', prBadPct: 'Discount must be 0 to 90%', prNeedEnd: 'Set the discount end date', prPastEnd: 'End date has passed', prFix: 'Fix the highlighted errors first', prNoTable: 'Prices table not found. Run supabase-prices.sql first.', prPlace: 'e.g. Opening offer', prConfirmClear: 'Remove all discounts and publish the original prices?', prLegal: 'Note: the discount is calculated from the current price and every change is logged (price before/after and who changed it). To my knowledge, promotions in Oman may need prior approval from the Consumer Protection Authority, so please confirm before publishing any discount.', prFrom: 'From', vTable: 'Table', vCards: 'Cards', colPref: 'Service date', colInv: 'Invoice', openReq: 'Open request', shownN: n => `${n} request(s)`, repPeriod: 'Report period', repPreset: 'Period', repFrom: 'From date', repTo: 'To date', repOpen: 'View report',
       presets: { month: 'This month', last: 'Last month', quarter: 'Last 3 months', year: 'This year', custom: 'Custom period' },
       repHint: 'Requests by the date they were sent; invoices by the date they were issued. Reports contain customers’ personal data, so do not share them outside management.',
       repSumT: 'Summary report', repSumP: 'Requests and finances for the period: counts, rates, invoiced, collected and outstanding.',
@@ -615,7 +656,7 @@
     $('rpHint').textContent = L.repHint;
     $('loginMsg').textContent = '';
     stampText();
-    if (!$('appView').hidden) { render(); renderDrivers(); }
+    if (!$('appView').hidden) { render(); renderDrivers(); renderPriceAdmin(); }
   }
   document.querySelectorAll('[data-lang-btn]').forEach(b => b.addEventListener('click', () => {
     lang = lang === 'ar' ? 'en' : 'ar';
@@ -631,10 +672,99 @@
     $('reqPane').hidden = name !== 'req';
     $('drvPane').hidden = name !== 'drv';
     $('repPane').hidden = name !== 'rep';
+    $('tabPri').setAttribute('aria-selected', String(name === 'pri'));
+    $('priPane').hidden = name !== 'pri';
+    if (name === 'pri') loadPrices();
   }
   $('tabReq').onclick = () => showTab('req');
   $('tabDrv').onclick = () => showTab('drv');
   $('tabRep').onclick = () => showTab('rep');
+  $('tabPri').onclick = () => showTab('pri');
+
+  // ===== الأسعار والعروض / Prices & offers =====
+  const PRICE_LABELS = {
+    pm1: ['غرفة أو ستوديو', 'Room or studio'], pm2: ['شقة غرفتين', 'Two-bedroom flat'],
+    pm3: ['شقة 3 غرف أو بيت صغير', '3-bedroom flat or small house'], pm4: ['فيلا', 'Villa'],
+    ps1: ['وحدة صغيرة (5 م²)', 'Small unit (5 m²)'], ps2: ['وحدة متوسطة (10 م²)', 'Medium unit (10 m²)'], ps3: ['وحدة كبيرة (20 م²)', 'Large unit (20 m²)']
+  };
+  let prices = null, priceInputs = {};
+  const muscatToday = () => new Date(Date.now() + 4 * 3600e3).toISOString().slice(0, 10);
+  const discounted = (p, pct) => Math.round(Number(p) * (100 - Number(pct)) * 10) / 1000;
+  async function loadPrices(){
+    if (!db) return;
+    $('prMsg').textContent = ''; $('prMsg').className = 'saved';
+    const { data, error } = await db.from('prices').select('*').order('category').order('sort');
+    if (error) { prices = null; $('prBody').replaceChildren(); $('prMsg').textContent = /relation|does not exist|schema cache/i.test(error.message) ? t().prNoTable : t().prErr + error.message; $('prMsg').className = 'saved err'; return; }
+    prices = data; renderPriceAdmin();
+  }
+  function pricePreview(cell, row){
+    const L = t(), inp = priceInputs[row.id];
+    const p = parseOmr(inp.price.value), pct = Number(toLatin(inp.pct.value) || 0), ends = inp.ends.value;
+    cell.replaceChildren();
+    const from = row.category === 'move' ? L.prFrom + ' ' : '';
+    if (!(p > 0)) return;
+    if (!(pct > 0)) { cell.append(el('span', null, from + money(p) + ' ' + (lang === 'en' ? 'OMR' : 'ر.ع'))); return; }
+    cell.append(el('s', null, money(p)), el('b', null, from + money(discounted(p, pct)) + ' ' + (lang === 'en' ? 'OMR' : 'ر.ع')), el('span', 'off', '-' + pct + '%')); cell.lastChild.dir = 'ltr';
+    if (ends && ends < muscatToday()) cell.append(el('div', 'exp', L.prExpired));
+  }
+  function renderPriceAdmin(){
+    if (!prices) return;
+    const L = t(), box = $('prBody'); box.replaceChildren(); priceInputs = {};
+    const withPromo = prices.find(r => r.promo_ar || r.promo_en) || {};
+    if (!$('prPromoAr').dataset.touched) $('prPromoAr').value = withPromo.promo_ar || '';
+    if (!$('prPromoEn').dataset.touched) $('prPromoEn').value = withPromo.promo_en || '';
+    $('prPromoAr').placeholder = L.prPlace; $('prPromoEn').placeholder = 'e.g. Opening offer';
+    [['move', L.prMove], ['storage', L.prStore]].forEach(([cat, title]) => {
+      const list = prices.filter(r => r.category === cat); if (!list.length) return;
+      const wrap = el('div', 'pr-cat'); wrap.append(el('h4', null, title));
+      const tb = el('table'), hr = el('tr');
+      [L.prColItem, L.prColPrice, L.prColPct, L.prColEnds, L.prColPrev].forEach(h => hr.append(el('th', null, h)));
+      tb.append(hr);
+      list.forEach(r => {
+        const tr = el('tr'), lb = PRICE_LABELS[r.id] || [r.id, r.id];
+        const price = omrInput(r.price); price.className = 'omr';
+        const pct = el('input'); pct.type = 'number'; pct.min = 0; pct.max = 90; pct.step = 1; pct.className = 'pct'; pct.placeholder = '0'; pct.dir = 'ltr';
+        if (Number(r.discount_pct) > 0) pct.value = Number(r.discount_pct);
+        const ends = el('input'); ends.type = 'date'; ends.min = muscatToday(); ends.value = r.discount_ends || '';
+        const prev = el('td', 'pr-prev'), err = el('span', 'rowerr');
+        priceInputs[r.id] = { price, pct, ends, err, row: r };
+        [price, pct, ends].forEach(i => i.addEventListener('input', () => { err.textContent = ''; pricePreview(prev, r); }));
+        const c1 = el('td', 'lbl', lb[lang === 'en' ? 1 : 0]); c1.append(err);
+        const c2 = el('td'), c3 = el('td'), c4 = el('td'); c2.append(price); c3.append(pct); c4.append(ends);
+        tr.append(c1, c2, c3, c4, prev); tb.append(tr);
+        pricePreview(prev, r);
+      });
+      wrap.append(tb); box.append(wrap);
+    });
+  }
+  ['prPromoAr', 'prPromoEn'].forEach(id => $(id).addEventListener('input', () => { $(id).dataset.touched = '1'; }));
+  async function savePrices(clearAll){
+    const L = t(), today = muscatToday(), updates = []; let bad = false;
+    const pa = $('prPromoAr').value.trim() || null, pe = $('prPromoEn').value.trim() || null;
+    Object.values(priceInputs).forEach(({ price, pct, ends, err, row }) => {
+      const p = parseOmr(price.value), d = clearAll ? 0 : Number(toLatin(pct.value) || 0), e = clearAll ? null : (ends.value || null);
+      err.textContent = '';
+      if (!(p > 0)) { err.textContent = L.prBadPrice; bad = true; return; }
+      if (!(d >= 0 && d <= 90)) { err.textContent = L.prBadPct; bad = true; return; }
+      if (d > 0 && !e) { err.textContent = L.prNeedEnd; bad = true; return; }
+      if (d > 0 && e < today) { err.textContent = L.prPastEnd; bad = true; return; }
+      const rec = { price: p, discount_pct: d, discount_ends: d > 0 ? e : null, promo_ar: d > 0 ? pa : null, promo_en: d > 0 ? pe : null };
+      const changed = Number(row.price) !== p || Number(row.discount_pct) !== d || (row.discount_ends || null) !== rec.discount_ends || (row.promo_ar || null) !== rec.promo_ar || (row.promo_en || null) !== rec.promo_en;
+      if (changed) updates.push([row.id, rec]);
+    });
+    if (bad) { $('prMsg').textContent = L.prFix; $('prMsg').className = 'saved err'; return; }
+    $('prSave').disabled = $('prClear').disabled = true;
+    for (const [id, rec] of updates) {
+      const { error } = await db.from('prices').update(rec).eq('id', id);
+      if (error) { $('prMsg').textContent = L.prErr + error.message; $('prMsg').className = 'saved err'; $('prSave').disabled = $('prClear').disabled = false; return; }
+    }
+    $('prSave').disabled = $('prClear').disabled = false;
+    delete $('prPromoAr').dataset.touched; delete $('prPromoEn').dataset.touched;
+    await loadPrices();
+    $('prMsg').textContent = L.prSaved; $('prMsg').className = 'saved';
+  }
+  $('prSave').onclick = () => savePrices(false);
+  $('prClear').onclick = () => { if (confirm(t().prConfirmClear)) savePrices(true); };
 
   // ===== الاتصال والدخول / Connection and login =====
   applyLang();

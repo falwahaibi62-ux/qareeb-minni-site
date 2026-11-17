@@ -261,6 +261,30 @@
   .mbar{background:rgba(8,35,42,.92)!important;border-top-color:rgba(255,255,255,.08)!important}
   .mbar .btn-primary{background:var(--mint);color:var(--petrol-0)}
   @media (max-width:960px){.steps-track{display:none}}
+
+  /* ===== Offers / discounts ===== */
+  .promo-chip{display:flex;width:fit-content;align-items:center;gap:8px;margin-bottom:14px;text-decoration:none;background:linear-gradient(90deg,rgba(217,183,124,.22),rgba(110,224,200,.18));border:1px solid rgba(217,183,124,.55);color:#fff;border-radius:999px;padding:6px 8px 6px 14px;font-weight:700;font-size:14.5px;position:relative;overflow:hidden}
+  [dir=rtl] .promo-chip{padding:6px 14px 6px 8px}
+  .promo-chip .pct{background:var(--brass);color:var(--petrol-0);border-radius:999px;padding:2px 10px;font-weight:800}
+  .promo-chip .arr{opacity:.8}
+  .promo-chip::after,.promo-banner::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.28) 50%,transparent 65%);transform:translateX(-120%);animation:shine 4.5s ease-in-out infinite}
+  @keyframes shine{0%,60%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+  .promo-banner{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:radial-gradient(500px 200px at 100% 0%,rgba(217,183,124,.35),transparent 60%),linear-gradient(135deg,var(--petrol-0),var(--navy-2));color:#fff;border-radius:var(--r-lg);padding:20px 24px;margin-bottom:24px}
+  .promo-banner .big{font-size:clamp(30px,4vw,42px);font-weight:800;line-height:1;color:var(--brass);font-variant-numeric:tabular-nums}
+  .promo-banner .t{font-weight:800;font-size:19px}
+  .promo-banner .s{color:#C4D6D3;font-size:14.5px}
+  .promo-banner .left{display:flex;align-items:center;gap:16px}
+  .promo-banner .timer{display:flex;gap:8px}
+  .promo-banner .timer div{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:6px 10px;text-align:center;min-width:58px}
+  .promo-banner .timer b{display:block;font-size:22px;font-variant-numeric:tabular-nums;color:var(--mint)}
+  .promo-banner .timer small{font-size:11px;color:#9FC0BB}
+  .ptable tr.has-off td{background:linear-gradient(90deg,transparent,rgba(110,224,200,.10),transparent)}
+  .pr-cell > *{unicode-bidi:isolate}
+  .pr-cell{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  .pr-old{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(179,38,30,.7);text-decoration-thickness:2px;font-weight:500;font-size:14px}
+  .pr-new{color:var(--mint-d);font-weight:800;font-size:18px}
+  .pr-off{background:var(--brass);color:var(--petrol-0);border-radius:999px;padding:1px 9px;font-size:12.5px;font-weight:800}
+  @media (prefers-reduced-motion:reduce){.promo-chip::after,.promo-banner::after{animation:none;display:none}}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
 </style>
 </head>
@@ -296,6 +320,7 @@
   <div class="hero">
     <div class="wrap hero-grid">
       <div>
+        <a class="promo-chip" id="promoChip" href="#prices" hidden></a>
         <span class="eyebrow" data-i18n="eyebrow">نقل وتخزين الأثاث في مسقط</span>
         <h1 data-i18n="h1">ننقل ونخزّن أثاثك، بسعر مكتوب وجرد مصوّر ومسؤولية واضحة</h1>
         <p class="lead" data-i18n="lead">من بيتك إلى مستودعنا إلى بيتك الجديد، مع جهة واحدة مسؤولة عن كل خطوة. تعرف السعر مكتوباً قبل أن تبدأ، وتوقّع على جرد أغراضك عند التحميل والتسليم.</p>
@@ -494,6 +519,7 @@
         <h2 data-i18n="prTitle">الأسعار</h2>
         <p data-i18n="prSub">أسعار تقريبية تبدأ منها، والسعر النهائي يصلك بعد معرفة حجم أغراضك.</p>
       </div>
+      <div class="promo-banner" id="promoBanner" hidden></div>
       <div class="prices">
         <div class="ptable">
           <h3 data-i18n="prMove">النقل داخل مسقط</h3>
@@ -703,7 +729,59 @@
       a.href = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(MSG[l].wa);
     });
     try { localStorage.setItem('qm-lang', l); } catch (e) {}
+    renderPrices();
   }
+
+
+  // ===== الأسعار والعروض من لوحة الإدارة (جدول prices) =====
+  // الأسعار المكتوبة في الصفحة تبقى احتياطاً إذا تعذّر الاتصال.
+  let PRICES = null, promoTimer = null;
+  const omr = n => { const v = Math.round(Number(n || 0) * 1000) / 1000; return Number.isInteger(v) ? v.toLocaleString('en-US') : v.toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 }); };
+  const muscatToday = () => new Date(Date.now() + 4 * 3600e3).toISOString().slice(0, 10);
+  const offOf = r => r && Number(r.discount_pct) > 0 && r.discount_ends && r.discount_ends >= muscatToday() ? Number(r.discount_pct) : 0;
+  function renderPrices(){
+    if (!PRICES) return;
+    const en = lang === 'en', cur = en ? 'OMR' : 'ر.ع';
+    PRICES.forEach(r => {
+      const td = document.querySelector(`[data-i18n="${r.id}v"]`); if (!td) return;
+      const from = r.category === 'move' ? (en ? 'From ' : 'من ') : '';
+      const pct = offOf(r), tr = td.closest('tr');
+      tr.classList.toggle('has-off', pct > 0);
+      if (!pct) { td.innerHTML = `${from}<span class="n">${omr(r.price)}</span> ${cur}`; return; }
+      const now = Math.round(Number(r.price) * (100 - pct) * 10) / 1000;
+      td.innerHTML = `<span class="pr-cell"><span class="pr-old">${omr(r.price)}</span><span class="pr-new">${from}<span class="n">${omr(now)}</span> ${cur}</span><span class="pr-off" dir="ltr">-${pct}%</span></span>`;
+    });
+    renderPromo();
+  }
+  function renderPromo(){
+    const en = lang === 'en', act = PRICES.filter(offOf), chip = $('promoChip'), ban = $('promoBanner');
+    clearInterval(promoTimer);
+    if (!act.length) { chip.hidden = ban.hidden = true; return; }
+    const max = Math.max(...act.map(offOf));
+    const cats = [...new Set(act.map(r => r.category))];
+    const what = cats.length > 1 ? (en ? 'moving & storage' : 'النقل والتخزين') : cats[0] === 'move' ? (en ? 'moving' : 'النقل') : (en ? 'storage' : 'التخزين');
+    const title = (en ? act.find(r => r.promo_en) : act.find(r => r.promo_ar)) || {};
+    const name = (en ? title.promo_en : title.promo_ar) || (en ? 'Limited-time offer' : 'عرض لفترة محدودة');
+    const ends = act.map(r => r.discount_ends).sort()[0];
+    const endTxt = new Date(ends + 'T12:00:00').toLocaleDateString(en ? 'en-GB' : 'ar-OM-u-nu-latn', { day: 'numeric', month: 'long' });
+    const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    chip.innerHTML = `<span class="pct" dir="ltr">-${max}%</span><span>${esc(name)} · ${en ? 'on ' + what : 'على ' + what}</span><span class="arr">${en ? '→' : '←'}</span>`;
+    ban.innerHTML = `<div class="left"><div class="big">${en ? 'Up to' : 'حتى'}<br>${max}%</div><div><div class="t">${esc(name)}</div><div class="s">${en ? `Discount on ${what} · ends ${endTxt}` : `خصم على ${what} · ينتهي ${endTxt}`}</div></div></div><div class="timer" aria-label="${en ? 'Time left' : 'الوقت المتبقي'}"></div>`;
+    chip.hidden = ban.hidden = false;
+    const end = new Date(ends + 'T23:59:59+04:00').getTime(), box = ban.querySelector('.timer');
+    const tick = () => {
+      let s = Math.max(0, Math.floor((end - Date.now()) / 1000));
+      if (!s) { renderPrices(); return; }
+      const parts = [[Math.floor(s / 86400), en ? 'days' : 'يوم'], [Math.floor(s % 86400 / 3600), en ? 'hrs' : 'ساعة'], [Math.floor(s % 3600 / 60), en ? 'min' : 'دقيقة'], [s % 60, en ? 'sec' : 'ثانية']];
+      box.innerHTML = parts.map(([v, l]) => `<div><b>${String(v).padStart(2, '0')}</b><small>${l}</small></div>`).join('');
+    };
+    tick(); promoTimer = setInterval(tick, 1000);
+  }
+  fetch(SUPABASE_URL + '/rest/v1/prices?select=id,category,sort,price,discount_pct,discount_ends,promo_ar,promo_en&order=category,sort', {
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY }
+  }).then(r => r.ok ? r.json() : null).then(d => {
+    if (Array.isArray(d) && d.length) { PRICES = d; renderPrices(); if (window.qmCounters) window.qmCounters(); }
+  }).catch(() => {});
 
   $('langBtn').addEventListener('click', () => applyLang(lang === 'ar' ? 'en' : 'ar'));
   (() => {
@@ -848,14 +926,17 @@
     // 4) "How it works": progress line grows with scroll, steps pop in
     gsap.to('.steps-track i',{scaleX:1,ease:'none',scrollTrigger:{trigger:'#how .steps',start:'top 75%',end:'bottom 55%',scrub:.6}});
     gsap.from('.steps li',{y:30,opacity:0,stagger:.18,duration:.7,ease,scrollTrigger:{trigger:'#how .steps',start:'top 80%'}});
-    // 5) Price counters (reads the current language text, so AR/EN both work)
-    document.querySelectorAll('.ptable td:last-child').forEach(td=>{
-      ScrollTrigger.create({trigger:td,start:'top 90%',once:true,onEnter:()=>{
-        const txt=td.textContent, m=txt.match(/\d+/); if(!m) return;
-        const o={v:0}, n=+m[0];
-        gsap.to(o,{v:n,duration:1.2,ease:'power2.out',onUpdate:()=>{td.textContent=txt.replace(m[0],Math.round(o.v));},onComplete:()=>{td.textContent=txt;}});
+    // 5) Price counters on the number spans (re-run after live prices load)
+    window.qmCounters = () => document.querySelectorAll('.ptable .n').forEach(n => {
+      if (n.dataset.counted) return; n.dataset.counted = '1';
+      ScrollTrigger.create({trigger:n,start:'top 92%',once:true,onEnter:()=>{
+        const final=n.textContent, v=Number(final.replace(/,/g,'')); if(!(v>0)) return;
+        const o={v:0}, dec=final.includes('.');
+        gsap.to(o,{v,duration:1.2,ease:'power2.out',onUpdate:()=>{n.textContent=dec?o.v.toFixed(3):Math.round(o.v).toLocaleString('en-US');},onComplete:()=>{n.textContent=final;}});
       }});
     });
+    window.qmCounters();
+    gsap.from('#promoChip',{scale:.8,opacity:0,duration:.6,ease:'back.out(2)',delay:.2});
     // 6) Closing CTA
     gsap.from('.cta',{scale:.96,opacity:0,duration:.8,ease,scrollTrigger:{trigger:'.cta',start:'top 85%'}});
     // 7) Gentle WhatsApp pulse (only when the number is set and buttons are shown)
