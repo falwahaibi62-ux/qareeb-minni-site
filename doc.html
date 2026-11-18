@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpath d='M100 64V36A22 22 0 0 0 78 14H36A22 22 0 0 0 14 36V78A22 22 0 0 0 36 100H64' fill='none' stroke='%237C4DDB' stroke-width='15' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M70 70L86 86' stroke='%237C4DDB' stroke-width='15' stroke-linecap='round'/%3E%3Crect x='84' y='84' width='30' height='30' rx='8' fill='%23F27FC4'/%3E%3C/svg%3E">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
@@ -25,7 +26,7 @@
   .paper{max-width:820px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:30px}
   .ph{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-bottom:2px solid var(--brass);padding-bottom:14px;flex-wrap:wrap}
   .co{display:flex;gap:12px;align-items:center}
-  .co svg{width:84px;height:auto}
+  .co svg{width:54px;height:54px}
   .co svg path,.co svg circle{fill:none;stroke:var(--navy);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
   .co svg .h{stroke:var(--brass)}
   .co b{font-family:var(--display);font-size:20px;display:block}
@@ -80,7 +81,7 @@
           pm: { cash: 'Cash', transfer: 'Bank transfer', card: 'Card', other: 'Other' }, langBtn: 'عربي' }
   };
   const WIL_EN = { 'مسقط': 'Muscat', 'مطرح': 'Muttrah', 'بوشر': 'Bausher', 'السيب': 'Seeb', 'العامرات': 'Al Amerat', 'قريات': 'Qurayyat', 'ولاية أخرى': 'Another wilayat' };
-  const LOGO = '<svg viewBox="30 4 262 124" aria-hidden="true"><path d="M58 118C53 110 36 98 36 78A22 22 0 1 1 80 78C80 98 63 110 58 118Z"/><circle cx="58" cy="78" r="8"/><path d="M58 118c-4 3-1 7 4 5C100 112 150 128 168 108C182 92 140 86 150 70C160 54 210 70 236 76C248 79 256 80 262 78c4-2 2-6-2-4"/><path d="M262 74C257 66 240 54 240 34A22 22 0 1 1 284 34C284 54 267 66 262 74Z"/><path class="h" d="M253 37L262 29L271 37V45H253Z"/></svg>';
+  const LOGO = '<svg class="qm-mark" viewBox="0 0 120 120" aria-hidden="true"><path d="M100 64V36A22 22 0 0 0 78 14H36A22 22 0 0 0 14 36V78A22 22 0 0 0 36 100H64" style="fill:none;stroke:#1C1633;stroke-width:15;stroke-linecap:round;stroke-linejoin:round"/><path d="M70 70L86 86" style="fill:none;stroke:#1C1633;stroke-width:15;stroke-linecap:round"/><rect x="84" y="84" width="30" height="30" rx="8" style="fill:#1C1633;stroke:none"/></svg>';
   let lang = 'ar';
   try { const s = localStorage.getItem('qm-lang'); if (s === 'en' || s === 'ar') lang = s; } catch (e) {}
   let doc = null, state = 'loading';

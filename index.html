@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpath d='M100 64V36A22 22 0 0 0 78 14H36A22 22 0 0 0 14 36V78A22 22 0 0 0 36 100H64' fill='none' stroke='%237C4DDB' stroke-width='15' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M70 70L86 86' stroke='%237C4DDB' stroke-width='15' stroke-linecap='round'/%3E%3Crect x='84' y='84' width='30' height='30' rx='8' fill='%23F27FC4'/%3E%3C/svg%3E">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>قريب مني | وحدات تخزين آمنة في مسقط</title>
 <meta name="description" content="قريب مني (Qareeb Minni): وحدات تخزين خاصة في مسقط، آمنة ومكيّفة ومراقبة بالكاميرات ونظيفة، بقفلك الخاص وسعر شهري واضح.">
@@ -212,7 +213,7 @@
   header{background:transparent;border:0;backdrop-filter:none;padding-top:14px}
   header .bar{background:rgba(255,255,255,.6);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);border:1px solid rgba(255,255,255,.85);border-radius:999px;padding:8px 10px 8px 22px;box-shadow:0 10px 30px -18px rgba(28,22,51,.35);max-width:1140px}
   [dir=rtl] header .bar{padding:8px 22px 8px 10px}
-  header .brand svg{width:78px}
+  header .brand svg{width:42px;height:42px}
   header .brand svg path,header .brand svg circle{stroke:var(--navy)} header .brand svg .house{stroke:#D94BB0}
   header .brand .en{color:var(--muted)}
   nav a{color:var(--muted)} nav a:hover{color:var(--navy)}
@@ -355,7 +356,7 @@
   .pp-art.has-img img{display:block} .pp-art.has-img .pp-fallback{display:none}
   .pp-art::after{content:"";position:absolute;inset:auto 0 0 0;height:40%;background:linear-gradient(transparent,#0B2C33)}
   .pp-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center}
-  .pp-fallback svg{width:62%;margin-bottom:10px}
+  .pp-fallback svg{width:34%;margin-bottom:10px;filter:drop-shadow(0 10px 20px rgba(28,22,51,.25))}
   .pp-fallback path,.pp-fallback circle{fill:none;stroke:var(--mint);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
   .pp-fallback .house{stroke:var(--brass)}
   .pp-fallback .ex-en{font:800 15px/1 var(--display);letter-spacing:.28em;color:var(--brass)}
@@ -389,13 +390,7 @@
 <header>
   <div class="wrap bar">
     <a class="brand" href="#top" data-i18n-aria="aBrand" aria-label="قريب مني، الصفحة الرئيسية">
-      <svg viewBox="30 4 262 124" aria-hidden="true" class="route" style="margin:0">
-        <path d="M58 118C53 110 36 98 36 78A22 22 0 1 1 80 78C80 98 63 110 58 118Z"/>
-        <circle cx="58" cy="78" r="8"/>
-        <path d="M58 118c-4 3-1 7 4 5C100 112 150 128 168 108C182 92 140 86 150 70C160 54 210 70 236 76C248 79 256 80 262 78c4-2 2-6-2-4"/>
-        <path d="M262 74C257 66 240 54 240 34A22 22 0 1 1 284 34C284 54 267 66 262 74Z"/>
-        <path class="house" d="M253 37L262 29L271 37V45H253Z"/>
-      </svg>
+      <svg class="qm-mark" viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="qgH" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7FA8FF"/><stop offset=".35" stop-color="#A99BFF"/><stop offset=".62" stop-color="#D98BEA"/><stop offset=".85" stop-color="#F27FC4"/><stop offset="1" stop-color="#FFA98C"/></linearGradient></defs><path d="M100 64V36A22 22 0 0 0 78 14H36A22 22 0 0 0 14 36V78A22 22 0 0 0 36 100H64" style="fill:none;stroke:url(#qgH);stroke-width:15;stroke-linecap:round;stroke-linejoin:round"/><path d="M70 70L86 86" style="fill:none;stroke:url(#qgH);stroke-width:15;stroke-linecap:round"/><rect x="84" y="84" width="30" height="30" rx="8" style="fill:url(#qgH);stroke:none"/></svg>
       <span class="names"><span class="ar">قريب مني</span><span class="en">Qareeb Minni</span></span>
     </a>
     <nav data-i18n-aria="aNav" aria-label="أقسام الموقع">
@@ -649,7 +644,7 @@
     <div class="pp-art">
       <img id="ppImg" src="promo.jpg" alt="" decoding="async">
       <div class="pp-fallback" aria-hidden="true">
-        <svg viewBox="30 4 262 124"><path d="M58 118C53 110 36 98 36 78A22 22 0 1 1 80 78C80 98 63 110 58 118Z"/><circle cx="58" cy="78" r="8"/><path d="M58 118c-4 3-1 7 4 5C100 112 150 128 168 108C182 92 140 86 150 70C160 54 210 70 236 76C248 79 256 80 262 78c4-2 2-6-2-4"/><path d="M262 74C257 66 240 54 240 34A22 22 0 1 1 284 34C284 54 267 66 262 74Z"/><path class="house" d="M253 37L262 29L271 37V45H253Z"/></svg>
+        <svg class="qm-mark pp-mark" viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="qgP" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7FA8FF"/><stop offset=".35" stop-color="#A99BFF"/><stop offset=".62" stop-color="#D98BEA"/><stop offset=".85" stop-color="#F27FC4"/><stop offset="1" stop-color="#FFA98C"/></linearGradient></defs><path d="M100 64V36A22 22 0 0 0 78 14H36A22 22 0 0 0 14 36V78A22 22 0 0 0 36 100H64" style="fill:none;stroke:url(#qgP);stroke-width:15;stroke-linecap:round;stroke-linejoin:round"/><path d="M70 70L86 86" style="fill:none;stroke:url(#qgP);stroke-width:15;stroke-linecap:round"/><rect x="84" y="84" width="30" height="30" rx="8" style="fill:url(#qgP);stroke:none"/></svg>
         <span class="ex-en">EXCLUSIVE OFFER</span><span class="ex-ar">عرض حصري</span>
       </div>
     </div>

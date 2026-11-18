@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpath d='M100 64V36A22 22 0 0 0 78 14H36A22 22 0 0 0 14 36V78A22 22 0 0 0 36 100H64' fill='none' stroke='%237C4DDB' stroke-width='15' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M70 70L86 86' stroke='%237C4DDB' stroke-width='15' stroke-linecap='round'/%3E%3Crect x='84' y='84' width='30' height='30' rx='8' fill='%23F27FC4'/%3E%3C/svg%3E">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>لوحة الطلبات | قريب مني</title>
@@ -54,7 +55,7 @@
   header{position:sticky;top:0;z-index:10;background:rgba(250,247,242,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
   .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px;flex-wrap:wrap}
   .brand{display:flex;align-items:center;gap:10px}
-  .brand svg{width:70px;height:auto}
+  .brand svg{width:40px;height:40px}
   .brand svg path,.brand svg circle{fill:none;stroke:var(--navy);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
   .brand svg .house{stroke:var(--brass)}
   .brand b{font-family:var(--display);font-size:18px}
@@ -165,7 +166,7 @@
   .paper{background:#fff;color:#1F3A4D;border:1px solid var(--border);border-radius:10px;padding:28px;font-size:13.5px}
   .paper .ph{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-bottom:2px solid var(--brass);padding-bottom:14px}
   .paper .co{display:flex;gap:12px;align-items:center}
-  .paper .co svg{width:84px;height:auto}
+  .paper .co svg{width:54px;height:54px}
   .paper .co svg path,.paper .co svg circle{fill:none;stroke:#1F3A4D;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
   .paper .co svg .house{stroke:#B8915A}
   .paper .co b{font-family:var(--display);font-size:20px;display:block}
@@ -304,11 +305,7 @@
   <header>
     <div class="wrap bar">
       <div class="brand">
-        <svg viewBox="30 4 262 124" aria-hidden="true">
-          <path d="M58 118C53 110 36 98 36 78A22 22 0 1 1 80 78C80 98 63 110 58 118Z"/><circle cx="58" cy="78" r="8"/>
-          <path d="M58 118c-4 3-1 7 4 5C100 112 150 128 168 108C182 92 140 86 150 70C160 54 210 70 236 76C248 79 256 80 262 78c4-2 2-6-2-4"/>
-          <path d="M262 74C257 66 240 54 240 34A22 22 0 1 1 284 34C284 54 267 66 262 74Z"/><path class="house" d="M253 37L262 29L271 37V45H253Z"/>
-        </svg>
+        <svg class="qm-mark" viewBox="0 0 120 120" aria-hidden="true"><path d="M100 64V36A22 22 0 0 0 78 14H36A22 22 0 0 0 14 36V78A22 22 0 0 0 36 100H64" style="fill:none;stroke:#1C1633;stroke-width:15;stroke-linecap:round;stroke-linejoin:round"/><path d="M70 70L86 86" style="fill:none;stroke:#1C1633;stroke-width:15;stroke-linecap:round"/><rect x="84" y="84" width="30" height="30" rx="8" style="fill:#1C1633;stroke:none"/></svg>
         <div><b data-t="title">لوحة الطلبات</b><span data-t="brand">قريب مني</span></div>
       </div>
       <nav class="tabs" role="tablist">
@@ -1157,7 +1154,7 @@
   }
   const dueOf = v => Math.max(0, Number(v.total) - Number(v.amount_paid));
   const SVC_LINE = { move: 'نقل أثاث / Furniture moving', storage: 'تخزين أثاث / Furniture storage' };
-  const LOGO_SVG = '<svg viewBox="30 4 262 124" aria-hidden="true"><path d="M58 118C53 110 36 98 36 78A22 22 0 1 1 80 78C80 98 63 110 58 118Z"/><circle cx="58" cy="78" r="8"/><path d="M58 118c-4 3-1 7 4 5C100 112 150 128 168 108C182 92 140 86 150 70C160 54 210 70 236 76C248 79 256 80 262 78c4-2 2-6-2-4"/><path d="M262 74C257 66 240 54 240 34A22 22 0 1 1 284 34C284 54 267 66 262 74Z"/><path class="house" d="M253 37L262 29L271 37V45H253Z"/></svg>';
+  const LOGO_SVG = '<svg class="qm-mark" viewBox="0 0 120 120" aria-hidden="true"><path d="M100 64V36A22 22 0 0 0 78 14H36A22 22 0 0 0 14 36V78A22 22 0 0 0 36 100H64" style="fill:none;stroke:#1C1633;stroke-width:15;stroke-linecap:round;stroke-linejoin:round"/><path d="M70 70L86 86" style="fill:none;stroke:#1C1633;stroke-width:15;stroke-linecap:round"/><rect x="84" y="84" width="30" height="30" rx="8" style="fill:#1C1633;stroke:none"/></svg>';
 
   function invStateTag(v){
     const L = t();
