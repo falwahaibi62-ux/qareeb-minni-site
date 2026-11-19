@@ -8,18 +8,20 @@
 <title>لوحة الطلبات | قريب مني</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400..700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap">
 <style>
-  /* Layout: a quiet operations board — tabs for requests and drivers, counters on top, one card per record. */
+  /* Layout: a quiet operations board — tabs for requests, storage units, reports and prices; counters on top. */
   :root{
-    --ivory:#FAF7F2; --sand:#F1EADF; --card:#FFFDF9;
-    --navy:#1F3A4D; --navy-2:#2C4D63; --muted:#5A6A76;
-    --brass:#B8915A; --brass-text:#85632F; --border:#E3D9CA;
-    --error:#B3261E; --ok:#2F6B4F; --warn:#8A5A00;
-    --display:"Readex Pro","IBM Plex Sans Arabic",Tahoma,sans-serif;
-    --body:"IBM Plex Sans Arabic",Tahoma,sans-serif;
-    --s-new:#B8915A; --s-contacted:#4F7A96; --s-confirmed:#2F6B4F; --s-assigned:#6B5B95; --s-done:#5A6A76; --s-cancelled:#B3261E;
-    --d-available:#2F6B4F; --d-busy:#B8915A; --d-leave:#4F7A96; --d-suspended:#B3261E;
+    /* هوية قريب مني: بنفسجي داكن + تدرّج باستيل */
+    --ivory:#F7F5FD; --sand:#EFEAFB; --card:#FFFFFF;
+    --navy:#1C1633; --navy-2:#2E2552; --muted:#6B6585;
+    --brass:#7C4DDB; --brass-text:#6A3FC9; --border:#E4DEF3;
+    --grad:linear-gradient(100deg,#8FB8FF,#B8B2FF 28%,#D9A8F5 50%,#F08BD8 72%,#FFB59A);
+    --error:#C0264B; --ok:#1F7F6C; --warn:#9A5B00;
+    --display:"Tajawal",Tahoma,sans-serif;
+    --body:"Tajawal",Tahoma,sans-serif;
+    --s-new:#F0609E; --s-contacted:#6A8CFF; --s-confirmed:#7C4DDB; --s-assigned:#1F7F6C; --s-done:#6B6585; --s-cancelled:#C0264B;
+    --u-available:#1F7F6C; --u-reserved:#E08A1E; --u-rented:#7C4DDB; --u-maintenance:#8E8AA3;
     color-scheme:light;
   }
   *{box-sizing:border-box}
@@ -52,12 +54,10 @@
   .link-btn{background:none;border:0;padding:0;color:var(--muted);text-decoration:underline;cursor:pointer;justify-self:start;font:inherit;font-size:14px}
 
   /* Header + tabs */
-  header{position:sticky;top:0;z-index:10;background:rgba(250,247,242,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+  header{position:sticky;top:0;z-index:10;background:rgba(247,245,253,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
   .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px;flex-wrap:wrap}
   .brand{display:flex;align-items:center;gap:10px}
   .brand svg{width:40px;height:40px}
-  .brand svg path,.brand svg circle{fill:none;stroke:var(--navy);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
-  .brand svg .house{stroke:var(--brass)}
   .brand b{font-family:var(--display);font-size:18px}
   .brand span{display:block;font-size:12px;color:var(--muted)}
   .who{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
@@ -91,7 +91,7 @@
   table.reqs th[aria-sort=ascending]::after{content:" ▴"}
   table.reqs td{padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap;vertical-align:middle}
   table.reqs tbody tr{cursor:pointer}
-  table.reqs tbody tr:nth-child(even) td{background:#FBF8F3}
+  table.reqs tbody tr:nth-child(even) td{background:#FAF8FE}
   table.reqs tbody tr:hover td{background:var(--sand)}
   table.reqs tbody tr:focus-visible{outline:3px solid var(--brass);outline-offset:-3px}
   table.reqs .nm{font-weight:600;max-width:200px;overflow:hidden;text-overflow:ellipsis}
@@ -146,7 +146,7 @@
   .inv-tag{font-weight:700;border-radius:6px;padding:1px 8px;background:var(--sand);color:var(--navy)}
   .inv-tag.paid{background:#DDEEE5;color:var(--ok)}
   .inv-tag.due{background:#F6E9D2;color:var(--warn)}
-  .modal{position:fixed;inset:0;z-index:50;background:rgba(31,58,77,.45);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 16px}
+  .modal{position:fixed;inset:0;z-index:50;background:rgba(28,22,51,.45);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 16px}
   .sheet{background:var(--card);border-radius:16px;width:100%;max-width:820px;padding:20px;display:grid;gap:14px}
   .sheet-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
   .sheet-top h3{font-size:19px}
@@ -163,29 +163,27 @@
   .sum{font-family:var(--display);font-size:17px;font-weight:700;font-variant-numeric:tabular-nums}
 
   /* The invoice paper — bilingual, printed as-is */
-  .paper{background:#fff;color:#1F3A4D;border:1px solid var(--border);border-radius:10px;padding:28px;font-size:13.5px}
+  .paper{background:#fff;color:#1C1633;border:1px solid var(--border);border-radius:10px;padding:28px;font-size:13.5px}
   .paper .ph{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-bottom:2px solid var(--brass);padding-bottom:14px}
   .paper .co{display:flex;gap:12px;align-items:center}
   .paper .co svg{width:54px;height:54px}
-  .paper .co svg path,.paper .co svg circle{fill:none;stroke:#1F3A4D;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
-  .paper .co svg .house{stroke:#B8915A}
   .paper .co b{font-family:var(--display);font-size:20px;display:block}
-  .paper .small{font-size:12px;color:#5A6A76}
+  .paper .small{font-size:12px;color:#6B6585}
   .paper .ttl{text-align:end}
-  .paper .ttl h2{font-size:22px;color:#85632F}
+  .paper .ttl h2{font-size:22px;color:#6A3FC9}
   .paper .two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
-  .paper .box{background:#FAF7F2;border-radius:8px;padding:10px 12px}
+  .paper .box{background:#F7F5FD;border-radius:8px;padding:10px 12px}
   .paper .box dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:6px 0 0}
-  .paper .box dt{color:#5A6A76}
+  .paper .box dt{color:#6B6585}
   .paper .box dd{margin:0}
   .paper table{width:100%;border-collapse:collapse;margin-top:6px}
-  .paper th{background:#1F3A4D;color:#FAF7F2;font-weight:600;font-size:12px;padding:7px 8px;text-align:start}
-  .paper td{border-bottom:1px solid #E3D9CA;padding:7px 8px}
+  .paper th{background:#1C1633;color:#F7F5FD;font-weight:600;font-size:12px;padding:7px 8px;text-align:start}
+  .paper td{border-bottom:1px solid #E4DEF3;padding:7px 8px}
   .paper .n{text-align:end;font-variant-numeric:tabular-nums;white-space:nowrap}
   .paper .tot{margin-top:12px;margin-inline-start:auto;width:min(320px,100%);display:grid;grid-template-columns:1fr auto;gap:4px 16px}
-  .paper .tot .g{font-family:var(--display);font-weight:700;font-size:16px;border-top:2px solid #1F3A4D;padding-top:6px}
-  .paper .foot{margin-top:20px;border-top:1px solid #E3D9CA;padding-top:10px;text-align:center}
-  .paper .amt{display:flex;justify-content:space-between;align-items:center;gap:16px;background:#1F3A4D;color:#FAF7F2;border-radius:10px;padding:14px 18px;margin:16px 0}
+  .paper .tot .g{font-family:var(--display);font-weight:700;font-size:16px;border-top:2px solid #1C1633;padding-top:6px}
+  .paper .foot{margin-top:20px;border-top:1px solid #E4DEF3;padding-top:10px;text-align:center}
+  .paper .amt{display:flex;justify-content:space-between;align-items:center;gap:16px;background:#1C1633;color:#F7F5FD;border-radius:10px;padding:14px 18px;margin:16px 0}
   .paper .amt b{font-family:var(--display);font-size:26px;font-variant-numeric:tabular-nums}
   .rec-list{width:100%;border-collapse:collapse;font-size:14px}
   .rec-list th{font-size:12px;color:var(--muted);text-align:start;padding:6px;border-bottom:1px solid var(--border)}
@@ -193,7 +191,7 @@
   .rec-list .btn{padding:4px 12px;font-size:13px}
   .sec-h{font-family:var(--display);font-size:16px;margin:4px 0 0}
   .paper .void{color:#B3261E;font-family:var(--display);font-weight:700;font-size:18px;text-align:center;border:2px solid #B3261E;border-radius:8px;padding:4px;margin-bottom:10px}
-  .paper .bi{display:block;font-size:11px;color:#5A6A76;font-weight:500}
+  .paper .bi{display:block;font-size:11px;color:#6B6585;font-weight:500}
   .ltrnum{direction:ltr;unicode-bidi:isolate}
 
   /* Reports */
@@ -207,21 +205,21 @@
   .rp-card p{margin:0;font-size:13.5px;color:var(--muted)}
   .rp-card .btn{justify-self:start;margin-top:6px}
   .paper .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0 4px}
-  .paper .kpi{background:#FAF7F2;border:1px solid #E3D9CA;border-radius:8px;padding:10px 12px}
+  .paper .kpi{background:#F7F5FD;border:1px solid #E4DEF3;border-radius:8px;padding:10px 12px}
   .paper .kpi b{display:block;font-family:var(--display);font-size:20px;font-variant-numeric:tabular-nums}
-  .paper .kpi span{font-size:11.5px;color:#5A6A76}
-  .paper h3.rs{font-size:15px;margin:18px 0 6px;color:#85632F;font-family:var(--display);break-after:avoid}
+  .paper .kpi span{font-size:11.5px;color:#6B6585}
+  .paper h3.rs{font-size:15px;margin:18px 0 6px;color:#6A3FC9;font-family:var(--display);break-after:avoid}
   .paper .kpis,.paper .two-t > div{break-inside:avoid}
   .paper .two-t{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   .paper table.rt{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}
-  .paper table.rt th{background:#1F3A4D;color:#FAF7F2;font-weight:600;padding:6px 7px;text-align:start;white-space:nowrap}
-  .paper table.rt td{border-bottom:1px solid #E3D9CA;padding:5px 7px;vertical-align:top}
-  .paper table.rt tr:nth-child(even) td{background:#FBF8F3}
-  .paper table.rt tfoot td{font-weight:700;border-top:2px solid #1F3A4D;background:#fff}
-  .paper .meta-line{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:12px;color:#5A6A76;margin-top:10px}
-  .paper .meta-line b{color:#1F3A4D}
+  .paper table.rt th{background:#1C1633;color:#F7F5FD;font-weight:600;padding:6px 7px;text-align:start;white-space:nowrap}
+  .paper table.rt td{border-bottom:1px solid #E4DEF3;padding:5px 7px;vertical-align:top}
+  .paper table.rt tr:nth-child(even) td{background:#FAF8FE}
+  .paper table.rt tfoot td{font-weight:700;border-top:2px solid #1C1633;background:#fff}
+  .paper .meta-line{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:12px;color:#6B6585;margin-top:10px}
+  .paper .meta-line b{color:#1C1633}
   .paper .bad{color:#B3261E;font-weight:600} .paper .soon{color:#8A5A00;font-weight:600}
-  .paper .conf{margin-top:18px;border-top:1px solid #E3D9CA;padding-top:8px;font-size:11px;color:#5A6A76;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .paper .conf{margin-top:18px;border-top:1px solid #E4DEF3;padding-top:8px;font-size:11px;color:#6B6585;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
   .rt-wrap{overflow-x:auto}
   @media screen and (max-width:860px){ .rp-controls,.rp-cards{grid-template-columns:1fr 1fr} .paper .kpis{grid-template-columns:1fr 1fr} .paper .two-t{grid-template-columns:1fr} }
 
@@ -272,6 +270,29 @@
   .pr-save{padding-bottom:10px}
   .pr-legal{padding-bottom:48px;max-width:760px}
   .pr-cat .rowerr{color:var(--error);font-size:12px;display:block}
+
+  /* لمسات الهوية */
+  header::after{content:"";display:block;height:3px;background:var(--grad)}
+  .login-card{position:relative;overflow:hidden;box-shadow:0 20px 50px -24px rgba(124,77,219,.35)}
+  .login-card::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:var(--grad)}
+  .login-logo{width:46px;height:46px;flex:none}
+  .login-top > div{display:flex;align-items:center;gap:10px}
+  .paper .ph{border-bottom:3px solid transparent;border-image:var(--grad) 1}
+
+  /* الوحدات / Units */
+  .occ{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:4px 0 16px;font-weight:600}
+  .occ-bar{flex:1;min-width:180px;max-width:420px;height:10px;border-radius:99px;background:var(--sand);overflow:hidden}
+  .occ-bar i{display:block;height:100%;background:var(--grad);border-radius:99px}
+  .units{display:grid;align-items:start;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;padding-bottom:48px}
+  .unit{background:var(--card);border:1px solid var(--border);border-top:4px solid var(--border);border-radius:14px;padding:14px 16px;display:grid;gap:8px;align-content:start}
+  .unit-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .unit-head b{font-family:var(--display);font-size:20px;direction:ltr;unicode-bidi:isolate}
+  .unit .meta{margin-top:0;font-size:13.5px}
+  .unit .btn{justify-self:start;padding:6px 14px;font-size:13px}
+  .uform{grid-template-columns:repeat(4,1fr)}
+  .bulk{background:var(--sand);border-radius:10px;padding:12px;display:grid;grid-template-columns:repeat(6,1fr);gap:10px;align-items:end}
+  .bulk label{display:grid;gap:4px;font-size:13px;font-weight:600}
+  @media (max-width:760px){ .uform,.bulk{grid-template-columns:1fr 1fr} }
 </style>
 </head>
 <body>
@@ -280,7 +301,7 @@
 <div class="login" id="loginView">
   <form class="login-card" id="loginForm">
     <div class="login-top">
-      <h1 data-t="title">لوحة الطلبات</h1>
+      <div><svg class="login-logo" viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="qgL" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7FA8FF"/><stop offset=".3" stop-color="#A99BFF"/><stop offset=".55" stop-color="#D98BEA"/><stop offset=".8" stop-color="#F27FC4"/><stop offset="1" stop-color="#FFA98C"/></linearGradient></defs><path d="M100 64V36A22 22 0 0 0 78 14H36A22 22 0 0 0 14 36V78A22 22 0 0 0 36 100H64" fill="none" stroke="url(#qgL)" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><path d="M70 70L86 86" stroke="url(#qgL)" stroke-width="15" stroke-linecap="round"/><rect x="84" y="84" width="30" height="30" rx="8" fill="url(#qgL)"/></svg><h1 data-t="title">لوحة الطلبات</h1></div>
       <button class="lang" type="button" data-lang-btn>EN</button>
     </div>
     <p data-t="staffOnly">قريب مني · للموظفين فقط</p>
@@ -305,12 +326,12 @@
   <header>
     <div class="wrap bar">
       <div class="brand">
-        <svg class="qm-mark" viewBox="0 0 120 120" aria-hidden="true"><path d="M100 64V36A22 22 0 0 0 78 14H36A22 22 0 0 0 14 36V78A22 22 0 0 0 36 100H64" style="fill:none;stroke:#1C1633;stroke-width:15;stroke-linecap:round;stroke-linejoin:round"/><path d="M70 70L86 86" style="fill:none;stroke:#1C1633;stroke-width:15;stroke-linecap:round"/><rect x="84" y="84" width="30" height="30" rx="8" style="fill:#1C1633;stroke:none"/></svg>
+        <svg class="qm-mark" viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="qgH" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7FA8FF"/><stop offset=".3" stop-color="#A99BFF"/><stop offset=".55" stop-color="#D98BEA"/><stop offset=".8" stop-color="#F27FC4"/><stop offset="1" stop-color="#FFA98C"/></linearGradient></defs><path d="M100 64V36A22 22 0 0 0 78 14H36A22 22 0 0 0 14 36V78A22 22 0 0 0 36 100H64" fill="none" stroke="url(#qgH)" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><path d="M70 70L86 86" stroke="url(#qgH)" stroke-width="15" stroke-linecap="round"/><rect x="84" y="84" width="30" height="30" rx="8" fill="url(#qgH)"/></svg>
         <div><b data-t="title">لوحة الطلبات</b><span data-t="brand">قريب مني</span></div>
       </div>
       <nav class="tabs" role="tablist">
         <button class="tab" role="tab" id="tabReq" aria-selected="true" data-t="tabRequests">الطلبات</button>
-        <button class="tab" role="tab" id="tabDrv" aria-selected="false" data-t="tabDrivers">السائقون</button>
+        <button class="tab" role="tab" id="tabUnits" aria-selected="false" data-t="tabUnits">الوحدات</button>
         <button class="tab" role="tab" id="tabRep" aria-selected="false" data-t="tabReports">التقارير</button>
         <button class="tab" role="tab" id="tabPri" aria-selected="false" data-t="tabPrices">الأسعار والعروض</button>
       </nav>
@@ -339,10 +360,10 @@
       <label><span data-t="rName"></span><input id="rName" maxlength="80" dir="auto" autocomplete="off"></label>
       <label><span data-t="mobile"></span><span class="phone"><span>+968</span><input id="rPhone" inputmode="numeric" maxlength="8" placeholder="9XXXXXXX" autocomplete="off"></span></label>
       <label><span data-t="rSource"></span><select id="rSource"></select></label>
-      <label><span data-t="service"></span><select id="rService"></select></label>
+      <label><span data-t="reqUnit"></span><select id="rUnit"></select></label>
+      <label><span data-t="reqDur"></span><select id="rDur"></select></label>
       <label><span data-t="wilayat"></span><select id="rWilayat"></select></label>
       <label><span data-t="prefDate"></span><input id="rDate" type="date"></label>
-      <label class="wide"><span data-t="address"></span><input id="rAddress" maxlength="200" dir="auto"></label>
       <label class="wide"><span data-t="custNotes"></span><textarea id="rNotes" maxlength="600" dir="auto"></textarea></label>
       <label><span data-t="status"></span><select id="rStatus"></select></label>
       <label class="wide" style="grid-column:span 2"><span data-t="adminNotes"></span><input id="rAdminNotes" maxlength="600" dir="auto"></label>
@@ -356,48 +377,55 @@
     <div class="list" id="list"></div>
   </main>
 
-  <!-- السائقون / Drivers -->
-  <main class="wrap" id="drvPane" hidden>
+  <!-- الوحدات / Storage units -->
+  <main class="wrap" id="unitPane" hidden>
+    <div class="counters" id="uCounters" role="group"></div>
+    <div class="occ"><span id="occText"></span><span class="occ-bar"><i id="occBar" style="width:0"></i></span></div>
     <div class="tools">
-      <button class="btn" type="button" id="addDrvBtn" data-t="addDriver">إضافة سائق</button>
-      <input type="search" id="drvSearch">
+      <button class="btn" type="button" id="addUnitBtn" data-t="addUnit">+ إضافة وحدة</button>
+      <button class="btn btn-ghost" type="button" id="bulkUnitBtn" data-t="bulkUnits">إضافة عدة وحدات</button>
+      <input type="search" id="unitSearch">
     </div>
-    <form class="dform" id="drvForm" hidden novalidate>
-      <h3 id="drvFormTitle"></h3>
-      <p class="legal wide" data-t="legalNote"></p>
-
-      <h4 data-t="secBasic"></h4>
-      <label><span data-t="dName"></span><input id="dName" maxlength="80" dir="auto"></label>
-      <label><span data-t="mobile"></span><span class="phone"><span>+968</span><input id="dPhone" inputmode="numeric" maxlength="8" placeholder="9XXXXXXX"></span></label>
-      <label><span data-t="dContract"></span><select id="dContract"></select></label>
-      <label><span data-t="dCompany"></span><input id="dCompany" maxlength="120" dir="auto"></label>
-      <label><span data-t="dCr"></span><input id="dCr" maxlength="40" dir="ltr"></label>
-      <label><span data-t="dStatus"></span><select id="dStatus"></select></label>
-
-      <h4 data-t="secTruck"></h4>
-      <label><span data-t="dTruck"></span><select id="dTruck"></select></label>
-      <label><span data-t="dPlate"></span><input id="dPlate" maxlength="20" dir="auto"></label>
-      <label><span data-t="dVoc"></span><input id="dVoc" maxlength="40" dir="ltr"></label>
-      <label><span data-t="dVocExp"></span><input id="dVocExp" type="date"></label>
-      <label><span data-t="dLicType"></span><select id="dLicType"></select></label>
-      <label><span data-t="dLicExp"></span><input id="dLicExp" type="date"></label>
-      <label><span data-t="dInsExp"></span><input id="dInsExp" type="date"></label>
-
-      <h4 data-t="secOps"></h4>
-      <label><span data-t="dAreas"></span><input id="dAreas" maxlength="200" dir="auto"></label>
-      <label><span data-t="dHelpers"></span><input id="dHelpers" type="number" min="0" max="20" inputmode="numeric"></label>
-      <label><span data-t="dDays"></span><input id="dDays" maxlength="80" dir="auto"></label>
-      <label><span data-t="dRate"></span><span class="rate"><input id="dRate" type="number" min="0" step="0.5" inputmode="decimal"><select id="dRateUnit"></select></span></label>
-      <label><span data-t="dRating"></span><select id="dRating"></select></label>
-      <label class="wide"><span data-t="dNotes"></span><textarea id="dNotes" maxlength="600" dir="auto"></textarea></label>
-      <label class="check wide"><input type="checkbox" id="dConsent"><span data-t="dConsent"></span></label>
+    <form class="dform uform" id="bulkForm" hidden novalidate>
+      <h3 data-t="bulkT"></h3>
+      <p class="hint wide" data-t="bulkHint"></p>
+      <div class="bulk wide">
+        <label><span data-t="bPrefix"></span><input id="bPrefix" maxlength="6" dir="ltr" value="A"></label>
+        <label><span data-t="bFrom"></span><input id="bFrom" type="number" min="1" max="999" value="1" dir="ltr"></label>
+        <label><span data-t="bTo"></span><input id="bTo" type="number" min="1" max="999" value="10" dir="ltr"></label>
+        <label><span data-t="uSize"></span><select id="bSize"></select></label>
+        <label><span data-t="uArea"></span><input id="bArea" type="number" min="0" step="0.5" dir="ltr"></label>
+        <label><span data-t="uRent"></span><input id="bRent" type="number" min="0" step="0.5" dir="ltr"></label>
+      </div>
       <div class="save-row wide">
-        <button class="btn" type="submit" data-t="save">حفظ</button>
-        <button class="btn btn-ghost" type="button" id="drvCancel" data-t="cancel">إلغاء</button>
-        <span class="saved" id="drvMsg" aria-live="polite"></span>
+        <button class="btn" type="submit" data-t="bCreate">إنشاء الوحدات</button>
+        <button class="btn btn-ghost" type="button" id="bulkCancel" data-t="cancel">إلغاء</button>
+        <span class="saved" id="bulkMsg" aria-live="polite"></span>
       </div>
     </form>
-    <div class="list" id="drvList"></div>
+    <form class="dform uform" id="unitForm" hidden novalidate>
+      <h3 id="unitFormTitle"></h3>
+      <h4 data-t="secUnit"></h4>
+      <label><span data-t="uCode"></span><input id="uCode" maxlength="20" dir="ltr" placeholder="A-01"></label>
+      <label><span data-t="uSize"></span><select id="uSize"></select></label>
+      <label><span data-t="uArea"></span><input id="uArea" type="number" min="0" step="0.5" inputmode="decimal" dir="ltr"></label>
+      <label><span data-t="uRent"></span><input id="uRent" type="number" min="0" step="0.5" inputmode="decimal" dir="ltr"></label>
+      <label><span data-t="uStatus"></span><select id="uStatus"></select></label>
+      <h4 data-t="secRental"></h4>
+      <label><span data-t="uCust"></span><input id="uCust" maxlength="80" dir="auto"></label>
+      <label><span data-t="mobile"></span><span class="phone"><span>+968</span><input id="uPhone" inputmode="numeric" maxlength="8" placeholder="9XXXXXXX"></span></label>
+      <label><span data-t="uStart"></span><input id="uStart" type="date"></label>
+      <label><span data-t="uEnd"></span><input id="uEnd" type="date"></label>
+      <label class="wide"><span data-t="dNotes"></span><textarea id="uNotes" maxlength="600" dir="auto"></textarea></label>
+      <p class="legal wide" data-t="unitLegal"></p>
+      <div class="save-row wide">
+        <button class="btn" type="submit" data-t="save">حفظ</button>
+        <button class="btn btn-ghost" type="button" id="unitCancel" data-t="cancel">إلغاء</button>
+        <button class="btn btn-ghost" type="button" id="unitRelease" data-t="uRelease">إخلاء الوحدة</button>
+        <span class="saved" id="unitMsg" aria-live="polite"></span>
+      </div>
+    </form>
+    <div class="units" id="unitList"></div>
   </main>
 
   <!-- التقارير / Reports -->
@@ -413,7 +441,7 @@
       <div class="rp-card"><h4 data-t="repSumT">التقرير الإجمالي</h4><p data-t="repSumP"></p><button class="btn" type="button" data-rep="summary" data-t="repOpen">عرض التقرير</button></div>
       <div class="rp-card"><h4 data-t="repReqT">تقرير الطلبات التفصيلي</h4><p data-t="repReqP"></p><button class="btn" type="button" data-rep="requests" data-t="repOpen">عرض التقرير</button></div>
       <div class="rp-card"><h4 data-t="repInvT">تقرير الفواتير التفصيلي</h4><p data-t="repInvP"></p><button class="btn" type="button" data-rep="invoices" data-t="repOpen">عرض التقرير</button></div>
-      <div class="rp-card"><h4 data-t="repDrvT">تقرير السائقين التفصيلي</h4><p data-t="repDrvP"></p><button class="btn" type="button" data-rep="drivers" data-t="repOpen">عرض التقرير</button></div>
+      <div class="rp-card"><h4 data-t="repUnitT">تقرير الوحدات والإشغال</h4><p data-t="repUnitP"></p><button class="btn" type="button" data-rep="units" data-t="repOpen">عرض التقرير</button></div>
     </div>
   </main>
   <!-- الأسعار والعروض / Prices & offers -->
@@ -615,21 +643,85 @@
       paidNow: 'Payment received now (optional)', voidInvTitle: 'Void invoice', recFirst: 'An invoice with active receipts cannot be voided. Void the receipts first.', paidFull: 'The invoice is paid in full.', hRec: 'Receipt', hAmt: 'Amount', hAct: '',
     }
   };
+
+  // ===== نصوص التخزين (تخزين فقط) — تُضاف فوق النصوص السابقة =====
+  Object.assign(T.ar, {
+    tabUnits: 'الوحدات', prStore: 'إيجار وحدات التخزين (شهرياً)',
+    repReqP: 'كل طلب في سطر: الرقم والتاريخ والعميل والولاية والحجم المطلوب والمصدر والحالة والوحدة المخصّصة.',
+    repInvP: 'كل فاتورة في سطر: الرقم والتاريخ والعميل والإجمالي والمدفوع والمتبقي، ثم الإجمالي العام.',
+    repUnitT: 'تقرير الوحدات والإشغال', repUnitP: 'كل وحدة بحجمها ومساحتها وإيجارها وحالتها والمستأجر وتاريخ نهاية العقد، مع نسبة الإشغال والإيراد الشهري.',
+    hDriver: 'الوحدة', hReqSize: 'الحجم المطلوب', byService: 'حسب الحجم المطلوب',
+    rConsent: 'وافق العميل على حفظ بياناته واستخدامها للتواصل بخصوص هذا الطلب فقط',
+    adminNotesPh: 'مدة العقد، العربون، موعد التسليم...',
+    driver: 'الوحدة المخصّصة', noDriver: '— بدون وحدة —', needDriver: 'اختاري الوحدة قبل تسجيل التسليم',
+    noDrivers: 'لا توجد وحدات بعد. أضيفيها من تبويب «الوحدات».', unitWarnSize: 'تنبيه: حجم هذه الوحدة يختلف عن الحجم المطلوب.',
+    st: { new: 'جديد', contacted: 'تم التواصل', confirmed: 'مؤكد', assigned: 'الوحدة مُسلَّمة', done: 'انتهى العقد', cancelled: 'ملغي' },
+    reqUnit: 'حجم الوحدة المطلوب', reqDur: 'مدة التخزين', prefDate: 'تاريخ البدء', colPref: 'تاريخ البدء',
+    reqSizes: { '': '— غير محدد —', 'صغيرة': 'صغيرة (5 م²)', 'متوسطة': 'متوسطة (10 م²)', 'كبيرة': 'كبيرة (20 م²)', 'غير متأكد': 'غير متأكد' },
+    durs: { '': '— غير محدد —', 'شهر': 'شهر', '3 أشهر': '3 أشهر', '6 أشهر': '6 أشهر', 'سنة أو أكثر': 'سنة أو أكثر' },
+    addUnit: '+ إضافة وحدة', bulkUnits: 'إضافة عدة وحدات', unitSearch: 'بحث برقم الوحدة أو اسم المستأجر أو رقمه',
+    newUnit: 'وحدة جديدة', editUnit: 'تعديل الوحدة', secUnit: 'بيانات الوحدة', secRental: 'الإيجار الحالي',
+    uCode: 'رقم الوحدة', uSize: 'الحجم', uArea: 'المساحة (م²)', uRent: 'الإيجار الشهري (ر.ع)', uStatus: 'الحالة',
+    uCust: 'اسم المستأجر', uStart: 'بداية العقد', uEnd: 'نهاية العقد', uRelease: 'إخلاء الوحدة', uReleaseQ: 'إخلاء الوحدة ومسح بيانات المستأجر منها؟',
+    unitLegal: 'سجّلي فقط ما يلزم لإدارة الإيجار. لا تُدخلي رقم البطاقة الشخصية أو جواز السفر أو البيانات البنكية.',
+    size: { small: 'صغيرة', medium: 'متوسطة', large: 'كبيرة' },
+    ust: { available: 'متاحة', reserved: 'محجوزة', rented: 'مؤجّرة', maintenance: 'صيانة' },
+    occ: (r, n, p) => `الإشغال: ${r} من ${n} وحدة (${p})`,
+    endsIn: n => { const d = k => k === 1 ? 'يوم واحد' : k === 2 ? 'يومين' : k <= 10 ? `${k} أيام` : `${k} يوماً`; return n < 0 ? `انتهى العقد منذ ${d(-n)}` : n === 0 ? 'ينتهي العقد اليوم' : `ينتهي بعد ${d(n)}`; },
+    errCode: 'اكتبي رقم الوحدة', errDupCode: 'رقم الوحدة مستخدم من قبل', errDates: 'تاريخ النهاية قبل البداية',
+    noUnitTable: 'الوحدات غير مفعّلة بعد: نفّذي ملف supabase-units.sql', noUnitsList: 'لا توجد وحدات بعد. اضغطي «إضافة وحدة» أو «إضافة عدة وحدات».',
+    bulkT: 'إضافة عدة وحدات دفعة واحدة', bulkHint: 'مثال: البادئة A من 1 إلى 10 تنشئ الوحدات A-01 إلى A-10 بنفس الحجم والمساحة والإيجار. الأرقام الموجودة مسبقاً تُتخطّى.',
+    bPrefix: 'البادئة', bFrom: 'من رقم', bTo: 'إلى رقم', bCreate: 'إنشاء الوحدات', bDone: n => `تم إنشاء ${n} وحدة ✓`, bBad: 'تحقّقي من الأرقام (حتى 200 وحدة في المرة)',
+    kUnits: 'إجمالي الوحدات', kRented: 'مؤجّرة', kReserved: 'محجوزة', kAvail: 'متاحة', kOcc: 'نسبة الإشغال', kRent: 'الإيجار الشهري للمؤجّرة (ر.ع)',
+    secUnits: 'الوحدات', hCode: 'الوحدة', hSize: 'الحجم', hArea: 'م²', hRent: 'الإيجار', hStart: 'البداية', hEnd: 'النهاية', hTenant: 'المستأجر',
+    unitSvc: 'إيجار وحدة تخزين', unitShort: 'وحدة'
+  });
+  Object.assign(T.en, {
+    tabUnits: 'Units', prStore: 'Storage unit rent (monthly)',
+    repReqP: 'One line per request: number, date, customer, wilayat, requested size, source, status and assigned unit.',
+    repInvP: 'One line per invoice: number, date, customer, total, paid and outstanding, then a grand total.',
+    repUnitT: 'Units & occupancy report', repUnitP: 'Each unit with its size, area, rent, status, tenant and contract end date, plus occupancy and monthly rent.',
+    hDriver: 'Unit', hReqSize: 'Requested size', byService: 'By requested size',
+    rConsent: 'The customer agreed to their details being stored and used only to contact them about this request',
+    adminNotesPh: 'Contract length, deposit, hand-over date...',
+    driver: 'Assigned unit', noDriver: '— No unit —', needDriver: 'Choose the unit before marking it handed over',
+    noDrivers: 'No units yet. Add them from the "Units" tab.', unitWarnSize: 'Note: this unit’s size differs from the requested size.',
+    st: { new: 'New', contacted: 'Contacted', confirmed: 'Confirmed', assigned: 'Unit handed over', done: 'Rental ended', cancelled: 'Cancelled' },
+    reqUnit: 'Requested unit size', reqDur: 'Storage period', prefDate: 'Start date', colPref: 'Start date',
+    reqSizes: { '': '— Not set —', 'صغيرة': 'Small (5 m²)', 'متوسطة': 'Medium (10 m²)', 'كبيرة': 'Large (20 m²)', 'غير متأكد': 'Not sure' },
+    durs: { '': '— Not set —', 'شهر': '1 month', '3 أشهر': '3 months', '6 أشهر': '6 months', 'سنة أو أكثر': '1 year or more' },
+    addUnit: '+ Add unit', bulkUnits: 'Add several units', unitSearch: 'Search by unit number, tenant name or mobile',
+    newUnit: 'New unit', editUnit: 'Edit unit', secUnit: 'Unit details', secRental: 'Current rental',
+    uCode: 'Unit number', uSize: 'Size', uArea: 'Area (m²)', uRent: 'Monthly rent (OMR)', uStatus: 'Status',
+    uCust: 'Tenant name', uStart: 'Contract start', uEnd: 'Contract end', uRelease: 'Vacate unit', uReleaseQ: 'Vacate this unit and clear the tenant details?',
+    unitLegal: 'Record only what is needed to manage the rental. Do not enter civil ID or passport numbers or bank details.',
+    size: { small: 'Small', medium: 'Medium', large: 'Large' },
+    ust: { available: 'Available', reserved: 'Reserved', rented: 'Rented', maintenance: 'Maintenance' },
+    occ: (r, n, p) => `Occupancy: ${r} of ${n} units (${p})`,
+    endsIn: n => n < 0 ? `Contract ended ${-n} day(s) ago` : n === 0 ? 'Contract ends today' : `Ends in ${n} day(s)`,
+    errCode: 'Enter the unit number', errDupCode: 'This unit number is already used', errDates: 'The end date is before the start date',
+    noUnitTable: 'Units are not enabled yet: run supabase-units.sql', noUnitsList: 'No units yet. Press "Add unit" or "Add several units".',
+    bulkT: 'Add several units at once', bulkHint: 'Example: prefix A from 1 to 10 creates units A-01 to A-10 with the same size, area and rent. Existing numbers are skipped.',
+    bPrefix: 'Prefix', bFrom: 'From no.', bTo: 'To no.', bCreate: 'Create units', bDone: n => `${n} unit(s) created ✓`, bBad: 'Check the numbers (up to 200 units at a time)',
+    kUnits: 'Total units', kRented: 'Rented', kReserved: 'Reserved', kAvail: 'Available', kOcc: 'Occupancy', kRent: 'Monthly rent of rented units (OMR)',
+    secUnits: 'Units', hCode: 'Unit', hSize: 'Size', hArea: 'm²', hRent: 'Rent', hStart: 'Start', hEnd: 'End', hTenant: 'Tenant',
+    unitSvc: 'Storage unit rental', unitShort: 'Unit'
+  });
   // ===== بيانات الشركة على الفاتورة — عدّليها بعد إصدار السجل التجاري =====
   const COMPANY = {
-    address: 'العامرات، مسقط، سلطنة عُمان · Al Amerat, Muscat, Oman',
+    address: 'مسقط، سلطنة عُمان · Muscat, Oman',
     cr: '[رقم السجل التجاري]',
     phone: '[رقم الهاتف]',
     email: '[البريد الإلكتروني]',
     vatNote: 'المنشأة غير مسجّلة في ضريبة القيمة المضافة — هذه ليست فاتورة ضريبية · Not VAT-registered — this is not a tax invoice'
   };
   const STATUS_COLOR = { new: 'var(--s-new)', contacted: 'var(--s-contacted)', confirmed: 'var(--s-confirmed)', assigned: 'var(--s-assigned)', done: 'var(--s-done)', cancelled: 'var(--s-cancelled)' };
-  const DSTATUS_COLOR = { available: 'var(--d-available)', busy: 'var(--d-busy)', leave: 'var(--d-leave)', suspended: 'var(--d-suspended)' };
-  const ACTIVE = ['contacted', 'confirmed', 'assigned'];   // طلبات تشغل السائق
+  const USTATUS_COLOR = { available: 'var(--u-available)', reserved: 'var(--u-reserved)', rented: 'var(--u-rented)', maintenance: 'var(--u-maintenance)' };
+  const ACTIVE = ['contacted', 'confirmed', 'assigned'];   // طلبات مفتوحة
   const DOCS = [['voc', 'voc_expiry'], ['license', 'license_expiry'], ['insurance', 'insurance_expiry']];
 
   const $ = id => document.getElementById(id);
-  let db = null, rows = [], drivers = [], invoices = [], invOk = true, receipts = [], recOk = true, filter = 'open', timer = null, lastLoad = null, editingDriver = null;
+  let db = null, rows = [], drivers = [], units = [], unitOk = true, invoices = [], invOk = true, receipts = [], recOk = true, filter = 'open', timer = null, lastLoad = null, editingDriver = null, editingUnit = null;
   let lang = 'ar';
   try { if (localStorage.getItem('qm-admin-lang') === 'en') lang = 'en'; } catch (e) {}
   const t = () => T[lang];
@@ -650,22 +742,19 @@
     document.querySelectorAll('[data-t]').forEach(e => { e.textContent = L[e.dataset.t]; });
     document.querySelectorAll('[data-lang-btn]').forEach(b => { b.textContent = L.langBtn; b.setAttribute('aria-label', L.langAria); b.lang = lang === 'en' ? 'ar' : 'en'; });
     $('search').placeholder = L.search;
-    $('drvSearch').placeholder = L.drvSearch;
     $('counters').setAttribute('aria-label', L.filterLabel);
-    fillSelect($('dTruck'), L.truck, $('dTruck').value || 'medium');
-    fillSelect($('dStatus'), L.dst, $('dStatus').value || 'available');
-    fillSelect($('dContract'), L.contract, $('dContract').value || 'independent');
-    fillSelect($('dLicType'), L.lic, $('dLicType').value);
-    fillSelect($('dRateUnit'), L.unit, $('dRateUnit').value || 'trip');
-    fillSelect($('dRating'), L.rating, $('dRating').value);
-    $('dDays').placeholder = lang === 'en' ? 'e.g. Saturday to Thursday' : 'مثال: السبت إلى الخميس';
-    $('drvFormTitle').textContent = editingDriver ? L.editDriver : L.newDriver;
+    $('unitSearch').placeholder = L.unitSearch;
+    $('uCounters').setAttribute('aria-label', L.filterLabel);
+    fillSelect($('uSize'), L.size, $('uSize').value || 'medium');
+    fillSelect($('bSize'), L.size, $('bSize').value || 'medium');
+    fillSelect($('uStatus'), L.ust, $('uStatus').value || 'available');
+    $('unitFormTitle').textContent = editingUnit ? L.editUnit : L.newUnit;
     fillReqSelects();
     fillSelect($('rpPreset'), L.presets, $('rpPreset').value || 'month');
     $('rpHint').textContent = L.repHint;
     $('loginMsg').textContent = '';
     stampText();
-    if (!$('appView').hidden) { render(); renderDrivers(); renderPriceAdmin(); }
+    if (!$('appView').hidden) { render(); renderUnits(); renderPriceAdmin(); }
   }
   document.querySelectorAll('[data-lang-btn]').forEach(b => b.addEventListener('click', () => {
     lang = lang === 'ar' ? 'en' : 'ar';
@@ -676,17 +765,17 @@
   // ===== التبويبات / Tabs =====
   function showTab(name){
     $('tabReq').setAttribute('aria-selected', String(name === 'req'));
-    $('tabDrv').setAttribute('aria-selected', String(name === 'drv'));
+    $('tabUnits').setAttribute('aria-selected', String(name === 'unit'));
     $('tabRep').setAttribute('aria-selected', String(name === 'rep'));
     $('reqPane').hidden = name !== 'req';
-    $('drvPane').hidden = name !== 'drv';
+    $('unitPane').hidden = name !== 'unit';
     $('repPane').hidden = name !== 'rep';
     $('tabPri').setAttribute('aria-selected', String(name === 'pri'));
     $('priPane').hidden = name !== 'pri';
     if (name === 'pri') loadPrices();
   }
   $('tabReq').onclick = () => showTab('req');
-  $('tabDrv').onclick = () => showTab('drv');
+  $('tabUnits').onclick = () => showTab('unit');
   $('tabRep').onclick = () => showTab('rep');
   $('tabPri').onclick = () => showTab('pri');
 
@@ -723,7 +812,7 @@
     if (!$('prPromoAr').dataset.touched) $('prPromoAr').value = withPromo.promo_ar || '';
     if (!$('prPromoEn').dataset.touched) $('prPromoEn').value = withPromo.promo_en || '';
     $('prPromoAr').placeholder = L.prPlace; $('prPromoEn').placeholder = 'e.g. Opening offer';
-    [['move', L.prMove], ['storage', L.prStore]].forEach(([cat, title]) => {
+    [['storage', L.prStore]].forEach(([cat, title]) => {
       const list = prices.filter(r => r.category === cat); if (!list.length) return;
       const wrap = el('div', 'pr-cat'); wrap.append(el('h4', null, title));
       const tb = el('table'), hr = el('tr');
@@ -830,7 +919,7 @@
   $('logoutBtn').addEventListener('click', async () => {
     clearInterval(timer);
     await db.auth.signOut();
-    rows = []; drivers = []; $('list').replaceChildren(); $('drvList').replaceChildren();
+    rows = []; units = []; $('list').replaceChildren(); $('unitList').replaceChildren();
     $('appView').hidden = true; $('loginView').hidden = false;
   });
 
@@ -846,17 +935,16 @@
   async function load(){
     const [r, d, v, rc] = await Promise.all([
       db.from('requests').select('*').order('created_at', { ascending: false }).limit(500),
-      db.from('drivers').select('*').order('name'),
+      db.from('units').select('*').order('code'),
       db.from('invoices').select('*').order('seq', { ascending: false }).limit(1000),
       db.from('receipts').select('*').order('seq', { ascending: false }).limit(2000)
     ]);
     if (r.error) { $('stamp').textContent = t().loadFail + r.error.message; return; }
-    rows = r.data; drivers = d.error ? [] : d.data; lastLoad = new Date();
+    rows = r.data; unitOk = !d.error; units = d.error ? [] : d.data; lastLoad = new Date();
     invOk = !v.error; invoices = v.error ? [] : v.data;
     recOk = !rc.error; receipts = rc.error ? [] : rc.data;   // جدول الإيصالات قد لا يكون مُنشأً بعد   // جدول الفواتير قد لا يكون مُنشأً بعد
     stampText();
-    if (d.error) $('stamp').textContent += ' · ' + t().loadFail + d.error.message;   // جدول السائقين لم يُنشأ بعد
-    render(); renderDrivers();
+    render(); renderUnits();
     if (reopenId) { const rr = rows.find(x => x.id === reopenId); reopenId = null; if (rr && !modal.hidden) openRequest(rr); }
   }
   function stampText(){
@@ -865,9 +953,16 @@
   }
   $('refreshBtn').addEventListener('click', load);
   $('search').addEventListener('input', render);
-  $('drvSearch').addEventListener('input', renderDrivers);
+  $('unitSearch').addEventListener('input', renderUnits);
 
   const shortCode = r => 'QM-' + r.id.slice(0, 6).toUpperCase();
+  // الحجم والمدة المطلوبان يصلان من الموقع داخل الملاحظات: «حجم الوحدة: متوسطة · المدة: 3 أشهر»
+  const SIZE_OF = { 'صغيرة': 'small', 'متوسطة': 'medium', 'كبيرة': 'large' };
+  const reqSize = r => { const m = /حجم الوحدة:\s*([^·\n]+)/.exec(r.notes || ''); return m ? m[1].trim() : ''; };
+  const reqDur = r => { const m = /المدة:\s*([^·\n]+)/.exec(r.notes || ''); return m ? m[1].trim() : ''; };
+  const reqSizeLabel = r => { const v = reqSize(r); return v ? (t().reqSizes[v] || v) : ''; };
+  const unitOf = r => units.find(u => u.id === r.unit_id) || units.find(u => u.request_id === r.id);
+  const unitLabel = u => u ? `${u.code} · ${t().size[u.size] || ''}${u.area_m2 ? ' ' + Number(u.area_m2) + (lang === 'en' ? ' m²' : ' م²') : ''}` : '';
   const fmtDate = d => d ? new Date(d).toLocaleString(t().locale, { dateStyle: 'medium', timeStyle: 'short' }) : '';
   const fmtDay = d => d ? new Date(d + 'T00:00:00').toLocaleDateString(t().locale, { dateStyle: 'medium' }) : '';
 
@@ -933,13 +1028,12 @@
   $('vCards').onclick = () => setView('cards');
   function reqTable(list){
     const L = t();
-    const drvName = id => { const d = drivers.find(x => x.id === id); return d ? d.name : ''; };
     const invOf = r => invoices.find(v => v.request_id === r.id && v.status === 'issued');
     const cols = [
       ['code', L.hReq, r => shortCode(r)], ['created_at', L.sent, r => r.created_at], ['name', L.hCust, r => r.name], ['phone', L.mobile, r => r.phone],
-      ['service', L.service, r => L.svc[r.service] || r.service], ['wilayat', L.wilayat, r => L.wil[r.wilayat] || r.wilayat],
+      ['size', L.hReqSize, r => reqSizeLabel(r)], ['wilayat', L.wilayat, r => L.wil[r.wilayat] || r.wilayat],
       ['preferred_date', L.colPref, r => r.preferred_date || ''], ['status', L.status, r => L.st[r.status] || r.status],
-      ['driver', L.hDriver, r => drvName(r.driver_id)], ['source', L.srcLabel, r => L.src[r.source || 'website'] || r.source], ['inv', L.colInv, r => { const v = invOf(r); return v ? v.number : ''; }],
+      ['unit', L.hDriver, r => { const u = unitOf(r); return u ? u.code : ''; }], ['source', L.srcLabel, r => L.src[r.source || 'website'] || r.source], ['inv', L.colInv, r => { const v = invOf(r); return v ? v.number : ''; }],
     ];
     const getter = Object.fromEntries(cols.map(c => [c[0], c[2]]));
     const sorted = list.slice().sort((a, b) => { const x = getter[sortKey](a) || '', y = getter[sortKey](b) || ''; return (x > y ? 1 : x < y ? -1 : 0) * sortDir; });
@@ -963,8 +1057,8 @@
       const inv = el('td'); if (v) { inv.append(el('span', 'ltrnum', v.number), document.createTextNode(' '), invStateTag(v)); }
       const nm = el('td', 'nm', r.name); nm.dir = 'auto';
       tr.append(el('td', 'mut ltrnum', shortCode(r)), el('td', 'mut', fmtDate(r.created_at)), nm, el('td', 'ltrnum', r.phone),
-        el('td', null, L.svc[r.service] || r.service), el('td', null, L.wil[r.wilayat] || r.wilayat), el('td', null, fmtDay(r.preferred_date)),
-        st, el('td', null, drvName(r.driver_id) || '—'), el('td', 'mut', L.src[r.source || 'website'] || r.source), inv);
+        el('td', null, reqSizeLabel(r) || '—'), el('td', null, L.wil[r.wilayat] || r.wilayat), el('td', null, fmtDay(r.preferred_date)),
+        st, el('td', 'ltrnum', (unitOf(r) || {}).code || '—'), el('td', 'mut', L.src[r.source || 'website'] || r.source), inv);
       const open = () => openRequest(r);
       tr.onclick = open; tr.onkeydown = e => { if (e.key === 'Enter') open(); };
       body.append(tr);
@@ -1002,11 +1096,13 @@
     const meta = el('dl', 'meta');
     addMeta(meta, L.sent, fmtDate(r.created_at));
     addMeta(meta, L.mobile, r.phone, true);
-    addMeta(meta, L.service, L.svc[r.service] || r.service);
+    if (r.service && r.service !== 'storage') addMeta(meta, L.service, L.svc[r.service] || r.service);
+    addMeta(meta, L.reqUnit, reqSizeLabel(r));
+    addMeta(meta, L.reqDur, (L.durs[reqDur(r)] || reqDur(r)));
     addMeta(meta, L.wilayat, L.wil[r.wilayat] || r.wilayat);
     addMeta(meta, L.address, r.address);
     addMeta(meta, L.prefDate, fmtDay(r.preferred_date));
-    addMeta(meta, L.custNotes, r.notes);
+    addMeta(meta, L.custNotes, (r.notes || '').replace(/^حجم الوحدة:[^\n]*\n?|^المدة:[^\n]*\n?/, '').trim());
     addMeta(meta, L.srcLabel, (L.src[r.source || 'website'] || r.source) + (r.created_by ? ' · ' + r.created_by : ''));
     info.append(meta);
 
@@ -1022,29 +1118,26 @@
     const sLab = el('label', null, L.status); const sel = el('select');
     fillSelect(sel, L.st, r.status); sLab.append(sel);
 
-    // قائمة السائقين: القابلون للإسناد والمتاحون في التاريخ أولاً، وغير القابلين يظهرون معطّلين مع السبب
+    // قائمة الوحدات: المتاحة أولاً، والمطابقة للحجم المطلوب في المقدمة؛ غير المتاحة تظهر معطّلة
+    const cur = unitOf(r), want = SIZE_OF[reqSize(r)];
     const dLab = el('label', null, L.driver); const drvSel = el('select');
-    const scored = drivers.map(d => ({ d, n: jobsOn(d.id, r.preferred_date, r.id), a: assignable(d, r.preferred_date) }))
-      .sort((x, y) => (x.a.ok ? 0 : 1) - (y.a.ok ? 0 : 1) || (x.d.status === 'available' ? 0 : 1) - (y.d.status === 'available' ? 0 : 1) || x.n - y.n || x.d.name.localeCompare(y.d.name));
     const none = el('option', null, L.noDriver); none.value = ''; drvSel.append(none);
-    scored.forEach(({ d, n, a }) => {
-      const avail = !a.ok ? `${L.notAssignable}: ${a.why}` : r.preferred_date ? (n ? L.busyOn(n) : L.freeOn) : L.noDate;
-      const o = el('option', null, `${d.name} · ${L.truck[d.truck_size]} · ${L.dst[d.status]} · ${avail}`);
-      o.value = d.id;
-      if (!a.ok && d.id !== r.driver_id) o.disabled = true;
-      if (d.id === r.driver_id) o.selected = true;
-      drvSel.append(o);
-    });
+    units.slice().sort((x, y) => (x.status === 'available' ? 0 : 1) - (y.status === 'available' ? 0 : 1) || (x.size === want ? 0 : 1) - (y.size === want ? 0 : 1) || x.code.localeCompare(y.code, 'en', { numeric: true }))
+      .forEach(u => {
+        const mine = cur && u.id === cur.id;
+        const o = el('option', null, `${unitLabel(u)} · ${u.monthly_rent != null ? money(u.monthly_rent) + ' ' + L.omr : ''} · ${L.ust[u.status]}`);
+        o.value = u.id;
+        if (!mine && u.status !== 'available') o.disabled = true;
+        if (mine) o.selected = true;
+        drvSel.append(o);
+      });
     const dHint = el('span', 'hint');
     const updHint = () => {
-      const d = drivers.find(x => x.id === drvSel.value);
-      if (!d) { dHint.className = 'hint'; dHint.textContent = drivers.length ? '' : L.noDrivers; return; }
-      const msgs = [];
-      if (!assignable(d, r.preferred_date).ok) msgs.push(L.driverWarnDocs);
-      if (jobsOn(d.id, r.preferred_date, r.id)) msgs.push(L.driverWarnBusy);
-      if (d.status !== 'available') msgs.push(L.driverWarnStatus);
-      dHint.className = msgs.length ? 'hint warn' : 'hint';
-      dHint.textContent = msgs.join(' ') || [d.phone, d.plate_number].filter(Boolean).join(' · ');
+      const u = units.find(x => x.id === drvSel.value);
+      if (!unitOk) { dHint.className = 'hint warn'; dHint.textContent = L.noUnitTable; return; }
+      if (!u) { dHint.className = 'hint'; dHint.textContent = units.length ? '' : L.noDrivers; return; }
+      dHint.className = want && u.size !== want ? 'hint warn' : 'hint';
+      dHint.textContent = want && u.size !== want ? L.unitWarnSize : '';
     };
     drvSel.onchange = updHint; updHint();
     dLab.append(drvSel, dHint);
@@ -1076,10 +1169,21 @@
     btn.onclick = async () => {
       const L2 = t();
       if (sel.value === 'assigned' && !drvSel.value) { note.className = 'saved err'; note.textContent = L2.needDriver; return; }
-      const d = drivers.find(x => x.id === drvSel.value);
+      const u = units.find(x => x.id === drvSel.value);
       btn.disabled = true; note.className = 'saved'; note.textContent = L2.saving;
-      const patch = { status: sel.value, driver_id: d ? d.id : null, assigned_driver: d ? `${d.name} · ${d.phone}` : null, admin_notes: nts.value.trim() || null };
-      const { error } = await db.from('requests').update(patch).eq('id', r.id);
+      // انتهى العقد أو أُلغي الطلب: تُخلى الوحدة تلقائياً
+      const ending = ['done', 'cancelled'].includes(sel.value);
+      const patch = { status: sel.value, admin_notes: nts.value.trim() || null };
+      if (unitOk) patch.unit_id = u && !ending ? u.id : null;
+      let { error } = await db.from('requests').update(patch).eq('id', r.id);
+      if (!error && unitOk) {
+        const free = { status: 'available', request_id: null, customer_name: null, customer_phone: null, start_date: null, end_date: null };
+        if (cur && (!u || u.id !== cur.id || ending)) error = (await db.from('units').update(free).eq('id', cur.id)).error;
+        if (!error && u && !ending) {
+          const occ = { status: sel.value === 'assigned' ? 'rented' : 'reserved', request_id: r.id, customer_name: r.name, customer_phone: /^\+968[79]\d{7}$/.test(r.phone || '') ? r.phone : null, start_date: u.start_date || r.preferred_date || (sel.value === 'assigned' ? today() : null) };
+          error = (await db.from('units').update(occ).eq('id', u.id)).error;
+        }
+      }
       btn.disabled = false;
       if (error) { note.className = 'saved err'; note.textContent = L2.saveFail + error.message; return; }
       note.textContent = L2.savedOk;
@@ -1096,18 +1200,25 @@
     const L = t();
     const WILAYATS = ['مسقط', 'مطرح', 'بوشر', 'السيب', 'العامرات', 'قريات', 'ولاية أخرى'];
     fillSelect($('rSource'), { phone: L.src.phone, whatsapp: L.src.whatsapp, walkin: L.src.walkin, other: L.src.other }, $('rSource').value || 'phone');
-    fillSelect($('rService'), L.svc, $('rService').value || 'move');
+    fillSelect($('rUnit'), L.reqSizes, $('rUnit').value);
+    fillSelect($('rDur'), L.durs, $('rDur').value);
     fillSelect($('rWilayat'), Object.assign({ '': L.wilChoose }, Object.fromEntries(WILAYATS.map(w => [w, L.wil[w] || w]))), $('rWilayat').value);
     fillSelect($('rStatus'), { new: L.st.new, contacted: L.st.contacted, confirmed: L.st.confirmed }, $('rStatus').value || 'contacted');
   }
   function openReqForm(){
-    ['rName', 'rPhone', 'rDate', 'rAddress', 'rNotes', 'rAdminNotes'].forEach(id => $(id).value = '');
-    $('rConsent').checked = false; $('rWilayat').value = ''; $('rStatus').value = 'contacted'; $('rSource').value = 'phone'; $('rService').value = 'move';
+    ['rName', 'rPhone', 'rDate', 'rNotes', 'rAdminNotes'].forEach(id => $(id).value = '');
+    $('rConsent').checked = false; $('rWilayat').value = ''; $('rStatus').value = 'contacted'; $('rSource').value = 'phone'; $('rUnit').value = ''; $('rDur').value = '';
     $('reqMsg').textContent = '';
     $('rDate').min = today();
     $('reqForm').hidden = false;
     $('reqForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
     $('rName').focus({ preventScroll: true });
+  }
+  // نفس صيغة الموقع حتى تُقرأ بنفس الطريقة
+  function composeStaffNotes(){
+    const parts = [['حجم الوحدة', $('rUnit').value], ['المدة', $('rDur').value]].filter(([, v]) => v).map(([k, v]) => k + ': ' + v);
+    const text = [parts.join(' · '), $('rNotes').value.trim()].filter(Boolean).join('\n');
+    return text ? text.slice(0, 600) : null;
   }
   $('addReqBtn').onclick = openReqForm;
   $('reqCancel').onclick = () => { $('reqForm').hidden = true; };
@@ -1121,8 +1232,8 @@
     if (!$('rWilayat').value) { msg.textContent = L.errWil; return; }
     if (!$('rConsent').checked) { msg.textContent = L.errRConsent; return; }
     const rec = {
-      name: $('rName').value.trim(), phone: '+968' + $('rPhone').value, service: $('rService').value, wilayat: $('rWilayat').value,
-      address: $('rAddress').value.trim() || null, preferred_date: $('rDate').value || null, notes: $('rNotes').value.trim() || null,
+      name: $('rName').value.trim(), phone: '+968' + $('rPhone').value, service: 'storage', wilayat: $('rWilayat').value,
+      preferred_date: $('rDate').value || null, notes: composeStaffNotes(),
       consent: true, source: $('rSource').value, status: $('rStatus').value, admin_notes: $('rAdminNotes').value.trim() || null
     };
     msg.className = 'saved'; msg.textContent = L.saving;
@@ -1153,7 +1264,7 @@
     return i;
   }
   const dueOf = v => Math.max(0, Number(v.total) - Number(v.amount_paid));
-  const SVC_LINE = { move: 'نقل أثاث / Furniture moving', storage: 'تخزين أثاث / Furniture storage' };
+  const SVC_LINE = { move: 'نقل / Moving', storage: 'إيجار وحدة تخزين / Storage unit rental' };
   const LOGO_SVG = '<svg class="qm-mark" viewBox="0 0 120 120" aria-hidden="true"><path d="M100 64V36A22 22 0 0 0 78 14H36A22 22 0 0 0 14 36V78A22 22 0 0 0 36 100H64" style="fill:none;stroke:#1C1633;stroke-width:15;stroke-linecap:round;stroke-linejoin:round"/><path d="M70 70L86 86" style="fill:none;stroke:#1C1633;stroke-width:15;stroke-linecap:round"/><rect x="84" y="84" width="30" height="30" rx="8" style="fill:#1C1633;stroke:none"/></svg>';
 
   function invStateTag(v){
@@ -1193,8 +1304,10 @@
       td1.append(d); td2.append(q); td3.append(p); td4.append(x); tr.append(td1, td2, td3, td4); tb.append(tr);
       [d, q, p].forEach(i => i.addEventListener('input', calc));
     };
-    const lines = r.service === 'both' ? [SVC_LINE.move, SVC_LINE.storage] : [SVC_LINE[r.service] || ''];
-    lines.forEach(x => addLine(x));
+    // البند الافتراضي: إيجار الوحدة المخصّصة (شهر واحد بسعرها)، ويمكن تعديل الكمية لعدد الأشهر
+    const iu = unitOf(r);
+    if (iu) addLine(`${SVC_LINE.storage} — ${iu.code}`, 1, iu.monthly_rent != null ? iu.monthly_rent : '');
+    else addLine(SVC_LINE.storage);
     const add = el('button', 'btn btn-ghost', L.addItem); add.type = 'button'; add.onclick = () => { addLine(); calc(); };
 
     const grid = el('div', 'inv-grid');
@@ -1285,8 +1398,8 @@
       b.append(dl); return b;
     };
     two.append(
-      box('العميل / Customer', [['الاسم / Name', v.customer_name], ['الموبايل / Mobile', v.customer_phone, true], ['العنوان / Address', [r.wilayat, r.address].filter(Boolean).join(' – ')]]),
-      box('الطلب / Request', [['رقم الطلب / Request No', r.id ? shortCode(r) : '', true], ['تاريخ الخدمة / Service date', r.preferred_date || '', true], ['طريقة الدفع / Payment', v.payment_method ? `${T.ar.pm[v.payment_method]} / ${T.en.pm[v.payment_method]}` : '']])
+      box('العميل / Customer', [['الاسم / Name', v.customer_name], ['الموبايل / Mobile', v.customer_phone, true], ['الولاية / Wilayat', r.wilayat ? `${r.wilayat}${T.en.wil[r.wilayat] ? ' / ' + T.en.wil[r.wilayat] : ''}` : '']]),
+      box('الطلب / Request', [['رقم الطلب / Request No', r.id ? shortCode(r) : '', true], ['الوحدة / Unit', (unitOf(r) || {}).code || '', true], ['تاريخ البدء / Start date', r.preferred_date || '', true], ['طريقة الدفع / Payment', v.payment_method ? `${T.ar.pm[v.payment_method]} / ${T.en.pm[v.payment_method]}` : '']])
     );
 
     const tbl = el('table');
@@ -1552,9 +1665,8 @@
     const inR = iso => { const d = muscatDay(iso); return d >= from && d <= to; };
     const reqs = rows.filter(r => inR(r.created_at)).sort((a, b) => a.created_at < b.created_at ? -1 : 1);
     const invs = invoices.filter(v => inR(v.issued_at)).sort((a, b) => a.seq - b.seq);
-    const titles = { summary: L.repSumT, requests: L.repReqT, invoices: L.repInvT, drivers: L.repDrvT };
+    const titles = { summary: L.repSumT, requests: L.repReqT, invoices: L.repInvT, units: L.repUnitT };
     const paper = reportPaper(titles[kind], from, to);
-    const drvName = id => { const d = drivers.find(x => x.id === id); return d ? d.name : ''; };
     const reqCode = id => { const r = rows.find(x => x.id === id); return r ? shortCode(r) : ''; };
 
     if (kind === 'summary') {
@@ -1562,9 +1674,10 @@
       paper.append(el2('h3', 'rs', esc(L.secReq)));
       paper.append(kpis([[reqs.length, L.kReq], [conf, L.kConf], [reqs.filter(r => r.status === 'done').length, L.kDone], [pct(conf, reqs.length), L.kRate]]));
       const mk = (title, data) => { const d = el2('div'); d.append(el2('h3', 'rs', esc(title)), table([L.cItem, L.cCount, L.cShare], data.map(([k, n]) => [k, n, pct(n, reqs.length)]), [L.repTotal, reqs.length, reqs.length ? '100%' : '—'], [1, 2])); return d; };
-      const g1 = el2('div', 'two-t'); g1.append(mk(L.byStatus, countBy(reqs, 'status', L.st)), mk(L.byService, countBy(reqs, 'service', L.svc)));
+      const g1 = el2('div', 'two-t'); g1.append(mk(L.byStatus, countBy(reqs, 'status', L.st)), mk(L.byService, countBy(reqs.map(r => ({ sz: reqSize(r) || '' })), 'sz', L.reqSizes)));
       const g2 = el2('div', 'two-t'); g2.append(mk(L.byWil, countBy(reqs, 'wilayat', L.wil)), mk(L.bySource, countBy(reqs.map(r => ({ source: r.source || 'website' })), 'source', L.src)));
       paper.append(g1, g2);
+      if (unitOk && units.length) { paper.append(el2('h3', 'rs', esc(L.secUnits))); paper.append(kpis(unitKpis())); }
 
       paper.append(el2('h3', 'rs', esc(L.secFin)));
       if (!invOk) paper.append(el2('p', 'small', esc(L.invNA)));
@@ -1582,24 +1695,20 @@
         paper.append(el2('p', 'small', esc(L.nonVat)));
       }
     } else if (kind === 'requests') {
-      // جدول مستقل لكل خدمة
-      const groups = SVC_ORDER.map(k => [k, reqs.filter(r => r.service === k)]).filter(([, l]) => l.length);
-      if (!groups.length) paper.append(el2('p', null, esc(L.repEmpty)));
-      groups.forEach(([k, list]) => {
-        paper.append(el2('h3', 'rs', esc(`${L.svc[k] || k} · ${list.length}`)));
-        const data = list.map((r, i) => [i + 1, { html: `<span dir="ltr">${esc(shortCode(r))}</span>` }, muscatDay(r.created_at), r.name, { html: `<span dir="ltr">${esc(r.phone)}</span>` }, L.wil[r.wilayat] || r.wilayat, L.src[r.source || 'website'] || r.source, L.st[r.status] || r.status, drvName(r.driver_id)]);
-        paper.append(table([L.hNo, L.hReq, L.hDate, L.hCust, L.hMobile, L.hWil, L.hSrc, L.hStatus, L.hDriver], data, [L.repTotal, list.length, '', '', '', '', '', '', '']));
-      });
-      if (groups.length > 1) paper.append(kpis(groups.map(([k, l]) => [l.length, L.svc[k] || k]).concat([[reqs.length, L.repGrand]])));
+      if (!reqs.length) paper.append(el2('p', null, esc(L.repEmpty)));
+      else {
+        const data = reqs.map((r, i) => [i + 1, { html: `<span dir="ltr">${esc(shortCode(r))}</span>` }, muscatDay(r.created_at), r.name, { html: `<span dir="ltr">${esc(r.phone)}</span>` }, L.wil[r.wilayat] || r.wilayat, reqSizeLabel(r), L.src[r.source || 'website'] || r.source, L.st[r.status] || r.status, { html: `<span dir="ltr">${esc((unitOf(r) || {}).code || '')}</span>` }]);
+        paper.append(table([L.hNo, L.hReq, L.hDate, L.hCust, L.hMobile, L.hWil, L.hReqSize, L.hSrc, L.hStatus, L.hDriver], data, [L.repTotal, reqs.length, '', '', '', '', '', '', '', '']));
+      }
     } else if (kind === 'invoices') {
       if (!invOk) paper.append(el2('p', null, esc(L.invNA)));
       else {
         const svcOf = v => { const r = rows.find(x => x.id === v.request_id); return r ? r.service : '—'; };
         const sum = (list, f) => list.filter(v => v.status === 'issued').reduce((s, v) => s + Number(f(v) || 0), 0);
-        const groups = SVC_ORDER.concat(['—']).map(k => [k, invs.filter(v => svcOf(v) === k)]).filter(([, l]) => l.length);
+        const groups = invs.length ? [['storage', invs]] : [];
         if (!groups.length) paper.append(el2('p', null, esc(L.repEmpty)));
         groups.forEach(([k, list]) => {
-          paper.append(el2('h3', 'rs', esc(`${L.svc[k] || L.svcUnknown} · ${list.length}`)));
+          paper.append(el2('h3', 'rs', esc(`${L.secFin} · ${list.length}`)));
           const data = list.map((v, i) => [i + 1, { html: `<span dir="ltr">${esc(v.number)}</span>` }, muscatDay(v.issued_at), v.customer_name, { html: `<span dir="ltr">${esc(reqCode(v.request_id))}</span>` }, money(v.total), money(v.amount_paid), v.status === 'void' ? '—' : money(dueOf(v)), v.payment_method ? L.pm[v.payment_method] : '—', v.status === 'void' ? L.invVoid : (dueOf(v) > 0 ? L.stDue : L.invPaid)]);
           const live = list.filter(v => v.status === 'issued').length;
           paper.append(table([L.hNo, L.hInv, L.hDate, L.hCust, L.hReq, L.hTotal, L.hPaid, L.hDue, L.hPm, L.hStatus], data, [L.repTotal, live, '', '', '', money(sum(list, v => v.total)), money(sum(list, v => v.amount_paid)), money(sum(list, v => dueOf(v))), '', ''], [5, 6, 7]));
@@ -1611,16 +1720,18 @@
         }
         paper.append(el2('p', 'small', esc(L.nonVat)));
       }
-    } else if (kind === 'drivers') {
-      const docCell = (d, col, key) => {
-        const st = docStates(d).find(x => x.key === key).state, v = d[col];
-        const cls = st === 'expired' || st === 'missing' ? 'bad' : st === 'soon' ? 'soon' : '';
-        return { html: `<span class="${cls}">${v ? esc(fmtDay(v)) : esc(L.docMissing(''))}</span>` };
-      };
-      const data = drivers.map((d, i) => [i + 1, d.name, { html: `<span dir="ltr">${esc(d.phone)}</span>` }, (L.contract[d.contract_type] || '') + (d.company_name ? ' · ' + d.company_name : ''), L.truck[d.truck_size] || '', d.plate_number || '',
-        docCell(d, 'voc_expiry', 'voc'), docCell(d, 'license_expiry', 'license'), docCell(d, 'insurance_expiry', 'insurance'), L.dst[d.status] || d.status,
-        reqs.filter(r => r.driver_id === d.id && r.status === 'done').length, rows.filter(r => r.driver_id === d.id && ACTIVE.includes(r.status)).length]);
-      paper.append(data.length ? table([L.hNo, L.hName, L.hMobile, L.hContract, L.hTruck, L.hPlate, L.hVoc, L.hLic, L.hIns, L.hStatus, L.hDoneP, L.hActive], data, null, [10, 11]) : el2('p', null, esc(L.repEmpty)));
+    } else if (kind === 'units') {
+      if (!unitOk) paper.append(el2('p', null, esc(L.noUnitTable)));
+      else if (!units.length) paper.append(el2('p', null, esc(L.repEmpty)));
+      else {
+        paper.append(kpis(unitKpis()));
+        const sorted = units.slice().sort((x, y) => x.code.localeCompare(y.code, 'en', { numeric: true }));
+        const endCell = u => { if (!u.end_date) return ''; const n = daysTo(u.end_date); return { html: `<span class="${n < 0 ? 'bad' : n <= 14 ? 'soon' : ''}">${esc(fmtDay(u.end_date))}</span>` }; };
+        const data = sorted.map((u, i) => [i + 1, { html: `<b dir="ltr">${esc(u.code)}</b>` }, L.size[u.size] || u.size, u.area_m2 != null ? Number(u.area_m2) : '', u.monthly_rent != null ? money(u.monthly_rent) : '', L.ust[u.status] || u.status, u.customer_name || '', { html: `<span dir="ltr">${esc(u.customer_phone || '')}</span>` }, fmtDay(u.start_date), endCell(u), { html: `<span dir="ltr">${esc(reqCode(u.request_id))}</span>` }]);
+        const rentSum = sorted.filter(u => u.status === 'rented').reduce((a, u) => a + Number(u.monthly_rent || 0), 0);
+        paper.append(el2('h3', 'rs', esc(L.secUnits)), table([L.hNo, L.hCode, L.hSize, L.hArea, L.hRent, L.hStatus, L.hTenant, L.hMobile, L.hStart, L.hEnd, L.hReq], data, [L.repTotal, sorted.length, '', '', money(rentSum), '', '', '', '', '', ''], [3, 4]));
+        paper.append(el2('p', 'small', esc(L.nonVat)));
+      }
     }
     finishPaper(paper);
 
@@ -1637,122 +1748,156 @@
   }
   document.querySelectorAll('[data-rep]').forEach(b => b.addEventListener('click', () => openReport(b.dataset.rep)));
 
-  // ===== السائقون / Drivers =====
-  function renderDrivers(){
+  // ===== الوحدات / Storage units =====
+  let uFilter = 'all';
+  const daysTo = d => Math.round((new Date(d + 'T00:00:00') - new Date(today() + 'T00:00:00')) / 864e5);
+  function unitKpis(){
+    const L = t(), n = units.filter(u => u.status !== 'maintenance').length;
+    const rented = units.filter(u => u.status === 'rented').length, reserved = units.filter(u => u.status === 'reserved').length;
+    const rent = units.filter(u => u.status === 'rented').reduce((a, u) => a + Number(u.monthly_rent || 0), 0);
+    return [[units.length, L.kUnits], [rented, L.kRented], [reserved, L.kReserved], [units.filter(u => u.status === 'available').length, L.kAvail], [pct(rented + reserved, n), L.kOcc], [money(rent), L.kRent]];
+  }
+  function renderUnits(){
     const L = t();
-    const q = $('drvSearch').value.trim().toLowerCase();
-    const shown = drivers.filter(d => !q || [d.name, d.phone, d.plate_number].some(v => (v || '').toLowerCase().includes(q)));
-    if (!shown.length) { $('drvList').replaceChildren(el('div', 'empty', drivers.length ? L.emptyFilter : L.noDriversList)); return; }
-    const month = today().slice(0, 7);
-    $('drvList').replaceChildren(...shown.map(d => {
-      const color = DSTATUS_COLOR[d.status];
-      const c = el('article', 'req'); c.style.borderInlineStartColor = color;
-      const info = el('div');
-      const head = el('div', 'req-head');
-      const nm = el('h3', null, d.name); nm.dir = 'auto'; head.append(nm);
-      const badge = el('span', 'badge', L.dst[d.status]); badge.style.background = color; head.append(badge);
-      docStates(d).forEach(({ key, state }) => {
-        if (state === 'expired') head.append(el('span', 'flag bad', L.docExpired(L.docs[key])));
-        if (state === 'missing') head.append(el('span', 'flag bad', L.docMissing(L.docs[key])));
-        if (state === 'soon') head.append(el('span', 'flag soon', L.docSoon(L.docs[key])));
-      });
-      if (d.rating) head.append(el('span', 'stars', '★'.repeat(d.rating)));
-      info.append(head);
-
+    if (!unitOk) { $('uCounters').replaceChildren(); $('occText').textContent = ''; $('unitList').replaceChildren(el('div', 'empty', L.noUnitTable)); return; }
+    // العدّادات
+    const items = [['all', L.all, units.length, 'var(--muted)']].concat(Object.keys(USTATUS_COLOR).map(k => [k, L.ust[k], units.filter(u => u.status === k).length, USTATUS_COLOR[k]]));
+    $('uCounters').replaceChildren(...items.map(([k, label, n, color]) => {
+      const b = el('button', 'chip'); b.type = 'button'; b.setAttribute('aria-pressed', String(uFilter === k));
+      const dot = el('span', 'dot'); dot.style.background = color;
+      b.append(dot, document.createTextNode(label), el('span', 'n', String(n)));
+      b.onclick = () => { uFilter = k; renderUnits(); };
+      return b;
+    }));
+    const usable = units.filter(u => u.status !== 'maintenance').length, used = units.filter(u => ['rented', 'reserved'].includes(u.status)).length;
+    $('occText').textContent = units.length ? L.occ(used, usable, pct(used, usable)) : '';
+    $('occBar').style.width = usable ? Math.round(used * 100 / usable) + '%' : '0';
+    // القائمة
+    const q = $('unitSearch').value.trim().toLowerCase();
+    const shown = units.filter(u => (uFilter === 'all' || u.status === uFilter) && (!q || [u.code, u.customer_name, u.customer_phone].some(v => (v || '').toLowerCase().includes(q))))
+      .sort((x, y) => x.code.localeCompare(y.code, 'en', { numeric: true }));
+    if (!shown.length) { $('unitList').replaceChildren(el('div', 'empty', units.length ? L.emptyFilter : L.noUnitsList)); return; }
+    $('unitList').replaceChildren(...shown.map(u => {
+      const color = USTATUS_COLOR[u.status];
+      const c = el('article', 'unit'); c.style.borderTopColor = color;
+      const head = el('div', 'unit-head');
+      const badge = el('span', 'badge', L.ust[u.status]); badge.style.background = color;
+      head.append(el('b', null, u.code), badge);
+      c.append(head);
       const meta = el('dl', 'meta');
-      addMeta(meta, L.mobile, d.phone, true);
-      addMeta(meta, L.dContract, (L.contract[d.contract_type] || '') + (d.company_name ? ' · ' + d.company_name : ''));
-      addMeta(meta, L.dCr, d.cr_number, true);
-      addMeta(meta, L.dTruck, L.truck[d.truck_size]);
-      addMeta(meta, L.dPlate, d.plate_number);
-      addMeta(meta, L.dVoc, d.voc_number, true);
-      addMeta(meta, L.dVocExp, fmtDay(d.voc_expiry));
-      addMeta(meta, L.dLicType, d.license_type ? L.lic[d.license_type] : '');
-      addMeta(meta, L.dLicExp, fmtDay(d.license_expiry));
-      addMeta(meta, L.dInsExp, fmtDay(d.insurance_expiry));
-      addMeta(meta, L.dAreas, d.areas);
-      addMeta(meta, L.dHelpers, d.helpers_count != null ? L.helpers(d.helpers_count) : '');
-      addMeta(meta, L.dDays, d.work_days);
-      addMeta(meta, L.dRate, d.agreed_rate != null ? `${Number(d.agreed_rate)} ${L.omr} ${L.unit[d.rate_unit] || ''}` : '');
-      addMeta(meta, L.dNotes, d.notes);
-      info.append(meta);
-
-      const links = el('div', 'links');
-      const a1 = el('a', null, L.call); a1.href = 'tel:' + d.phone;
-      const a2 = el('a', null, L.whatsapp); a2.href = 'https://wa.me/' + d.phone.replace(/[^\d]/g, ''); a2.target = '_blank'; a2.rel = 'noopener';
-      links.append(a1, a2); info.append(links);
-
-      const side = el('div', 'edit');
-      const active = rows.filter(x => x.driver_id === d.id && ACTIVE.includes(x.status)).length;
-      const done = rows.filter(x => x.driver_id === d.id && x.status === 'done' && (x.updated_at || '').slice(0, 7) === month).length;
-      side.append(el('span', null, L.activeJobs(active)), el('span', null, L.jobsMonth(done)));
-      const a = assignable(d);
-      if (!a.ok) side.append(el('span', 'hint warn', `${L.notAssignable}: ${a.why}`));
-      const eb = el('button', 'btn btn-ghost', L.edit); eb.type = 'button'; eb.onclick = () => openDriverForm(d);
-      side.append(eb);
-      c.append(info, side);
+      addMeta(meta, L.uSize, `${L.size[u.size]}${u.area_m2 ? ' · ' + Number(u.area_m2) + (lang === 'en' ? ' m²' : ' م²') : ''}`);
+      addMeta(meta, L.uRent, u.monthly_rent != null ? `${money(u.monthly_rent)} ${L.omr}` : '');
+      addMeta(meta, L.uCust, u.customer_name);
+      addMeta(meta, L.mobile, u.customer_phone, true);
+      addMeta(meta, L.uStart, fmtDay(u.start_date));
+      addMeta(meta, L.uEnd, fmtDay(u.end_date));
+      const r = u.request_id ? rows.find(x => x.id === u.request_id) : null;
+      if (r) addMeta(meta, L.hReq, shortCode(r), true);
+      addMeta(meta, L.dNotes, u.notes);
+      c.append(meta);
+      if (u.end_date && ['rented', 'reserved'].includes(u.status)) {
+        const n = daysTo(u.end_date);
+        if (n <= 14) c.append(el('span', n < 0 ? 'flag bad' : 'flag soon', L.endsIn(n)));
+      }
+      const acts = el('div', 'links');
+      if (u.customer_phone) {
+        const a1 = el('a', null, L.call); a1.href = 'tel:' + u.customer_phone;
+        const a2 = el('a', null, L.whatsapp); a2.href = 'https://wa.me/' + u.customer_phone.replace(/[^\d]/g, ''); a2.target = '_blank'; a2.rel = 'noopener';
+        acts.append(a1, a2);
+      }
+      if (r) { const a3 = el('a', null, L.openReq); a3.href = '#'; a3.onclick = e => { e.preventDefault(); openRequest(r); }; acts.append(a3); }
+      const eb = el('button', 'btn btn-ghost', L.edit); eb.type = 'button'; eb.onclick = () => openUnitForm(u);
+      c.append(acts, eb);
       return c;
     }));
   }
 
-  function openDriverForm(d){
-    editingDriver = d || null;
+  function openUnitForm(u){
+    editingUnit = u || null;
     const L = t();
-    $('drvFormTitle').textContent = d ? L.editDriver : L.newDriver;
-    $('dName').value = d ? d.name : '';
-    $('dPhone').value = d ? d.phone.replace('+968', '') : '';
-    fillSelect($('dContract'), L.contract, d ? d.contract_type : 'independent');
-    $('dCompany').value = d ? (d.company_name || '') : '';
-    $('dCr').value = d ? (d.cr_number || '') : '';
-    fillSelect($('dStatus'), L.dst, d ? d.status : 'available');
-    fillSelect($('dTruck'), L.truck, d ? d.truck_size : 'medium');
-    $('dPlate').value = d ? (d.plate_number || '') : '';
-    $('dVoc').value = d ? (d.voc_number || '') : '';
-    $('dVocExp').value = d ? (d.voc_expiry || '') : '';
-    fillSelect($('dLicType'), L.lic, d ? (d.license_type || '') : '');
-    $('dLicExp').value = d ? (d.license_expiry || '') : '';
-    $('dInsExp').value = d ? (d.insurance_expiry || '') : '';
-    $('dAreas').value = d ? (d.areas || '') : '';
-    $('dHelpers').value = d && d.helpers_count != null ? d.helpers_count : '';
-    $('dDays').value = d ? (d.work_days || '') : '';
-    $('dRate').value = d && d.agreed_rate != null ? Number(d.agreed_rate) : '';
-    fillSelect($('dRateUnit'), L.unit, d ? (d.rate_unit || 'trip') : 'trip');
-    fillSelect($('dRating'), L.rating, d && d.rating ? d.rating : '');
-    $('dNotes').value = d ? (d.notes || '') : '';
-    $('dConsent').checked = d ? d.consent : false;
-    $('drvMsg').textContent = '';
-    $('drvForm').hidden = false;
-    $('drvForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    $('dName').focus({ preventScroll: true });
+    $('bulkForm').hidden = true;
+    $('unitFormTitle').textContent = u ? L.editUnit : L.newUnit;
+    $('uCode').value = u ? u.code : '';
+    fillSelect($('uSize'), L.size, u ? u.size : 'medium');
+    $('uArea').value = u && u.area_m2 != null ? Number(u.area_m2) : '';
+    $('uRent').value = u && u.monthly_rent != null ? Number(u.monthly_rent) : '';
+    fillSelect($('uStatus'), L.ust, u ? u.status : 'available');
+    $('uCust').value = u ? (u.customer_name || '') : '';
+    $('uPhone').value = u && u.customer_phone ? u.customer_phone.replace('+968', '') : '';
+    $('uStart').value = u ? (u.start_date || '') : '';
+    $('uEnd').value = u ? (u.end_date || '') : '';
+    $('uNotes').value = u ? (u.notes || '') : '';
+    $('unitRelease').hidden = !(u && (u.customer_name || u.request_id || ['rented', 'reserved'].includes(u.status)));
+    $('unitMsg').textContent = '';
+    $('unitForm').hidden = false;
+    $('unitForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    $('uCode').focus({ preventScroll: true });
   }
-  $('addDrvBtn').onclick = () => openDriverForm(null);
-  $('drvCancel').onclick = () => { $('drvForm').hidden = true; editingDriver = null; };
-  $('dPhone').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^\d]/g, '').slice(0, 8); });
+  $('addUnitBtn').onclick = () => openUnitForm(null);
+  $('unitCancel').onclick = () => { $('unitForm').hidden = true; editingUnit = null; };
+  $('uPhone').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^\d]/g, '').slice(0, 8); });
 
-  $('drvForm').addEventListener('submit', async e => {
+  $('unitForm').addEventListener('submit', async e => {
     e.preventDefault();
-    const L = t(), msg = $('drvMsg');
+    const L = t(), msg = $('unitMsg');
     msg.className = 'saved err';
-    if ($('dName').value.trim().length < 2) { msg.textContent = L.errName; return; }
-    if (!/^[79]\d{7}$/.test($('dPhone').value)) { msg.textContent = L.errPhone; return; }
-    if ($('dContract').value === 'company' && !$('dCompany').value.trim()) { msg.textContent = L.errCompany; return; }
-    if (!$('dConsent').checked) { msg.textContent = L.errConsent; return; }
+    const code = $('uCode').value.trim().toUpperCase();
+    if (!code) { msg.textContent = L.errCode; return; }
+    if (units.some(x => x.code.toUpperCase() === code && (!editingUnit || x.id !== editingUnit.id))) { msg.textContent = L.errDupCode; return; }
+    if ($('uPhone').value && !/^[79]\d{7}$/.test($('uPhone').value)) { msg.textContent = L.errPhone; return; }
+    if ($('uStart').value && $('uEnd').value && $('uEnd').value < $('uStart').value) { msg.textContent = L.errDates; return; }
     const num = v => v === '' ? null : Number(v);
     const rec = {
-      name: $('dName').value.trim(), phone: '+968' + $('dPhone').value,
-      contract_type: $('dContract').value, company_name: $('dCompany').value.trim() || null, cr_number: $('dCr').value.trim() || null,
-      status: $('dStatus').value, truck_size: $('dTruck').value, plate_number: $('dPlate').value.trim() || null,
-      voc_number: $('dVoc').value.trim() || null, voc_expiry: $('dVocExp').value || null,
-      license_type: $('dLicType').value || null, license_expiry: $('dLicExp').value || null, insurance_expiry: $('dInsExp').value || null,
-      areas: $('dAreas').value.trim() || null, helpers_count: num($('dHelpers').value), work_days: $('dDays').value.trim() || null,
-      agreed_rate: num($('dRate').value), rate_unit: $('dRate').value === '' ? null : $('dRateUnit').value,
-      rating: num($('dRating').value), notes: $('dNotes').value.trim() || null, consent: true
+      code, size: $('uSize').value, area_m2: num($('uArea').value), monthly_rent: num($('uRent').value), status: $('uStatus').value,
+      customer_name: $('uCust').value.trim() || null, customer_phone: $('uPhone').value ? '+968' + $('uPhone').value : null,
+      start_date: $('uStart').value || null, end_date: $('uEnd').value || null, notes: $('uNotes').value.trim() || null
     };
     msg.className = 'saved'; msg.textContent = L.saving;
-    const res = editingDriver ? await db.from('drivers').update(rec).eq('id', editingDriver.id) : await db.from('drivers').insert(rec);
+    const res = editingUnit ? await db.from('units').update(rec).eq('id', editingUnit.id) : await db.from('units').insert(rec);
     if (res.error) { msg.className = 'saved err'; msg.textContent = L.saveFail + res.error.message; return; }
     msg.textContent = L.savedOk;
-    $('drvForm').hidden = true; editingDriver = null;
+    $('unitForm').hidden = true; editingUnit = null;
+    load();
+  });
+
+  // إخلاء الوحدة: تصبح متاحة، ويُفك ربطها بالطلب
+  $('unitRelease').onclick = async () => {
+    const L = t(), u = editingUnit, msg = $('unitMsg');
+    if (!u || !confirm(L.uReleaseQ)) return;
+    msg.className = 'saved'; msg.textContent = L.saving;
+    let { error } = await db.from('units').update({ status: 'available', request_id: null, customer_name: null, customer_phone: null, start_date: null, end_date: null }).eq('id', u.id);
+    if (!error) {
+      const linked = rows.filter(r => r.unit_id === u.id);
+      for (const r of linked) { const x = await db.from('requests').update({ unit_id: null }).eq('id', r.id); if (x.error) { error = x.error; break; } }
+    }
+    if (error) { msg.className = 'saved err'; msg.textContent = L.saveFail + error.message; return; }
+    $('unitForm').hidden = true; editingUnit = null;
+    load();
+  };
+
+  // إضافة عدة وحدات
+  $('bulkUnitBtn').onclick = () => { $('unitForm').hidden = true; $('bulkMsg').textContent = ''; $('bulkForm').hidden = false; $('bulkForm').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  $('bulkCancel').onclick = () => { $('bulkForm').hidden = true; };
+  $('bulkForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const L = t(), msg = $('bulkMsg');
+    const pre = $('bPrefix').value.trim().toUpperCase(), from = Number($('bFrom').value), to = Number($('bTo').value);
+    msg.className = 'saved err';
+    if (!(from >= 1 && to >= from && to - from < 200)) { msg.textContent = L.bBad; return; }
+    const pad = String(to).length < 2 ? 2 : String(to).length;
+    const have = new Set(units.map(u => u.code.toUpperCase()));
+    const num = v => v === '' ? null : Number(v);
+    const list = [];
+    for (let i = from; i <= to; i++) {
+      const code = (pre ? pre + '-' : '') + String(i).padStart(pad, '0');
+      if (!have.has(code)) list.push({ code, size: $('bSize').value, area_m2: num($('bArea').value), monthly_rent: num($('bRent').value), status: 'available' });
+    }
+    if (!list.length) { msg.textContent = L.bDone(0); return; }
+    msg.className = 'saved'; msg.textContent = L.saving;
+    const { error } = await db.from('units').insert(list);
+    if (error) { msg.className = 'saved err'; msg.textContent = L.saveFail + error.message; return; }
+    msg.textContent = L.bDone(list.length);
+    setTimeout(() => { $('bulkForm').hidden = true; }, 900);
     load();
   });
 </script>
